@@ -1045,9 +1045,10 @@ function closeModal(){ document.getElementById('modal').classList.remove('visibl
 function modalAnswer(v){ data.feels_close = v; closeModal(); }
 
 // ============ LEAD ============
-function submitLead() {
+async function submitLead() {
   const name = document.getElementById('inName').value.trim();
   const email = document.getElementById('inEmail').value.trim();
+  const btn = document.querySelector('#slide-lead .submit');
   let ok = true;
   if(!name){ document.getElementById('inName').style.borderColor='#EF4444'; ok=false; }
   if(!email || !email.includes('@')){ document.getElementById('inEmail').style.borderColor='#EF4444'; ok=false; }
@@ -1055,8 +1056,34 @@ function submitLead() {
   data.name = name; data.email = email;
   data.phone = document.getElementById('inPhone').value.trim();
   data.optin = document.getElementById('optin').checked;
-  // TODO: enviar `data` para seu webhook / CRM aqui
-  console.log('LEAD:', data);
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Salvando...';
+  }
+
+  try {
+    await fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        optin: data.optin,
+        card: selectedKey,
+        answers: data,
+      }),
+    });
+  } catch (err) {
+    console.error('Lead send failed:', err);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Revelar minha leitura de alma gêmea';
+    }
+  }
+
   showReading();
 }
 function skipReading(){ data.name = data.name || 'você'; showReading(); }
