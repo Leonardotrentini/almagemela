@@ -18,6 +18,9 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Supabase não configurado' });
   }
 
+  let urlHost = '';
+  try { urlHost = new URL(supabaseUrl).host; } catch { urlHost = 'invalid-url'; }
+
   let body = req.body;
   if (typeof body === 'string') {
     try { body = JSON.parse(body || '{}'); } catch { body = {}; }
@@ -55,11 +58,10 @@ module.exports = async function handler(req, res) {
   };
 
   try {
-    const response = await fetch(`${supabaseUrl}/rest/v1/leads`, {
+    const response = await fetch(`${supabaseUrl.replace(/\/$/, '')}/rest/v1/leads`, {
       method: 'POST',
       headers: {
         apikey: supabaseKey,
-        Authorization: `Bearer ${supabaseKey}`,
         'Content-Type': 'application/json',
         Prefer: 'return=minimal',
       },
@@ -68,11 +70,13 @@ module.exports = async function handler(req, res) {
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error('Supabase error:', response.status, errText);
+      console.error('Supabase error:', response.status, errText, urlHost);
       return res.status(502).json({
         error: 'Falha ao salvar lead',
         detail: errText.slice(0, 300),
         status: response.status,
+        urlHost,
+        keyPrefix: supabaseKey.slice(0, 15),
       });
     }
 
