@@ -11,20 +11,30 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SECRET_KEY;
+  const supabaseUrl = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '').trim();
+  const supabaseKey = (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
 
   if (!supabaseUrl || !supabaseKey) {
     return res.status(500).json({ error: 'Supabase não configurado' });
   }
 
-  const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body || '{}'); } catch { body = {}; }
+  }
+  body = body || {};
+
   const name = String(body.name || '').trim();
   const email = String(body.email || '').trim().toLowerCase();
   const phone = String(body.phone || '').trim();
   const optin = Boolean(body.optin);
   const card = body.card ? String(body.card).slice(0, 64) : null;
-  const answers = body.answers && typeof body.answers === 'object' ? body.answers : {};
+  const rawAnswers = body.answers && typeof body.answers === 'object' ? body.answers : {};
+  // evita payload enorme / campos sensíveis duplicados
+  const answers = { ...rawAnswers };
+  delete answers.name;
+  delete answers.email;
+  delete answers.phone;
 
   if (!name || name.length < 2) {
     return res.status(400).json({ error: 'Nome inválido' });
@@ -49,6 +59,7 @@ module.exports = async function handler(req, res) {
       method: 'POST',
       headers: {
         apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`,
         'Content-Type': 'application/json',
         Prefer: 'return=minimal',
       },
@@ -58,7 +69,11 @@ module.exports = async function handler(req, res) {
     if (!response.ok) {
       const errText = await response.text();
       console.error('Supabase error:', response.status, errText);
-      return res.status(502).json({ error: 'Falha ao salvar lead' });
+      return res.status(502).json({
+        error: 'Falha ao salvar lead',
+        detail: errText.slice(0, 300),
+        status: response.status,
+      });
     }
 
     return res.status(201).json({ ok: true });
