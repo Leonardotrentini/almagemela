@@ -11,15 +11,21 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const supabaseUrl = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '').trim();
-  const supabaseKey = (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+  // Nomes próprios: a integração Vercel↔Supabase sobrescreve SUPABASE_URL/SECRET
+  const supabaseUrl = (
+    process.env.ALMAGEMELA_SUPABASE_URL ||
+    process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    ''
+  ).trim().replace(/\/$/, '');
+
+  const supabaseKey = (
+    process.env.ALMAGEMELA_SUPABASE_SECRET_KEY ||
+    ''
+  ).trim();
 
   if (!supabaseUrl || !supabaseKey) {
     return res.status(500).json({ error: 'Supabase não configurado' });
   }
-
-  let urlHost = '';
-  try { urlHost = new URL(supabaseUrl).host; } catch { urlHost = 'invalid-url'; }
 
   let body = req.body;
   if (typeof body === 'string') {
@@ -33,7 +39,6 @@ module.exports = async function handler(req, res) {
   const optin = Boolean(body.optin);
   const card = body.card ? String(body.card).slice(0, 64) : null;
   const rawAnswers = body.answers && typeof body.answers === 'object' ? body.answers : {};
-  // evita payload enorme / campos sensíveis duplicados
   const answers = { ...rawAnswers };
   delete answers.name;
   delete answers.email;
@@ -58,7 +63,7 @@ module.exports = async function handler(req, res) {
   };
 
   try {
-    const response = await fetch(`${supabaseUrl.replace(/\/$/, '')}/rest/v1/leads`, {
+    const response = await fetch(`${supabaseUrl}/rest/v1/leads`, {
       method: 'POST',
       headers: {
         apikey: supabaseKey,
@@ -70,14 +75,8 @@ module.exports = async function handler(req, res) {
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error('Supabase error:', response.status, errText, urlHost);
-      return res.status(502).json({
-        error: 'Falha ao salvar lead',
-        detail: errText.slice(0, 300),
-        status: response.status,
-        urlHost,
-        keyPrefix: supabaseKey.slice(0, 15),
-      });
+      console.error('Supabase error:', response.status, errText);
+      return res.status(502).json({ error: 'Falha ao salvar lead' });
     }
 
     return res.status(201).json({ ok: true });
