@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>Almagemela · Leitura de Alma Gêmea</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --purple: #6D28D9;
+  --purple-bright: #8B5CF6;
+  --purple-dark: #4C1D95;
+  --purple-soft: #F3EEFB;
+  --purple-mist: #FAF7FE;
+  --gold: #C9A24B;
+  --gold-soft: #F5EDD8;
+  --ink: #1E1B2E;
+  --text: #443F56;
+  --text-soft: #8B849C;
+  --line: #EDE9F3;
+  --white: #FFFFFF;
+  --cream: #FDFCFE;
+}
+
+html, body { height: 100%; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(ellipse at top, #F6F1FB 0%, #FDFCFE 55%);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 460px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--cream);
+  position: relative;
+  box-shadow: 0 0 60px rgba(76,29,149,0.06);
+  overflow: hidden;
+}
+
+/* ============ HEADER ============ */
+.header {
+  text-align: center;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--line);
+  background: var(--white);
+}
+.logo-img {
+  height: 64px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+  mix-blend-mode: multiply;
+}
+.brand-sub {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-soft);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* ============ PROGRESS ============ */
+.progress-wrap { display: none; padding: 14px 22px 2px; background: var(--white); }
+.progress-wrap.visible { display: block; }
+.progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.back-btn {
+  background: none; border: none; font-size: 22px; color: var(--text-soft);
+  cursor: pointer; padding: 0 6px; line-height: 1; font-family: serif;
+}
+.section-label { font-size: 11px; font-weight: 600; color: var(--purple); letter-spacing: 2px; text-transform: uppercase; }
+.slide-counter { font-size: 12px; font-weight: 700; color: var(--text-soft); }
+.progress-bar { width: 100%; height: 5px; background: var(--purple-soft); border-radius: 5px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--purple), var(--purple-bright)); border-radius: 5px; transition: width 0.55s cubic-bezier(0.4,0,0.2,1); width: 0; }
+
+/* ============ SLIDES ============ */
+.slide { display: none; }
+.slide.active { display: block; animation: slideIn 0.45s cubic-bezier(0.16,1,0.3,1); }
+@keyframes slideIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============ CARD PICKER ============ */
+.picker { text-align: center; padding: 34px 24px 30px; }
+.picker h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px; font-weight: 700; color: var(--ink);
+  line-height: 1.25; margin-bottom: 6px; letter-spacing: 0.3px;
+}
+.picker .arrow { font-size: 22px; color: var(--purple-bright); margin-bottom: 6px; animation: bob 1.8s ease-in-out infinite; }
+@keyframes bob { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(6px); } }
+
+.fan { position: relative; width: 340px; height: 250px; margin: 12px auto 26px; }
+.fan .tcard {
+  position: absolute; left: 50%; top: 50%;
+  width: 82px; height: 130px;
+  margin-left: -41px; margin-top: -75px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+  transform-origin: 50% 130%;
+  box-shadow: 0 6px 18px rgba(76,29,149,0.18);
+  overflow: hidden;
+}
+.fan .tcard svg { width: 100%; height: 100%; display: block; }
+.fan .tcard:active { transform: var(--base) scale(0.97); }
+.fan .tcard.lifted { box-shadow: 0 16px 40px rgba(109,40,217,0.4); z-index: 50 !important; }
+
+.badges { display: flex; justify-content: center; gap: 18px; margin-bottom: 14px; flex-wrap: wrap; }
+.badge { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-soft); font-weight: 500; }
+.disclaimer { font-size: 11px; color: #A79FB8; line-height: 1.5; max-width: 320px; margin: 0 auto; }
+.disclaimer a { color: var(--purple-bright); text-decoration: underline; }
+
+/* ============ CARD REVEAL ============ */
+.reveal { text-align: center; padding: 40px 24px 30px; }
+.reveal .big-card {
+  width: 150px; height: 236px; margin: 0 auto 22px;
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 12px 40px rgba(109,40,217,0.32);
+  animation: cardPop 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+.reveal .big-card svg { width: 100%; height: 100%; display: block; }
+@keyframes cardPop { from { opacity:0; transform: scale(0.7) rotateY(40deg); } to { opacity:1; transform: scale(1) rotateY(0); } }
+.reveal h2 {
+  font-family: 'Cormorant Garamond', serif; font-size: 27px; font-weight: 700;
+  color: var(--ink); margin-bottom: 8px;
+}
+.reveal .kw { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 14px; }
+.reveal p { font-size: 15px; color: var(--text); line-height: 1.65; max-width: 340px; margin: 0 auto; }
+.reveal .tap-hint {
+  margin-top: 22px; font-size: 12px; color: var(--text-soft);
+  letter-spacing: 1px; text-transform: uppercase; opacity: 0.7;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{ opacity: 0.4; } 50%{ opacity: 0.8; } }
+
+/* ============ QUESTIONS ============ */
+.q-wrap { padding: 30px 24px 40px; }
+.q-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 25px; font-weight: 700;
+  color: var(--ink); text-align: center; margin-bottom: 26px; line-height: 1.3;
+}
+.options { display: flex; flex-direction: column; gap: 11px; }
+.opt {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px; background: var(--white);
+  border: 1.5px solid var(--line); border-radius: 15px;
+  cursor: pointer; transition: all 0.18s ease;
+  font-size: 15px; color: var(--text); text-align: left; width: 100%;
+  font-family: 'Inter', sans-serif; font-weight: 500;
+}
+.opt:hover { border-color: var(--purple-bright); background: var(--purple-mist); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(109,40,217,0.1); }
+.opt:active { transform: scale(0.98); }
+.opt .emo {
+  font-size: 22px; width: 42px; height: 42px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--purple-soft); border-radius: 11px;
+}
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid .opt { flex-direction: column; text-align: center; gap: 7px; padding: 15px 8px; }
+.grid .opt .emo { background: linear-gradient(135deg, var(--purple-soft), var(--purple-mist)); }
+
+/* ============ INTERSTITIAL ============ */
+.inter { text-align: center; padding: 44px 26px; }
+.inter .orb {
+  width: 92px; height: 92px; margin: 0 auto 22px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 42px;
+  background: radial-gradient(circle at 30% 30%, var(--white), var(--purple-soft));
+  box-shadow: 0 8px 30px rgba(109,40,217,0.18), inset 0 0 20px rgba(139,92,246,0.1);
+  animation: glow 2.5s ease-in-out infinite;
+}
+@keyframes glow { 0%,100%{ box-shadow: 0 8px 30px rgba(109,40,217,0.18), inset 0 0 20px rgba(139,92,246,0.1); } 50%{ box-shadow: 0 8px 40px rgba(109,40,217,0.34), inset 0 0 24px rgba(139,92,246,0.2); } }
+.inter h2 { font-family: 'Cormorant Garamond', serif; font-size: 27px; font-weight: 700; color: var(--ink); margin-bottom: 14px; }
+.inter p { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 26px; max-width: 340px; margin-left: auto; margin-right: auto; }
+.inter p .hl { color: var(--purple); font-weight: 600; font-style: italic; }
+
+.btn-primary {
+  width: 100%; padding: 17px; border: none; border-radius: 15px;
+  background: linear-gradient(135deg, var(--purple), var(--purple-bright));
+  color: white; font-size: 16px; font-weight: 600; cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: all 0.2s;
+  box-shadow: 0 6px 20px rgba(109,40,217,0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(109,40,217,0.42); }
+.btn-primary:active { transform: scale(0.98); }
+
+/* ============ LOADING ============ */
+.loading { text-align: center; padding: 46px 26px; }
+.loading h2 { font-family: 'Cormorant Garamond', serif; font-size: 25px; font-weight: 700; color: var(--ink); margin-bottom: 34px; }
+.ring { width: 150px; height: 150px; margin: 0 auto 34px; position: relative; }
+.ring svg { transform: rotate(-90deg); }
+.ring .pct {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-size: 34px; font-weight: 700; color: var(--purple);
+  font-family: 'Cormorant Garamond', serif;
+}
+.checklist { text-align: left; max-width: 310px; margin: 0 auto; }
+.check {
+  display: flex; align-items: center; gap: 13px; padding: 11px 0;
+  font-size: 14px; color: var(--text-soft); opacity: 0.35; transition: all 0.5s;
+}
+.check.on { opacity: 1; color: var(--text); }
+.check .ci {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--purple-soft); display: flex; align-items: center; justify-content: center;
+  font-size: 13px; transition: all 0.3s;
+}
+.check.done .ci { background: var(--purple); border-color: var(--purple); color: white; }
+
+/* ============ MODAL ============ */
+.overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(30,27,46,0.5); backdrop-filter: blur(5px);
+  align-items: center; justify-content: center; padding: 26px;
+}
+.overlay.visible { display: flex; }
+.modal {
+  background: white; border-radius: 22px; padding: 34px 26px 28px;
+  max-width: 350px; width: 100%; text-align: center; position: relative;
+  animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 20px 60px rgba(30,27,46,0.3);
+}
+@keyframes modalIn { from { opacity:0; transform: scale(0.88) translateY(24px); } to { opacity:1; transform: scale(1) translateY(0); } }
+.modal .x { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 18px; color: #C4BDD2; cursor: pointer; }
+.modal .m-orb {
+  width: 66px; height: 66px; margin: 0 auto 16px; font-size: 38px;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 30% 30%, var(--white), var(--purple-soft));
+  border-radius: 50%; box-shadow: 0 6px 20px rgba(109,40,217,0.2);
+}
+.modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 23px; font-weight: 700; color: var(--ink); margin-bottom: 22px; line-height: 1.3; }
+.m-btns { display: flex; gap: 12px; }
+.m-btn { flex: 1; padding: 15px; border-radius: 13px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+.m-btn.sec { background: white; border: 1.5px solid var(--line); color: var(--text-soft); }
+.m-btn.sec:hover { border-color: var(--text-soft); }
+.m-btn.pri { background: linear-gradient(135deg, var(--purple), var(--purple-bright)); border: none; color: white; box-shadow: 0 4px 14px rgba(109,40,217,0.3); }
+.m-btn.pri:hover { transform: translateY(-1px); }
+
+/* ============ LEAD ============ */
+.lead { padding: 40px 26px 44px; }
+.lead .lead-icon { text-align: center; font-size: 34px; margin-bottom: 12px; }
+.lead h2 {
+  font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700;
+  color: var(--ink); margin-bottom: 6px; text-align: center; line-height: 1.3;
+}
+.lead .sub { text-align: center; font-size: 14px; color: var(--text-soft); margin-bottom: 26px; }
+.fg { margin-bottom: 13px; }
+.fg input {
+  width: 100%; padding: 16px 18px; border: 1.5px solid var(--line); border-radius: 13px;
+  font-size: 15px; font-family: 'Inter', sans-serif; color: var(--ink); background: white;
+  transition: border-color 0.2s;
+}
+.fg input:focus { outline: none; border-color: var(--purple-bright); }
+.fg input::placeholder { color: #B0A9C0; }
+.checkbox { display: flex; align-items: flex-start; gap: 10px; margin: 16px 2px 22px; text-align: left; }
+.checkbox input { margin-top: 3px; accent-color: var(--purple); width: 17px; height: 17px; flex-shrink: 0; }
+.checkbox label { font-size: 11.5px; color: var(--text-soft); line-height: 1.5; }
+.checkbox a { color: var(--purple-bright); }
+.submit {
+  width: 100%; padding: 18px; border: none; border-radius: 15px;
+  background: linear-gradient(135deg, var(--purple), var(--purple-bright));
+  color: white; font-size: 16px; font-weight: 700; cursor: pointer;
+  font-family: 'Inter', sans-serif; margin-bottom: 14px;
+  box-shadow: 0 8px 24px rgba(109,40,217,0.35); transition: all 0.2s;
+}
+.submit:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(109,40,217,0.45); }
+.skip { display: block; text-align: center; font-size: 13px; color: var(--text-soft); text-decoration: underline; cursor: pointer; }
+.trust-row { display: flex; justify-content: center; gap: 18px; margin-top: 20px; }
+.trust-row .t { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-soft); }
+
+/* ============ READING ============ */
+.reading { padding: 34px 26px 46px; }
+.reading .r-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 700;
+  color: var(--purple); text-align: center; letter-spacing: 1.5px;
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.reading .r-title .nm { color: var(--gold); }
+.reading .r-sep { width: 40px; height: 2px; background: var(--gold); margin: 12px auto 24px; }
+.reading .r-card { width: 130px; height: 205px; margin: 0 auto 26px; border-radius: 11px; overflow: hidden; box-shadow: 0 10px 30px rgba(109,40,217,0.25); }
+.reading .r-card svg { width: 100%; height: 100%; display: block; }
+.r-text { font-size: 15.5px; line-height: 1.85; color: var(--text); }
+.r-text p { margin-bottom: 15px; }
+.r-text .em { font-style: italic; color: var(--ink); font-weight: 500; }
+.r-text .bd { font-weight: 700; color: var(--ink); }
+.r-text .rev { font-weight: 700; color: var(--purple); font-size: 16px; margin: 26px 0 14px; display: block; }
+.r-text .cliff { color: var(--purple); font-weight: 600; font-size: 16.5px; font-style: italic; margin-top: 22px; }
+.r-text .prompt { text-align: center; margin-top: 28px; font-size: 14px; color: var(--text-soft); }
+
+.cta {
+  margin-top: 20px; padding: 26px 22px; border-radius: 18px;
+  background: linear-gradient(160deg, var(--purple-mist), var(--white));
+  border: 1.5px solid var(--purple-soft); text-align: center;
+}
+.cta .price { font-size: 14px; color: var(--text-soft); margin-bottom: 6px; }
+.cta .price .old { text-decoration: line-through; }
+.cta .price .new { color: var(--purple); font-weight: 700; font-size: 26px; font-family: 'Cormorant Garamond', serif; }
+.cta .btn-cta {
+  display: block; width: 100%; padding: 18px; margin-top: 14px;
+  background: linear-gradient(135deg, var(--purple), var(--purple-bright));
+  color: white; border: none; border-radius: 15px; font-size: 16px; font-weight: 700;
+  cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none;
+  box-shadow: 0 8px 24px rgba(109,40,217,0.35); transition: all 0.2s;
+}
+.cta .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(109,40,217,0.45); }
+.cta .guar { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 14px; font-size: 12px; color: var(--text-soft); }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+
+  <div class="header">
+    <img src="logo.jpg" alt="Almagemela" class="logo-img">
+    <div class="brand-sub">Leituras Espirituais</div>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-top">
+      <button class="back-btn" onclick="prevSlide()">‹</button>
+      <span class="section-label" id="sectionLabel">A Conexão</span>
+      <span class="slide-counter" id="slideCounter">1/19</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <!-- SLIDE 0: PICKER -->
+  <div class="slide active" id="slide-0">
+    <div class="picker">
+      <h1>Escolha uma carta e comece sua leitura gratuita</h1>
+      <div class="arrow">↓</div>
+      <div class="fan" id="fan"></div>
+      <div class="badges">
+        <span class="badge">⏱ Quiz de 1 min</span>
+        <span class="badge">🧩 Personalizado</span>
+        <span class="badge">💜 98% de satisfação</span>
+      </div>
+      <p class="disclaimer">Ao escolher uma carta, você concorda com os <a href="#">Termos de Serviço</a> e a <a href="#">Política de Privacidade</a>.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 1: REVEAL -->
+  <div class="slide" id="slide-1" onclick="skipReveal()">
+    <div class="reveal">
+      <div class="big-card" id="revealCardArt"></div>
+      <h2 id="revealName"></h2>
+      <div class="kw" id="revealKw"></div>
+      <p id="revealMeaning"></p>
+      <p class="tap-hint">toque para continuar</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide" id="slide-2">
+    <div class="q-wrap">
+      <h2 class="q-title">Para quem estou lendo hoje?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('gender','F')"><span class="emo">🌙</span>Sou mulher</button>
+        <button class="opt" onclick="answer('gender','M')"><span class="emo">☀️</span>Sou homem</button>
+        <button class="opt" onclick="answer('gender','NB')"><span class="emo">✨</span>Prefiro não dizer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: signo do usuário -->
+  <div class="slide" id="slide-3">
+    <div class="q-wrap">
+      <h2 class="q-title">Qual é o seu signo?</h2>
+      <div class="options grid" id="zodiacGrid"></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: situação amorosa -->
+  <div class="slide" id="slide-4">
+    <div class="q-wrap">
+      <h2 class="q-title">Como está o seu coração hoje?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('status','single')"><span class="emo">💫</span>Solteiro(a) e aberto(a) ao amor</button>
+        <button class="opt" onclick="answer('status','complicated')"><span class="emo">💭</span>É complicado no momento</button>
+        <button class="opt" onclick="answer('status','someone')"><span class="emo">💕</span>Tem alguém na minha cabeça</button>
+        <button class="opt" onclick="answer('status','relationship')"><span class="emo">❤️</span>Num relacionamento</button>
+        <button class="opt" onclick="answer('status','healing')"><span class="emo">🕊️</span>Me curando de um término</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: já conheceu -->
+  <div class="slide" id="slide-5">
+    <div class="q-wrap">
+      <h2 class="q-title">Você sente que sua alma gêmea já cruzou o seu caminho?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('met','yes')"><span class="emo">✨</span>Sim, acho que já a conheci</button>
+        <button class="opt" onclick="answer('met','maybe')"><span class="emo">🤔</span>Talvez… ainda tenho dúvidas</button>
+        <button class="opt" onclick="answer('met','no')"><span class="emo">🔮</span>Ainda não, estou esperando</button>
+        <button class="opt" onclick="answer('met','lost')"><span class="emo">💔</span>Sim, mas nos perdemos</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: INTER 1 -->
+  <div class="slide" id="slide-6">
+    <div class="inter">
+      <div class="orb">🔮</div>
+      <h2>Sinto uma energia forte</h2>
+      <p id="inter1Text"></p>
+      <button class="btn-primary" onclick="nextSlide()">Continuar leitura</button>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: faixa etária -->
+  <div class="slide" id="slide-7">
+    <div class="q-wrap">
+      <h2 class="q-title">Em que fase da vida você está?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('age','18-25')"><span class="emo">🌱</span>18 a 25 anos</button>
+        <button class="opt" onclick="answer('age','26-35')"><span class="emo">🌿</span>26 a 35 anos</button>
+        <button class="opt" onclick="answer('age','36-45')"><span class="emo">🌷</span>36 a 45 anos</button>
+        <button class="opt" onclick="answer('age','46+')"><span class="emo">🌟</span>46 anos ou mais</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: o que mais deseja -->
+  <div class="slide" id="slide-8">
+    <div class="q-wrap">
+      <h2 class="q-title">O que o seu coração mais pede neste momento?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('desire','find')"><span class="emo">💘</span>Encontrar minha alma gêmea</button>
+        <button class="opt" onclick="answer('desire','clarity')"><span class="emo">🔍</span>Clareza sobre alguém especial</button>
+        <button class="opt" onclick="answer('desire','heal')"><span class="emo">🕊️</span>Curar uma ferida do passado</button>
+        <button class="opt" onclick="answer('desire','deepen')"><span class="emo">🤝</span>Fortalecer o amor que já tenho</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: como imagina a energia dela -->
+  <div class="slide" id="slide-9">
+    <div class="q-wrap">
+      <h2 class="q-title">Que tipo de energia você sente que combina com a sua?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('energy','calm')"><span class="emo">🌊</span>Calma e acolhedora</button>
+        <button class="opt" onclick="answer('energy','intense')"><span class="emo">🔥</span>Intensa e magnética</button>
+        <button class="opt" onclick="answer('energy','fun')"><span class="emo">☀️</span>Leve e divertida</button>
+        <button class="opt" onclick="answer('energy','deep')"><span class="emo">🌌</span>Profunda e misteriosa</button>
+        <button class="opt" onclick="answer('energy','protective')"><span class="emo">🛡️</span>Forte e protetora</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: signo que mais atrai -->
+  <div class="slide" id="slide-10">
+    <div class="q-wrap">
+      <h2 class="q-title">Qual signo mais te atrai — ou já te marcou?</h2>
+      <div class="options grid" id="zodiacGrid2"></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: INTER 2 (compatibilidade) -->
+  <div class="slide" id="slide-11">
+    <div class="inter">
+      <div class="orb">💞</div>
+      <h2 id="inter2Title">Compatibilidade rara</h2>
+      <p id="inter2Text"></p>
+      <button class="btn-primary" onclick="nextSlide()">Continuar</button>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: bloqueio -->
+  <div class="slide" id="slide-12">
+    <div class="q-wrap">
+      <h2 class="q-title">O que você sente que te impede de viver um amor verdadeiro?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('block','trust')"><span class="emo">🛡️</span>Medo de confiar de novo</button>
+        <button class="opt" onclick="answer('block','past')"><span class="emo">⛓️</span>Feridas que ainda não cicatrizaram</button>
+        <button class="opt" onclick="answer('block','worth')"><span class="emo">🪞</span>Sinto que não sou o bastante</button>
+        <button class="opt" onclick="answer('block','timing')"><span class="emo">⏳</span>Acho que não é a hora certa</button>
+        <button class="opt" onclick="answer('block','none')"><span class="emo">🌈</span>Nada, estou pronto(a)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: último amor -->
+  <div class="slide" id="slide-13">
+    <div class="q-wrap">
+      <h2 class="q-title">Como terminou o seu último amor importante?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('past','toxic')"><span class="emo">🌪️</span>Foi doloroso e desgastante</button>
+        <button class="opt" onclick="answer('past','fade')"><span class="emo">🍂</span>Esfriou aos poucos</button>
+        <button class="opt" onclick="answer('past','ghost')"><span class="emo">👻</span>A pessoa sumiu sem explicar</button>
+        <button class="opt" onclick="answer('past','never')"><span class="emo">🌸</span>Nunca vivi um amor assim</button>
+        <button class="opt" onclick="answer('past','current')"><span class="emo">💑</span>Ainda estou vivendo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: INTER 3 (proteção) -->
+  <div class="slide" id="slide-14">
+    <div class="inter">
+      <div class="orb">🧿</div>
+      <h2 id="inter3Title">Seu coração se protege</h2>
+      <p id="inter3Text"></p>
+      <button class="btn-primary" onclick="nextSlide()">Continuar</button>
+    </div>
+  </div>
+
+  <!-- SLIDE 15: sinais -->
+  <div class="slide" id="slide-15">
+    <div class="q-wrap">
+      <h2 class="q-title">O universo tem te mandado algum sinal?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('signs','dreams')"><span class="emo">🌙</span>Sonhos vívidos com alguém</button>
+        <button class="opt" onclick="answer('signs','numbers')"><span class="emo">✨</span>Números repetidos (11:11, 444)</button>
+        <button class="opt" onclick="answer('signs','feeling')"><span class="emo">💓</span>Pressentimentos que não explico</button>
+        <button class="opt" onclick="answer('signs','sync')"><span class="emo">🎶</span>Coincidências que me arrepiam</button>
+        <button class="opt" onclick="answer('signs','none')"><span class="emo">😶</span>Ainda não percebi nada</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 16: o que quer descobrir -->
+  <div class="slide" id="slide-16">
+    <div class="q-wrap">
+      <h2 class="q-title">O que você mais quer descobrir sobre sua alma gêmea?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('want','who')"><span class="emo">👤</span>Quem é essa pessoa</button>
+        <button class="opt" onclick="answer('want','when')"><span class="emo">📅</span>Quando vou encontrá-la</button>
+        <button class="opt" onclick="answer('want','where')"><span class="emo">📍</span>Onde nossos caminhos vão cruzar</button>
+        <button class="opt" onclick="answer('want','already')"><span class="emo">💡</span>Se ela já está na minha vida</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 17: INTER 4 (cartas confirmam) -->
+  <div class="slide" id="slide-17">
+    <div class="inter">
+      <div class="orb">🃏</div>
+      <h2>As cartas confirmam</h2>
+      <p id="inter4Text"></p>
+      <button class="btn-primary" onclick="nextSlide()">Estou quase lá</button>
+    </div>
+  </div>
+
+  <!-- SLIDE 18: o que valoriza -->
+  <div class="slide" id="slide-18">
+    <div class="q-wrap">
+      <h2 class="q-title">O que mais importa para você em um grande amor?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('trait','loyalty')"><span class="emo">🤝</span>Lealdade e confiança</button>
+        <button class="opt" onclick="answer('trait','passion')"><span class="emo">🔥</span>Paixão e intensidade</button>
+        <button class="opt" onclick="answer('trait','safety')"><span class="emo">🏡</span>Paz e segurança</button>
+        <button class="opt" onclick="answer('trait','adventure')"><span class="emo">✈️</span>Cumplicidade e aventura</button>
+        <button class="opt" onclick="answer('trait','understanding')"><span class="emo">💜</span>Ser compreendido(a) de verdade</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 19: crença -->
+  <div class="slide" id="slide-19">
+    <div class="q-wrap">
+      <h2 class="q-title">Você acredita em almas gêmeas?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('believe','sure')"><span class="emo">💯</span>Sim, com toda certeza</button>
+        <button class="opt" onclick="answer('believe','want')"><span class="emo">🙏</span>Quero muito acreditar</button>
+        <button class="opt" onclick="answer('believe','doubt')"><span class="emo">🤷</span>Talvez, mas tenho dúvidas</button>
+        <button class="opt" onclick="answer('believe','curious')"><span class="emo">🧐</span>Sou cético(a), mas curioso(a)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 20: pronta? -->
+  <div class="slide" id="slide-20">
+    <div class="q-wrap">
+      <h2 class="q-title">Você está pronto(a) para ver o que as cartas revelam?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('ready','yes')"><span class="emo">💜</span>Sim, estou pronto(a)</button>
+        <button class="opt" onclick="answer('ready','nervous')"><span class="emo">🦋</span>Sim, mas com o coração acelerado</button>
+        <button class="opt" onclick="answer('ready','curious')"><span class="emo">👀</span>Muito curioso(a) pra ver</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="slide" id="slide-loading">
+    <div class="loading">
+      <h2>Lendo a sua energia amorosa…</h2>
+      <div class="ring">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="66" fill="none" stroke="#F3EEFB" stroke-width="10"/>
+          <circle id="ringFill" cx="75" cy="75" r="66" fill="none" stroke="#8B5CF6" stroke-width="10" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="415"/>
+        </svg>
+        <span class="pct" id="loadingPct">0%</span>
+      </div>
+      <div class="checklist">
+        <div class="check" data-i="0"><span class="ci">○</span> Analisando a energia de <span id="chkSign" style="font-weight:600;margin-left:3px;"></span></div>
+        <div class="check" data-i="1"><span class="ci">○</span> Identificando bloqueios do coração</div>
+        <div class="check" data-i="2"><span class="ci">○</span> Localizando sua alma gêmea</div>
+        <div class="check" data-i="3"><span class="ci">○</span> Verificando a agenda de Martha</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEAD -->
+  <div class="slide" id="slide-lead">
+    <div class="lead">
+      <div class="lead-icon">💌</div>
+      <h2>Sua leitura está pronta</h2>
+      <p class="sub">Diga para onde a Martha deve enviar</p>
+      <div class="fg"><input type="text" id="inName" placeholder="Seu primeiro nome" required></div>
+      <div class="fg"><input type="email" id="inEmail" placeholder="Seu melhor e-mail" required></div>
+      <div class="fg"><input type="tel" id="inPhone" placeholder="WhatsApp (opcional)"></div>
+      <div class="checkbox">
+        <input type="checkbox" id="optin" checked>
+        <label for="optin">Sim, quero receber minha leitura e mensagens da Martha por e-mail e WhatsApp. O consentimento não é obrigatório para a compra.</label>
+      </div>
+      <button class="submit" onclick="submitLead()">Revelar minha leitura de alma gêmea</button>
+      <span class="skip" onclick="skipReading()">A Martha já tem meus dados</span>
+      <div class="trust-row">
+        <span class="t">🔒 100% sigiloso</span>
+        <span class="t">💜 +12 mil leituras</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- READING -->
+  <div class="slide" id="slide-reading">
+    <div class="reading">
+      <div class="r-title">Mini leitura para <span class="nm" id="readingName">você</span></div>
+      <div class="r-sep"></div>
+      <div class="r-card" id="readingCardArt"></div>
+      <div class="r-text" id="readingText"></div>
+      <div class="cta">
+        <div class="price"><span class="old">De R$127</span> · <span class="new">R$47</span></div>
+        <a class="btn-cta" href="#" id="ctaLink">Quero minha leitura completa</a>
+        <div class="guar">🔒 Garantia de 60 dias — ou seu dinheiro de volta</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <button class="x" onclick="closeModal()">✕</button>
+    <div class="m-orb">💫</div>
+    <h3>Você sente que essa pessoa está perto?</h3>
+    <div class="m-btns">
+      <button class="m-btn sec" onclick="modalAnswer('no')">Ainda não</button>
+      <button class="m-btn pri" onclick="modalAnswer('yes')">Sim, sinto</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ TAROT ART (SVG) ============
+// Each card is a hand-drawn SVG in Rider-Waite inspired style
+function cardArt(id) {
+  const frame = (inner) => `
+    <svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bg${id}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FBF8EF"/><stop offset="1" stop-color="#F4ECD8"/>
+        </linearGradient>
+      </defs>
+      <rect width="100" height="160" rx="6" fill="url(#bg${id})"/>
+      <rect x="4" y="4" width="92" height="152" rx="4" fill="none" stroke="#C9A24B" stroke-width="1.5"/>
+      <rect x="7" y="7" width="86" height="146" rx="3" fill="none" stroke="#C9A24B" stroke-width="0.5" opacity="0.5"/>
+      ${inner}
+    </svg>`;
+  const roman = (r) => `<text x="50" y="20" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#4C1D95" font-weight="bold" letter-spacing="1">${r}</text>`;
+  const name = (n) => `<text x="50" y="150" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="#4C1D95" letter-spacing="1" font-weight="bold">${n}</text>`;
+
+  const art = {
+    lovers: `${roman('VI')}
+      <circle cx="50" cy="42" r="13" fill="none" stroke="#C9A24B" stroke-width="1"/>
+      <path d="M50 34 L50 50 M42 42 L58 42" stroke="#C9A24B" stroke-width="1"/>
+      <circle cx="36" cy="82" r="9" fill="#DDD6FE" stroke="#6D28D9" stroke-width="1"/>
+      <circle cx="64" cy="82" r="9" fill="#F9D5E5" stroke="#B03A6E" stroke-width="1"/>
+      <path d="M50 100 C40 108 40 118 50 124 C60 118 60 108 50 100 Z" fill="#B03A6E" opacity="0.85"/>
+      <path d="M30 130 Q50 120 70 130" stroke="#6D28D9" stroke-width="1" fill="none"/>
+      ${name('OS AMANTES')}`,
+    star: `${roman('XVII')}
+      <path d="M50 30 L54 44 L68 44 L57 53 L61 67 L50 58 L39 67 L43 53 L32 44 L46 44 Z" fill="#C9A24B" stroke="#4C1D95" stroke-width="0.6"/>
+      <circle cx="30" cy="55" r="2" fill="#8B5CF6"/><circle cx="70" cy="55" r="2" fill="#8B5CF6"/>
+      <circle cx="25" cy="72" r="1.5" fill="#8B5CF6"/><circle cx="75" cy="72" r="1.5" fill="#8B5CF6"/>
+      <path d="M40 95 Q50 88 60 95 L58 122 Q50 116 42 122 Z" fill="#DDD6FE" stroke="#6D28D9" stroke-width="0.8"/>
+      <path d="M35 128 Q50 122 65 128" stroke="#8B5CF6" stroke-width="1" fill="none"/>
+      ${name('A ESTRELA')}`,
+    sun: `${roman('XIX')}
+      <circle cx="50" cy="60" r="20" fill="#F5D76E" stroke="#C9A24B" stroke-width="1"/>
+      ${[...Array(12)].map((_,i)=>{const a=i*30*Math.PI/180;const x1=50+Math.cos(a)*23,y1=60+Math.sin(a)*23,x2=50+Math.cos(a)*32,y2=60+Math.sin(a)*32;return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#C9A24B" stroke-width="1.2"/>`}).join('')}
+      <circle cx="44" cy="57" r="1.5" fill="#4C1D95"/><circle cx="56" cy="57" r="1.5" fill="#4C1D95"/>
+      <path d="M44 65 Q50 69 56 65" stroke="#4C1D95" stroke-width="1" fill="none"/>
+      <path d="M35 100 Q50 94 65 100 L63 128 Q50 122 37 128 Z" fill="#F9E6A8" stroke="#C9A24B" stroke-width="0.8"/>
+      ${name('O SOL')}`,
+    moon: `${roman('XVIII')}
+      <path d="M58 32 A18 18 0 1 0 58 68 A14 14 0 1 1 58 32 Z" fill="#EDE9FE" stroke="#6D28D9" stroke-width="1"/>
+      ${[...Array(8)].map((_,i)=>{const a=i*45*Math.PI/180;return `<line x1="${50+Math.cos(a)*22}" y1="${50+Math.sin(a)*22}" x2="${50+Math.cos(a)*27}" y2="${50+Math.sin(a)*27}" stroke="#C9A24B" stroke-width="0.8"/>`}).join('')}
+      <path d="M32 105 Q40 95 40 88 M68 105 Q60 95 60 88" stroke="#6D28D9" stroke-width="1" fill="none"/>
+      <path d="M40 88 Q50 84 60 88 L60 105 L40 105 Z" fill="#DDD6FE" stroke="#6D28D9" stroke-width="0.8"/>
+      <path d="M46 130 Q50 118 54 130" stroke="#8B5CF6" stroke-width="1" fill="none"/>
+      ${name('A LUA')}`,
+    empress: `${roman('III')}
+      <path d="M42 26 L44 32 L50 30 L48 36 L54 36 L50 40 L44 40 L42 34 Z" fill="#C9A24B"/>
+      <circle cx="50" cy="34" r="2" fill="#B03A6E"/>
+      <circle cx="50" cy="58" r="12" fill="#F9D5E5" stroke="#B03A6E" stroke-width="1"/>
+      <circle cx="45" cy="56" r="1.3" fill="#4C1D95"/><circle cx="55" cy="56" r="1.3" fill="#4C1D95"/>
+      <path d="M45 62 Q50 65 55 62" stroke="#4C1D95" stroke-width="0.8" fill="none"/>
+      <path d="M35 100 Q50 88 65 100 L68 130 Q50 122 32 130 Z" fill="#F9D5E5" stroke="#B03A6E" stroke-width="0.9"/>
+      <circle cx="50" cy="112" r="3" fill="#C9A24B"/>
+      ${name('A IMPERATRIZ')}`,
+    ace: `${roman('I')}
+      <path d="M40 55 Q40 42 50 40 Q60 42 60 55 Q60 66 50 70 Q40 66 40 55 Z" fill="#DDD6FE" stroke="#6D28D9" stroke-width="1.2"/>
+      <path d="M50 40 L50 30 M45 34 L50 30 L55 34" stroke="#C9A24B" stroke-width="1.2" fill="none"/>
+      ${[...Array(5)].map((_,i)=>`<circle cx="${38+i*6}" cy="${78+ (i%2)*4}" r="1.3" fill="#8B5CF6"/>`).join('')}
+      <path d="M42 92 Q50 100 58 92 M46 96 Q50 102 54 96" stroke="#8B5CF6" stroke-width="0.8" fill="none"/>
+      <path d="M40 108 L60 108 L57 130 L43 130 Z" fill="#EDE9FE" stroke="#6D28D9" stroke-width="0.8"/>
+      ${name('ÁS DE COPAS')}`,
+    two: `${roman('II')}
+      <path d="M35 50 Q35 40 42 40 Q49 40 49 50 Q49 58 42 61 Q35 58 35 50 Z" fill="#F9D5E5" stroke="#B03A6E" stroke-width="1"/>
+      <path d="M51 50 Q51 40 58 40 Q65 40 65 50 Q65 58 58 61 Q51 58 51 50 Z" fill="#DDD6FE" stroke="#6D28D9" stroke-width="1"/>
+      <path d="M50 68 C44 74 44 82 50 87 C56 82 56 74 50 68 Z" fill="#B03A6E"/>
+      <path d="M38 98 Q50 90 62 98" stroke="#C9A24B" stroke-width="1.2" fill="none"/>
+      <path d="M42 110 Q50 104 58 110 L56 130 L44 130 Z" fill="#EDE9FE" stroke="#6D28D9" stroke-width="0.8"/>
+      ${name('DOIS DE COPAS')}`,
+    temperance: `${roman('XIV')}
+      <circle cx="50" cy="40" r="10" fill="#F9E6A8" stroke="#C9A24B" stroke-width="1"/>
+      <path d="M45 38 L48 43 L56 35" stroke="#C9A24B" stroke-width="1.3" fill="none"/>
+      <path d="M38 62 Q42 55 46 62 L45 75 L39 75 Z" fill="#DDD6FE" stroke="#6D28D9" stroke-width="0.8"/>
+      <path d="M54 62 Q58 55 62 62 L61 75 L55 75 Z" fill="#F9D5E5" stroke="#B03A6E" stroke-width="0.8"/>
+      <path d="M46 68 Q50 72 54 68" stroke="#C9A24B" stroke-width="1" fill="none"/>
+      <path d="M40 100 Q50 92 60 100 L62 128 Q50 122 38 128 Z" fill="#EDE9FE" stroke="#6D28D9" stroke-width="0.8"/>
+      ${name('TEMPERANÇA')}`,
+    strength: `${roman('VIII')}
+      <path d="M42 30 Q50 24 58 30 Q56 26 50 26 Q44 26 42 30 Z" fill="#C9A24B"/>
+      <path d="M50 26 L50 20 M46 22 L50 18 L54 22" stroke="#C9A24B" stroke-width="1" fill="none"/>
+      <circle cx="50" cy="58" r="15" fill="#F5D76E" stroke="#C9A24B" stroke-width="1"/>
+      <circle cx="44" cy="55" r="1.5" fill="#4C1D95"/><circle cx="56" cy="55" r="1.5" fill="#4C1D95"/>
+      <path d="M44 63 Q50 67 56 63" stroke="#4C1D95" stroke-width="1" fill="none"/>
+      <path d="M38 58 L34 55 M40 64 L35 64 M60 64 L65 64 M62 58 L66 55" stroke="#C9A24B" stroke-width="0.8"/>
+      <path d="M40 100 Q50 92 60 100 L62 128 Q50 122 38 128 Z" fill="#F9E6A8" stroke="#C9A24B" stroke-width="0.8"/>
+      ${name('A FORÇA')}`,
+    wheel: `${roman('X')}
+      <circle cx="50" cy="62" r="24" fill="none" stroke="#C9A24B" stroke-width="1.5"/>
+      <circle cx="50" cy="62" r="14" fill="none" stroke="#6D28D9" stroke-width="1"/>
+      <circle cx="50" cy="62" r="4" fill="#C9A24B"/>
+      ${[...Array(8)].map((_,i)=>{const a=i*45*Math.PI/180;return `<line x1="${50+Math.cos(a)*4}" y1="${62+Math.sin(a)*4}" x2="${50+Math.cos(a)*24}" y2="${62+Math.sin(a)*24}" stroke="#8B5CF6" stroke-width="1"/>`}).join('')}
+      <path d="M40 108 Q50 100 60 108 L62 130 L38 130 Z" fill="#EDE9FE" stroke="#6D28D9" stroke-width="0.8"/>
+      ${name('RODA DA FORTUNA')}`
+  };
+  return frame(art[id] || art.lovers);
+}
+
+function cardBack() {
+  return `<svg viewBox="0 0 82 130" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="cbg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#5B21B6"/><stop offset="1" stop-color="#3B0F73"/>
+      </linearGradient>
+      <pattern id="cpat" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="10" height="10" fill="none"/>
+        <path d="M0 5 H10 M5 0 V10" stroke="#8B5CF6" stroke-width="0.5" opacity="0.4"/>
+      </pattern>
+    </defs>
+    <rect width="82" height="130" rx="8" fill="url(#cbg)"/>
+    <rect width="82" height="130" rx="8" fill="url(#cpat)"/>
+    <rect x="6" y="6" width="70" height="118" rx="5" fill="none" stroke="#C9A24B" stroke-width="1" opacity="0.7"/>
+    <circle cx="41" cy="65" r="16" fill="none" stroke="#C9A24B" stroke-width="1" opacity="0.8"/>
+    <path d="M41 52 L44 62 L54 62 L46 68 L49 78 L41 72 L33 78 L36 68 L28 62 L38 62 Z" fill="#C9A24B" opacity="0.85"/>
+  </svg>`;
+}
+
+// ============ DATA ============
+const CARDS = {
+  lovers:    { name:"Os Amantes", kw:"União de Almas", meaning:"Os Amantes surgem quando existe uma conexão profunda esperando para florescer.", hook:"Alguém está energeticamente ligado a você neste momento." },
+  star:      { name:"A Estrela", kw:"Esperança Renovada", meaning:"A Estrela é um farol de esperança — um sinal de que a solidão está com os dias contados.", hook:"Uma luz se aproxima para renovar sua fé no amor." },
+  sun:       { name:"O Sol", kw:"Clareza e Verdade", meaning:"O Sol traz clareza radiante sobre quem é verdadeiramente destinado a você.", hook:"A verdade sobre o seu amor está prestes a se revelar." },
+  moon:      { name:"A Lua", kw:"Segredos do Coração", meaning:"A Lua revela que nem tudo é o que parece — há sentimentos ocultos ao seu redor.", hook:"Alguém sente algo forte por você e ainda não teve coragem de dizer." },
+  empress:   { name:"A Imperatriz", kw:"Amor que Floresce", meaning:"A Imperatriz é a carta do amor que floresce. Você está pronta para receber.", hook:"Sua energia está atraindo alguém marcante para a sua vida." },
+  ace:       { name:"Ás de Copas", kw:"Novo Começo", meaning:"O Ás de Copas marca o início de um ciclo amoroso transformador.", hook:"Um novo amor está prestes a transbordar na sua vida." },
+  two:       { name:"Dois de Copas", kw:"Atração Mútua", meaning:"O Dois de Copas fala de atração mútua e do reconhecimento entre duas almas.", hook:"Existe alguém sentindo a mesma atração que você." },
+  temperance:{ name:"Temperança", kw:"Tempo Divino", meaning:"Temperança diz que o universo está preparando o momento certo para o encontro.", hook:"O tempo divino já começou a trabalhar a seu favor." },
+  strength:  { name:"A Força", kw:"Coragem de Amar", meaning:"A Força mostra que você tem a coragem necessária para abrir o coração de novo.", hook:"Sua coragem de amar é exatamente o que vai atrair essa pessoa." },
+  wheel:     { name:"Roda da Fortuna", kw:"Ciclos Mudando", meaning:"A Roda da Fortuna indica que um ciclo de solidão está se encerrando.", hook:"Uma virada importante na sua vida amorosa está chegando." }
+};
+const CARD_KEYS = Object.keys(CARDS);
+
+const ZODIAC = [
+  ["Áries","♈"],["Touro","♉"],["Gêmeos","♊"],["Câncer","♋"],
+  ["Leão","♌"],["Virgem","♍"],["Libra","♎"],["Escorpião","♏"],
+  ["Sagitário","♐"],["Capricórnio","♑"],["Aquário","♒"],["Peixes","♓"]
+];
+
+const SECTIONS = {
+  2:'A Conexão', 3:'A Conexão', 4:'A Conexão', 5:'A Conexão', 6:'A Conexão',
+  7:'Seu Coração', 8:'Seu Coração', 9:'Seu Coração', 10:'Seu Coração', 11:'Seu Coração',
+  12:'Mergulho Profundo', 13:'Mergulho Profundo', 14:'Mergulho Profundo', 15:'Mergulho Profundo', 16:'Mergulho Profundo', 17:'Mergulho Profundo',
+  18:'A Revelação', 19:'A Revelação', 20:'A Revelação'
+};
+
+let currentSlide = 0;
+let selectedKey = null;
+let data = {};
+const LAST_Q = 20;
+
+// ============ INIT ============
+function buildFan() {
+  const fan = document.getElementById('fan');
+  const N = 9;
+  const spread = 68;
+  for (let i = 0; i < N; i++) {
+    const angle = -spread/2 + (spread/(N-1))*i;
+    const card = document.createElement('div');
+    card.className = 'tcard';
+    card.style.setProperty('--base', `rotate(${angle}deg)`);
+    card.style.transform = `rotate(${angle}deg)`;
+    card.style.zIndex = i;
+    card.innerHTML = cardBack();
+    card.onclick = () => pickCard(card);
+    fan.appendChild(card);
+  }
+}
+function buildZodiac() {
+  // Grid 1 - user's sign
+  const g = document.getElementById('zodiacGrid');
+  ZODIAC.forEach(([s,e]) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = `<span class="emo">${e}</span>${s}`;
+    b.onclick = () => answer('zodiac', s);
+    g.appendChild(b);
+  });
+  // Grid 2 - most attractive sign (partner)
+  const g2 = document.getElementById('zodiacGrid2');
+  ZODIAC.forEach(([s,e]) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = `<span class="emo">${e}</span>${s}`;
+    b.onclick = () => answer('partner_sign', s);
+    g2.appendChild(b);
+  });
+  // add "não sei" to grid 2
+  const nd = document.createElement('button');
+  nd.className = 'opt';
+  nd.innerHTML = `<span class="emo">❓</span>Não sei ainda`;
+  nd.onclick = () => answer('partner_sign', 'unknown');
+  g2.appendChild(nd);
+}
+
+// ============ PICKER ============
+function pickCard(el) {
+  selectedKey = CARD_KEYS[Math.floor(Math.random()*CARD_KEYS.length)];
+  document.querySelectorAll('.tcard').forEach(c => c.style.pointerEvents='none');
+  el.classList.add('lifted');
+  el.style.transform = 'rotate(0deg) translateY(-30px) scale(1.15)';
+  setTimeout(() => {
+    fillReveal();
+    goToSlide(1);
+    revealTimer = setTimeout(() => { if(currentSlide===1) goToSlide(2); }, 1500);
+  }, 400);
+}
+let revealTimer = null;
+function skipReveal() {
+  if (currentSlide !== 1) return;
+  clearTimeout(revealTimer);
+  goToSlide(2);
+}
+function fillReveal() {
+  const c = CARDS[selectedKey];
+  document.getElementById('revealCardArt').innerHTML = cardArt(selectedKey);
+  document.getElementById('revealName').textContent = c.name;
+  document.getElementById('revealKw').textContent = c.kw;
+  document.getElementById('revealMeaning').textContent = c.meaning;
+}
+
+// ============ NAV ============
+function goToSlide(n) {
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  let id;
+  if (n <= LAST_Q) id = `slide-${n}`;
+  else if (n === 21) id = 'slide-loading';
+  else if (n === 22) id = 'slide-lead';
+  else id = 'slide-reading';
+  document.getElementById(id).classList.add('active');
+  currentSlide = n;
+  updateProgress();
+  document.getElementById('app').scrollIntoView({block:'start'});
+  window.scrollTo(0,0);
+}
+function nextSlide(){ goToSlide(currentSlide+1); }
+function prevSlide(){ if(currentSlide>2) goToSlide(currentSlide-1); }
+function updateProgress() {
+  const w = document.getElementById('progressWrap');
+  if (currentSlide>=2 && currentSlide<=LAST_Q) {
+    w.classList.add('visible');
+    const n = currentSlide-1, total = LAST_Q-1;
+    document.getElementById('slideCounter').textContent = `${n}/${total}`;
+    document.getElementById('progressFill').style.width = `${(n/total)*100}%`;
+    document.getElementById('sectionLabel').textContent = SECTIONS[currentSlide]||'A Revelação';
+  } else w.classList.remove('visible');
+}
+
+// ============ ANSWER ============
+function answer(key, val) {
+  data[key] = val;
+  if (key==='zodiac') document.getElementById('chkSign').textContent = val;
+  if (key==='gender') updateGenderCopy(val);
+  if (key==='met') fillInter1(val);
+  if (key==='partner_sign') fillInter2(val);
+  if (key==='block') fillInter3(val);
+  if (key==='want') fillInter4(val);
+  if (key==='ready') { startLoading(); return; }
+  nextSlide();
+}
+
+// gender-aware wording
+let G = 'a'; // default feminine
+function updateGenderCopy(g){ G = g==='M' ? 'o' : 'a'; }
+
+// ============ INTERSTITIALS ============
+// Inter 1 (slide 6) - based on "met soulmate"
+function fillInter1(met) {
+  const map = {
+    yes: "As cartas confirmam: essa pessoa que você acredita ter encontrado deixou uma marca energética profunda em você. Preciso olhar mais fundo para entender essa ligação.",
+    maybe: "Sinto uma presença ao seu redor — alguém que já cruzou seu caminho, mesmo que você ainda não tenha certeza. As cartas querem revelar quem é.",
+    no: "Há uma energia amorosa se aproximando de você. Ela ainda não tem rosto, mas já está em movimento. Deixe-me ver com mais clareza quem é.",
+    lost: "Uma conexão que se perdeu nem sempre se encerra de verdade. As cartas mostram um fio que ainda liga vocês. Vamos descobrir o que ele significa."
+  };
+  document.getElementById('inter1Text').innerHTML = (map[met]||map.no) + " <span class='hl'>Isso explica muita coisa.</span>";
+}
+// Inter 2 (slide 11) - compatibility based on partner_sign vs user zodiac
+function fillInter2(partnerSign) {
+  const userSign = data.zodiac || 'seu signo';
+  let txt;
+  if (partnerSign === 'unknown') {
+    document.getElementById('inter2Title').textContent = 'Uma alma em movimento';
+    txt = "Mesmo sem saber o signo dela, as cartas sentem uma energia se aproximando da sua. A compatibilidade está escrita — só falta revelá-la.";
+  } else {
+    document.getElementById('inter2Title').textContent = 'Compatibilidade rara';
+    txt = `${userSign} e ${partnerSign} formam uma das combinações mais magnéticas do zodíaco. Isso explica por que essa atração é tão forte. Mas compatibilidade sozinha não basta — o timing precisa estar certo.`;
+  }
+  document.getElementById('inter2Text').innerHTML = txt;
+}
+// Inter 3 (slide 14) - based on "block"
+function fillInter3(block) {
+  const map = {
+    trust: ["Seu coração aprendeu a se proteger", "Depois de tudo que viveu, seu coração criou uma armadura. Ela te protegeu — mas as cartas mostram que chegou a hora de baixar a guarda para o amor certo."],
+    past: ["Você ainda carrega o passado", "As feridas antigas deixaram marcas, e as cartas sentem esse peso. A boa notícia: elas também mostram que a cura está mais perto do que você imagina."],
+    worth: ["Você vale muito mais do que sente", "As cartas revelam algo que você esqueceu: você merece um amor grande. O bloqueio não está em você — está na história que te contaram sobre você."],
+    timing: ["O tempo certo se aproxima", "Você sente que não é a hora — mas as cartas discordam. Elas mostram um movimento começando agora, mesmo que você ainda não perceba."],
+    none: ["Seu coração está aberto", "Que energia linda! Um coração aberto é um imã para a alma gêmea. As cartas mostram que você está no momento perfeito para receber esse amor."]
+  };
+  const [t,txt] = map[block]||map.trust;
+  document.getElementById('inter3Title').textContent = t;
+  document.getElementById('inter3Text').innerHTML = txt;
+}
+// Inter 4 (slide 17) - based on "want"
+function fillInter4(want) {
+  const map = {
+    who: "Você quer saber quem é. As cartas já estão desenhando o rosto, o jeito e a energia dessa pessoa para você.",
+    when: "Você quer saber quando. As cartas apontam um período específico — e ele está mais próximo do que parece.",
+    where: "Você quer saber onde. As cartas indicam o lugar e o contexto do encontro. Detalhes surpreendentes estão surgindo.",
+    already: "Você quer saber se já a conhece. E as cartas têm uma resposta clara sobre isso — que pode mudar como você enxerga alguém ao seu redor."
+  };
+  document.getElementById('inter4Text').innerHTML = (map[want]||map.who) + " <span class='hl'>A carta que você escolheu confirma tudo.</span>";
+}
+
+// ============ LOADING ============
+function startLoading() {
+  goToSlide(21);
+  let pct = 0, step = 0, modal = false;
+  const pctEl = document.getElementById('loadingPct');
+  const ring = document.getElementById('ringFill');
+  const items = document.querySelectorAll('.check');
+  const CIRC = 415;
+  const tick = setInterval(() => {
+    pct += Math.random()*3.5 + 1.2;
+    if (pct>100) pct=100;
+    pctEl.textContent = Math.floor(pct)+'%';
+    ring.style.strokeDashoffset = CIRC - (CIRC*pct/100);
+    if (pct>12 && step===0){ mark(items[0],'done'); mark(items[1],'on'); step=1; }
+    if (pct>38 && step===1){ mark(items[1],'done'); mark(items[2],'on'); step=2; }
+    if (pct>52 && !modal){ showModal(); modal=true; }
+    if (pct>74 && step===2){ mark(items[2],'done'); mark(items[3],'on'); step=3; }
+    if (pct>=100){ mark(items[3],'done'); clearInterval(tick); setTimeout(()=>goToSlide(22),1100); }
+  }, 200);
+}
+function mark(el, cls){
+  el.classList.add('on');
+  if(cls==='done'){ el.classList.add('done'); el.querySelector('.ci').textContent='✓'; }
+}
+
+// ============ MODAL ============
+function showModal(){ document.getElementById('modal').classList.add('visible'); }
+function closeModal(){ document.getElementById('modal').classList.remove('visible'); }
+function modalAnswer(v){ data.feels_close = v; closeModal(); }
+
+// ============ LEAD ============
+function submitLead() {
+  const name = document.getElementById('inName').value.trim();
+  const email = document.getElementById('inEmail').value.trim();
+  let ok = true;
+  if(!name){ document.getElementById('inName').style.borderColor='#EF4444'; ok=false; }
+  if(!email || !email.includes('@')){ document.getElementById('inEmail').style.borderColor='#EF4444'; ok=false; }
+  if(!ok) return;
+  data.name = name; data.email = email;
+  data.phone = document.getElementById('inPhone').value.trim();
+  data.optin = document.getElementById('optin').checked;
+  // TODO: enviar `data` para seu webhook / CRM aqui
+  console.log('LEAD:', data);
+  showReading();
+}
+function skipReading(){ data.name = data.name || 'você'; showReading(); }
+
+// ============ READING ============
+function showReading() {
+  goToSlide(23);
+  const c = CARDS[selectedKey];
+  const name = data.name || 'você';
+  const traitMap = {loyalty:'lealdade',passion:'paixão',safety:'paz e segurança',adventure:'cumplicidade',understanding:'ser compreendido(a) de verdade'};
+  const trait = traitMap[data.trait] || 'conexão verdadeira';
+  document.getElementById('readingName').textContent = name;
+  document.getElementById('readingCardArt').innerHTML = cardArt(selectedKey);
+  document.getElementById('readingText').innerHTML = `
+    <p>Você foi atraíd${G} por <span class="bd">${c.name}</span>.</p>
+    <p>${c.meaning}</p>
+    <p>${name.charAt(0).toUpperCase()+name.slice(1)}, quando essa carta aparece numa leitura de alma gêmea, ela me diz uma coisa com clareza:</p>
+    <p><span class="em">Existe alguém pensando em você neste exato momento.</span></p>
+    <p>Essa pessoa carrega uma energia que completa a sua. O que ela mais busca é justamente ${trait} — e é isso que você tem para oferecer.</p>
+    <p>Não foi coincidência você escolher essa carta. ${c.hook}</p>
+    <span class="rev">E aqui está o que as cartas revelam:</span>
+    <p>Eu vejo essa pessoa se aproximando. Pode ser alguém que já está na sua vida — ou alguém prestes a chegar.</p>
+    <p>Ela tem uma presença que te faz sentir…</p>
+    <p><span class="em">Em casa.</span></p>
+    <p>Como se você pudesse baixar a guarda e ser exatamente quem é. Sem medo. Sem julgamento.</p>
+    <p>As cartas mostram que essa conexão é rara — o tipo de amor que faz a gente acreditar de novo.</p>
+    <p class="cliff">${c.name} me diz que essa pessoa está começando a…</p>
+    <p class="prompt">Para descobrir o resto, peça sua leitura completa com a Martha 👇</p>
+  `;
+}
+
+// ============ BOOT ============
+buildFan();
+buildZodiac();
+</script>
+</body>
+</html>
