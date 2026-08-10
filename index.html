@@ -1,11 +1,28 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="Almagemela — leitura gratuita de alma gêmea. Escolha uma carta e receba sua orientação espiritual.">
-<title>Almagemela · Leitura de Alma Gêmea</title>
+<meta name="description" content="Almagemela — lectura gratuita de alma gemela. Elige una carta y recibe tu orientación espiritual.">
+<title>Almagemela · Lectura de Alma Gemela</title>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '38539014385698035');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=38539014385698035&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/cormorant-700.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -361,13 +378,13 @@ body {
       </svg>
       <span class="logo-word">Almagemela</span>
     </div>
-    <div class="brand-sub">Leituras Espirituais</div>
+    <div class="brand-sub">Lecturas Espirituales</div>
   </div>
 
   <div class="progress-wrap" id="progressWrap">
     <div class="progress-top">
       <button class="back-btn" onclick="prevSlide()">‹</button>
-      <span class="section-label" id="sectionLabel">A Conexão</span>
+      <span class="section-label" id="sectionLabel">La Conexión</span>
       <span class="slide-counter" id="slideCounter">1/19</span>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -376,15 +393,15 @@ body {
   <!-- SLIDE 0: PICKER -->
   <div class="slide active" id="slide-0">
     <div class="picker">
-      <h1>Escolha uma carta e comece sua leitura gratuita</h1>
+      <h1>Elige una carta y comienza tu lectura gratuita</h1>
       <div class="arrow">↓</div>
       <div class="fan" id="fan"></div>
       <div class="badges">
         <span class="badge">⏱ Quiz de 1 min</span>
         <span class="badge">🧩 Personalizado</span>
-        <span class="badge">💜 98% de satisfação</span>
+        <span class="badge">💜 98% de satisfacción</span>
       </div>
-      <p class="disclaimer">Ao escolher uma carta, você concorda com os <a href="#">Termos de Serviço</a> e a <a href="#">Política de Privacidade</a>.</p>
+      <p class="disclaimer">Al elegir una carta, aceptas los <a href="#">Términos de Servicio</a> y la <a href="#">Política de Privacidad</a>.</p>
     </div>
   </div>
 
@@ -395,18 +412,18 @@ body {
       <h2 id="revealName"></h2>
       <div class="kw" id="revealKw"></div>
       <p id="revealMeaning"></p>
-      <p class="tap-hint">toque para continuar</p>
+      <p class="tap-hint">toca para continuar</p>
     </div>
   </div>
 
   <!-- SLIDE 2 -->
   <div class="slide" id="slide-2">
     <div class="q-wrap">
-      <h2 class="q-title">Para quem estou lendo hoje?</h2>
+      <h2 class="q-title">¿Para quién estoy leyendo hoy?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('gender','F')"><span class="emo">🌙</span>Sou mulher</button>
-        <button class="opt" onclick="answer('gender','M')"><span class="emo">☀️</span>Sou homem</button>
-        <button class="opt" onclick="answer('gender','NB')"><span class="emo">✨</span>Prefiro não dizer</button>
+        <button class="opt" onclick="answer('gender','F')"><span class="emo">🌙</span>Soy mujer</button>
+        <button class="opt" onclick="answer('gender','M')"><span class="emo">☀️</span>Soy hombre</button>
+        <button class="opt" onclick="answer('gender','NB')"><span class="emo">✨</span>Prefiero no decirlo</button>
       </div>
     </div>
   </div>
@@ -414,7 +431,7 @@ body {
   <!-- SLIDE 3: signo do usuário -->
   <div class="slide" id="slide-3">
     <div class="q-wrap">
-      <h2 class="q-title">Qual é o seu signo?</h2>
+      <h2 class="q-title">¿Cuál es tu signo?</h2>
       <div class="options grid" id="zodiacGrid"></div>
     </div>
   </div>
@@ -422,13 +439,13 @@ body {
   <!-- SLIDE 4: situação amorosa -->
   <div class="slide" id="slide-4">
     <div class="q-wrap">
-      <h2 class="q-title">Como está o seu coração hoje?</h2>
+      <h2 class="q-title">¿Cómo está tu corazón hoy?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('status','single')"><span class="emo">💫</span>Solteiro(a) e aberto(a) ao amor</button>
-        <button class="opt" onclick="answer('status','complicated')"><span class="emo">💭</span>É complicado no momento</button>
-        <button class="opt" onclick="answer('status','someone')"><span class="emo">💕</span>Tem alguém na minha cabeça</button>
-        <button class="opt" onclick="answer('status','relationship')"><span class="emo">❤️</span>Num relacionamento</button>
-        <button class="opt" onclick="answer('status','healing')"><span class="emo">🕊️</span>Me curando de um término</button>
+        <button class="opt" onclick="answer('status','single')"><span class="emo">💫</span>Soltero/a y abierto/a al amor</button>
+        <button class="opt" onclick="answer('status','complicated')"><span class="emo">💭</span>Es complicado en este momento</button>
+        <button class="opt" onclick="answer('status','someone')"><span class="emo">💕</span>Hay alguien en mi mente</button>
+        <button class="opt" onclick="answer('status','relationship')"><span class="emo">❤️</span>En una relación</button>
+        <button class="opt" onclick="answer('status','healing')"><span class="emo">🕊️</span>Sanando de una ruptura</button>
       </div>
     </div>
   </div>
@@ -436,12 +453,12 @@ body {
   <!-- SLIDE 5: já conheceu -->
   <div class="slide" id="slide-5">
     <div class="q-wrap">
-      <h2 class="q-title">Você sente que sua alma gêmea já cruzou o seu caminho?</h2>
+      <h2 class="q-title">¿Sientes que tu alma gemela ya cruzó tu camino?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('met','yes')"><span class="emo">✨</span>Sim, acho que já a conheci</button>
-        <button class="opt" onclick="answer('met','maybe')"><span class="emo">🤔</span>Talvez… ainda tenho dúvidas</button>
-        <button class="opt" onclick="answer('met','no')"><span class="emo">🔮</span>Ainda não, estou esperando</button>
-        <button class="opt" onclick="answer('met','lost')"><span class="emo">💔</span>Sim, mas nos perdemos</button>
+        <button class="opt" onclick="answer('met','yes')"><span class="emo">✨</span>Sí, creo que ya la conocí</button>
+        <button class="opt" onclick="answer('met','maybe')"><span class="emo">🤔</span>Tal vez… todavía tengo dudas</button>
+        <button class="opt" onclick="answer('met','no')"><span class="emo">🔮</span>Todavía no, estoy esperando</button>
+        <button class="opt" onclick="answer('met','lost')"><span class="emo">💔</span>Sí, pero nos perdimos</button>
       </div>
     </div>
   </div>
@@ -450,21 +467,21 @@ body {
   <div class="slide" id="slide-6">
     <div class="inter">
       <div class="orb">🔮</div>
-      <h2>Sinto uma energia forte</h2>
+      <h2>Siento una energía fuerte</h2>
       <p id="inter1Text"></p>
-      <button class="btn-primary" onclick="nextSlide()">Continuar leitura</button>
+      <button class="btn-primary" onclick="nextSlide()">Continuar lectura</button>
     </div>
   </div>
 
   <!-- SLIDE 7: faixa etária -->
   <div class="slide" id="slide-7">
     <div class="q-wrap">
-      <h2 class="q-title">Em que fase da vida você está?</h2>
+      <h2 class="q-title">¿En qué etapa de la vida estás?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('age','18-25')"><span class="emo">🌱</span>18 a 25 anos</button>
-        <button class="opt" onclick="answer('age','26-35')"><span class="emo">🌿</span>26 a 35 anos</button>
-        <button class="opt" onclick="answer('age','36-45')"><span class="emo">🌷</span>36 a 45 anos</button>
-        <button class="opt" onclick="answer('age','46+')"><span class="emo">🌟</span>46 anos ou mais</button>
+        <button class="opt" onclick="answer('age','18-25')"><span class="emo">🌱</span>18 a 25 años</button>
+        <button class="opt" onclick="answer('age','26-35')"><span class="emo">🌿</span>26 a 35 años</button>
+        <button class="opt" onclick="answer('age','36-45')"><span class="emo">🌷</span>36 a 45 años</button>
+        <button class="opt" onclick="answer('age','46+')"><span class="emo">🌟</span>46 años o más</button>
       </div>
     </div>
   </div>
@@ -472,12 +489,12 @@ body {
   <!-- SLIDE 8: o que mais deseja -->
   <div class="slide" id="slide-8">
     <div class="q-wrap">
-      <h2 class="q-title">O que o seu coração mais pede neste momento?</h2>
+      <h2 class="q-title">¿Qué es lo que más pide tu corazón en este momento?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('desire','find')"><span class="emo">💘</span>Encontrar minha alma gêmea</button>
-        <button class="opt" onclick="answer('desire','clarity')"><span class="emo">🔍</span>Clareza sobre alguém especial</button>
-        <button class="opt" onclick="answer('desire','heal')"><span class="emo">🕊️</span>Curar uma ferida do passado</button>
-        <button class="opt" onclick="answer('desire','deepen')"><span class="emo">🤝</span>Fortalecer o amor que já tenho</button>
+        <button class="opt" onclick="answer('desire','find')"><span class="emo">💘</span>Encontrar a mi alma gemela</button>
+        <button class="opt" onclick="answer('desire','clarity')"><span class="emo">🔍</span>Claridad sobre alguien especial</button>
+        <button class="opt" onclick="answer('desire','heal')"><span class="emo">🕊️</span>Sanar una herida del pasado</button>
+        <button class="opt" onclick="answer('desire','deepen')"><span class="emo">🤝</span>Fortalecer el amor que ya tengo</button>
       </div>
     </div>
   </div>
@@ -485,13 +502,13 @@ body {
   <!-- SLIDE 9: como imagina a energia dela -->
   <div class="slide" id="slide-9">
     <div class="q-wrap">
-      <h2 class="q-title">Que tipo de energia você sente que combina com a sua?</h2>
+      <h2 class="q-title">¿Qué tipo de energía sientes que combina con la tuya?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('energy','calm')"><span class="emo">🌊</span>Calma e acolhedora</button>
-        <button class="opt" onclick="answer('energy','intense')"><span class="emo">🔥</span>Intensa e magnética</button>
-        <button class="opt" onclick="answer('energy','fun')"><span class="emo">☀️</span>Leve e divertida</button>
-        <button class="opt" onclick="answer('energy','deep')"><span class="emo">🌌</span>Profunda e misteriosa</button>
-        <button class="opt" onclick="answer('energy','protective')"><span class="emo">🛡️</span>Forte e protetora</button>
+        <button class="opt" onclick="answer('energy','calm')"><span class="emo">🌊</span>Calmada y cálida</button>
+        <button class="opt" onclick="answer('energy','intense')"><span class="emo">🔥</span>Intensa y magnética</button>
+        <button class="opt" onclick="answer('energy','fun')"><span class="emo">☀️</span>Ligera y divertida</button>
+        <button class="opt" onclick="answer('energy','deep')"><span class="emo">🌌</span>Profunda y misteriosa</button>
+        <button class="opt" onclick="answer('energy','protective')"><span class="emo">🛡️</span>Fuerte y protectora</button>
       </div>
     </div>
   </div>
@@ -499,7 +516,7 @@ body {
   <!-- SLIDE 10: signo que mais atrai -->
   <div class="slide" id="slide-10">
     <div class="q-wrap">
-      <h2 class="q-title">Qual signo mais te atrai — ou já te marcou?</h2>
+      <h2 class="q-title">¿Qué signo más te atrae — o ya te marcó?</h2>
       <div class="options grid" id="zodiacGrid2"></div>
     </div>
   </div>
@@ -508,7 +525,7 @@ body {
   <div class="slide" id="slide-11">
     <div class="inter">
       <div class="orb">💞</div>
-      <h2 id="inter2Title">Compatibilidade rara</h2>
+      <h2 id="inter2Title">Compatibilidad rara</h2>
       <p id="inter2Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
@@ -517,13 +534,13 @@ body {
   <!-- SLIDE 12: bloqueio -->
   <div class="slide" id="slide-12">
     <div class="q-wrap">
-      <h2 class="q-title">O que você sente que te impede de viver um amor verdadeiro?</h2>
+      <h2 class="q-title">¿Qué sientes que te impide vivir un amor verdadero?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('block','trust')"><span class="emo">🛡️</span>Medo de confiar de novo</button>
-        <button class="opt" onclick="answer('block','past')"><span class="emo">⛓️</span>Feridas que ainda não cicatrizaram</button>
-        <button class="opt" onclick="answer('block','worth')"><span class="emo">🪞</span>Sinto que não sou o bastante</button>
-        <button class="opt" onclick="answer('block','timing')"><span class="emo">⏳</span>Acho que não é a hora certa</button>
-        <button class="opt" onclick="answer('block','none')"><span class="emo">🌈</span>Nada, estou pronto(a)</button>
+        <button class="opt" onclick="answer('block','trust')"><span class="emo">🛡️</span>Miedo a confiar de nuevo</button>
+        <button class="opt" onclick="answer('block','past')"><span class="emo">⛓️</span>Heridas que aún no cicatrizaron</button>
+        <button class="opt" onclick="answer('block','worth')"><span class="emo">🪞</span>Siento que no soy suficiente</button>
+        <button class="opt" onclick="answer('block','timing')"><span class="emo">⏳</span>Creo que no es el momento adecuado</button>
+        <button class="opt" onclick="answer('block','none')"><span class="emo">🌈</span>Nada, estoy listo/a</button>
       </div>
     </div>
   </div>
@@ -531,13 +548,13 @@ body {
   <!-- SLIDE 13: último amor -->
   <div class="slide" id="slide-13">
     <div class="q-wrap">
-      <h2 class="q-title">Como terminou o seu último amor importante?</h2>
+      <h2 class="q-title">¿Cómo terminó tu último amor importante?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('past','toxic')"><span class="emo">🌪️</span>Foi doloroso e desgastante</button>
-        <button class="opt" onclick="answer('past','fade')"><span class="emo">🍂</span>Esfriou aos poucos</button>
-        <button class="opt" onclick="answer('past','ghost')"><span class="emo">👻</span>A pessoa sumiu sem explicar</button>
-        <button class="opt" onclick="answer('past','never')"><span class="emo">🌸</span>Nunca vivi um amor assim</button>
-        <button class="opt" onclick="answer('past','current')"><span class="emo">💑</span>Ainda estou vivendo</button>
+        <button class="opt" onclick="answer('past','toxic')"><span class="emo">🌪️</span>Fue doloroso y desgastante</button>
+        <button class="opt" onclick="answer('past','fade')"><span class="emo">🍂</span>Se enfrió poco a poco</button>
+        <button class="opt" onclick="answer('past','ghost')"><span class="emo">👻</span>La persona desapareció sin explicar</button>
+        <button class="opt" onclick="answer('past','never')"><span class="emo">🌸</span>Nunca viví un amor así</button>
+        <button class="opt" onclick="answer('past','current')"><span class="emo">💑</span>Todavía lo estoy viviendo</button>
       </div>
     </div>
   </div>
@@ -546,7 +563,7 @@ body {
   <div class="slide" id="slide-14">
     <div class="inter">
       <div class="orb">🧿</div>
-      <h2 id="inter3Title">Seu coração se protege</h2>
+      <h2 id="inter3Title">Tu corazón se protege</h2>
       <p id="inter3Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
@@ -555,13 +572,13 @@ body {
   <!-- SLIDE 15: sinais -->
   <div class="slide" id="slide-15">
     <div class="q-wrap">
-      <h2 class="q-title">O universo tem te mandado algum sinal?</h2>
+      <h2 class="q-title">¿El universo te ha enviado alguna señal?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('signs','dreams')"><span class="emo">🌙</span>Sonhos vívidos com alguém</button>
+        <button class="opt" onclick="answer('signs','dreams')"><span class="emo">🌙</span>Sueños vívidos con alguien</button>
         <button class="opt" onclick="answer('signs','numbers')"><span class="emo">✨</span>Números repetidos (11:11, 444)</button>
-        <button class="opt" onclick="answer('signs','feeling')"><span class="emo">💓</span>Pressentimentos que não explico</button>
-        <button class="opt" onclick="answer('signs','sync')"><span class="emo">🎶</span>Coincidências que me arrepiam</button>
-        <button class="opt" onclick="answer('signs','none')"><span class="emo">😶</span>Ainda não percebi nada</button>
+        <button class="opt" onclick="answer('signs','feeling')"><span class="emo">💓</span>Presentimientos que no explico</button>
+        <button class="opt" onclick="answer('signs','sync')"><span class="emo">🎶</span>Coincidencias que me erizan la piel</button>
+        <button class="opt" onclick="answer('signs','none')"><span class="emo">😶</span>Todavía no he notado nada</button>
       </div>
     </div>
   </div>
@@ -569,12 +586,12 @@ body {
   <!-- SLIDE 16: o que quer descobrir -->
   <div class="slide" id="slide-16">
     <div class="q-wrap">
-      <h2 class="q-title">O que você mais quer descobrir sobre sua alma gêmea?</h2>
+      <h2 class="q-title">¿Qué es lo que más quieres descubrir sobre tu alma gemela?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('want','who')"><span class="emo">👤</span>Quem é essa pessoa</button>
-        <button class="opt" onclick="answer('want','when')"><span class="emo">📅</span>Quando vou encontrá-la</button>
-        <button class="opt" onclick="answer('want','where')"><span class="emo">📍</span>Onde nossos caminhos vão cruzar</button>
-        <button class="opt" onclick="answer('want','already')"><span class="emo">💡</span>Se ela já está na minha vida</button>
+        <button class="opt" onclick="answer('want','who')"><span class="emo">👤</span>Quién es esa persona</button>
+        <button class="opt" onclick="answer('want','when')"><span class="emo">📅</span>Cuándo voy a encontrarla</button>
+        <button class="opt" onclick="answer('want','where')"><span class="emo">📍</span>Dónde se cruzarán nuestros caminos</button>
+        <button class="opt" onclick="answer('want','already')"><span class="emo">💡</span>Si ya está en mi vida</button>
       </div>
     </div>
   </div>
@@ -583,22 +600,22 @@ body {
   <div class="slide" id="slide-17">
     <div class="inter">
       <div class="orb">🃏</div>
-      <h2>As cartas confirmam</h2>
+      <h2>Las cartas confirman</h2>
       <p id="inter4Text"></p>
-      <button class="btn-primary" onclick="nextSlide()">Estou quase lá</button>
+      <button class="btn-primary" onclick="nextSlide()">Ya casi llego</button>
     </div>
   </div>
 
   <!-- SLIDE 18: o que valoriza -->
   <div class="slide" id="slide-18">
     <div class="q-wrap">
-      <h2 class="q-title">O que mais importa para você em um grande amor?</h2>
+      <h2 class="q-title">¿Qué es lo más importante para ti en un gran amor?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('trait','loyalty')"><span class="emo">🤝</span>Lealdade e confiança</button>
-        <button class="opt" onclick="answer('trait','passion')"><span class="emo">🔥</span>Paixão e intensidade</button>
-        <button class="opt" onclick="answer('trait','safety')"><span class="emo">🏡</span>Paz e segurança</button>
-        <button class="opt" onclick="answer('trait','adventure')"><span class="emo">✈️</span>Cumplicidade e aventura</button>
-        <button class="opt" onclick="answer('trait','understanding')"><span class="emo">💜</span>Ser compreendido(a) de verdade</button>
+        <button class="opt" onclick="answer('trait','loyalty')"><span class="emo">🤝</span>Lealtad y confianza</button>
+        <button class="opt" onclick="answer('trait','passion')"><span class="emo">🔥</span>Pasión e intensidad</button>
+        <button class="opt" onclick="answer('trait','safety')"><span class="emo">🏡</span>Paz y seguridad</button>
+        <button class="opt" onclick="answer('trait','adventure')"><span class="emo">✈️</span>Complicidad y aventura</button>
+        <button class="opt" onclick="answer('trait','understanding')"><span class="emo">💜</span>Ser comprendido/a de verdad</button>
       </div>
     </div>
   </div>
@@ -606,12 +623,12 @@ body {
   <!-- SLIDE 19: crença -->
   <div class="slide" id="slide-19">
     <div class="q-wrap">
-      <h2 class="q-title">Você acredita em almas gêmeas?</h2>
+      <h2 class="q-title">¿Crees en las almas gemelas?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('believe','sure')"><span class="emo">💯</span>Sim, com toda certeza</button>
-        <button class="opt" onclick="answer('believe','want')"><span class="emo">🙏</span>Quero muito acreditar</button>
-        <button class="opt" onclick="answer('believe','doubt')"><span class="emo">🤷</span>Talvez, mas tenho dúvidas</button>
-        <button class="opt" onclick="answer('believe','curious')"><span class="emo">🧐</span>Sou cético(a), mas curioso(a)</button>
+        <button class="opt" onclick="answer('believe','sure')"><span class="emo">💯</span>Sí, con toda certeza</button>
+        <button class="opt" onclick="answer('believe','want')"><span class="emo">🙏</span>Quiero mucho creerlo</button>
+        <button class="opt" onclick="answer('believe','doubt')"><span class="emo">🤷</span>Tal vez, pero tengo dudas</button>
+        <button class="opt" onclick="answer('believe','curious')"><span class="emo">🧐</span>Soy escéptico/a, pero curioso/a</button>
       </div>
     </div>
   </div>
@@ -619,11 +636,11 @@ body {
   <!-- SLIDE 20: pronta? -->
   <div class="slide" id="slide-20">
     <div class="q-wrap">
-      <h2 class="q-title">Você está pronto(a) para ver o que as cartas revelam?</h2>
+      <h2 class="q-title">¿Estás listo/a para ver lo que revelan las cartas?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('ready','yes')"><span class="emo">💜</span>Sim, estou pronto(a)</button>
-        <button class="opt" onclick="answer('ready','nervous')"><span class="emo">🦋</span>Sim, mas com o coração acelerado</button>
-        <button class="opt" onclick="answer('ready','curious')"><span class="emo">👀</span>Muito curioso(a) pra ver</button>
+        <button class="opt" onclick="answer('ready','yes')"><span class="emo">💜</span>Sí, estoy listo/a</button>
+        <button class="opt" onclick="answer('ready','nervous')"><span class="emo">🦋</span>Sí, pero con el corazón acelerado</button>
+        <button class="opt" onclick="answer('ready','curious')"><span class="emo">👀</span>Muy curioso/a por ver</button>
       </div>
     </div>
   </div>
@@ -631,7 +648,7 @@ body {
   <!-- LOADING -->
   <div class="slide" id="slide-loading">
     <div class="loading">
-      <h2>Lendo a sua energia amorosa…</h2>
+      <h2>Leyendo tu energía amorosa…</h2>
       <div class="ring">
         <svg width="150" height="150" viewBox="0 0 150 150">
           <circle cx="75" cy="75" r="66" fill="none" stroke="#F3EEFB" stroke-width="10"/>
@@ -640,10 +657,10 @@ body {
         <span class="pct" id="loadingPct">0%</span>
       </div>
       <div class="checklist">
-        <div class="check" data-i="0"><span class="ci">○</span> Analisando a energia de <span id="chkSign" style="font-weight:600;margin-left:3px;"></span></div>
-        <div class="check" data-i="1"><span class="ci">○</span> Identificando bloqueios do coração</div>
-        <div class="check" data-i="2"><span class="ci">○</span> Localizando sua alma gêmea</div>
-        <div class="check" data-i="3"><span class="ci">○</span> Verificando a agenda de Martha</div>
+        <div class="check" data-i="0"><span class="ci">○</span> Analizando la energía de <span id="chkSign" style="font-weight:600;margin-left:3px;"></span></div>
+        <div class="check" data-i="1"><span class="ci">○</span> Identificando bloqueos del corazón</div>
+        <div class="check" data-i="2"><span class="ci">○</span> Localizando tu alma gemela</div>
+        <div class="check" data-i="3"><span class="ci">○</span> Verificando la agenda de Martha</div>
       </div>
     </div>
   </div>
@@ -652,20 +669,20 @@ body {
   <div class="slide" id="slide-lead">
     <div class="lead">
       <div class="lead-icon">💌</div>
-      <h2>Sua leitura está pronta</h2>
-      <p class="sub">Diga para onde a Martha deve enviar</p>
-      <div class="fg"><input type="text" id="inName" placeholder="Seu primeiro nome" required></div>
-      <div class="fg"><input type="email" id="inEmail" placeholder="Seu melhor e-mail" required></div>
+      <h2>Tu lectura está lista</h2>
+      <p class="sub">Dime a dónde debe enviarla Martha</p>
+      <div class="fg"><input type="text" id="inName" placeholder="Tu primer nombre" required></div>
+      <div class="fg"><input type="email" id="inEmail" placeholder="Tu mejor correo" required></div>
       <div class="fg"><input type="tel" id="inPhone" placeholder="WhatsApp (opcional)"></div>
       <div class="checkbox">
         <input type="checkbox" id="optin" checked>
-        <label for="optin">Sim, quero receber minha leitura e mensagens da Martha por e-mail e WhatsApp. O consentimento não é obrigatório para a compra.</label>
+        <label for="optin">Sí, quiero recibir mi lectura y mensajes de Martha por correo y WhatsApp. El consentimiento no es obligatorio para la compra.</label>
       </div>
-      <button class="submit" onclick="submitLead()">Revelar minha leitura de alma gêmea</button>
-      <span class="skip" onclick="skipReading()">A Martha já tem meus dados</span>
+      <button class="submit" onclick="submitLead()">Revelar mi lectura de alma gemela</button>
+      <span class="skip" onclick="skipReading()">Martha ya tiene mis datos</span>
       <div class="trust-row">
-        <span class="t">🔒 100% sigiloso</span>
-        <span class="t">💜 +12 mil leituras</span>
+        <span class="t">🔒 100% confidencial</span>
+        <span class="t">💜 +12 mil lecturas</span>
       </div>
     </div>
   </div>
@@ -673,14 +690,14 @@ body {
   <!-- READING -->
   <div class="slide" id="slide-reading">
     <div class="reading">
-      <div class="r-title">Mini leitura para <span class="nm" id="readingName">você</span></div>
+      <div class="r-title">Mini lectura para <span class="nm" id="readingName">ti</span></div>
       <div class="r-sep"></div>
       <div class="r-card" id="readingCardArt"></div>
       <div class="r-text" id="readingText"></div>
       <div class="cta">
-        <div class="price"><span class="old">De R$127</span> · <span class="new">R$47</span></div>
-        <a class="btn-cta" href="#" id="ctaLink">Quero minha leitura completa</a>
-        <div class="guar">🔒 Garantia de 60 dias — ou seu dinheiro de volta</div>
+        <div class="price"><span class="old">De $97</span> · <span class="new">$6,90</span></div>
+        <a class="btn-cta" href="#" id="ctaLink">Quiero mi lectura completa</a>
+        <div class="guar">🔒 Garantía de 60 días — o tu dinero de vuelta</div>
       </div>
     </div>
   </div>
@@ -692,10 +709,10 @@ body {
   <div class="modal">
     <button class="x" onclick="closeModal()">✕</button>
     <div class="m-orb">💫</div>
-    <h3>Você sente que essa pessoa está perto?</h3>
+    <h3>¿Sientes que esa persona está cerca?</h3>
     <div class="m-btns">
-      <button class="m-btn sec" onclick="modalAnswer('no')">Ainda não</button>
-      <button class="m-btn pri" onclick="modalAnswer('yes')">Sim, sinto</button>
+      <button class="m-btn sec" onclick="modalAnswer('no')">Todavía no</button>
+      <button class="m-btn pri" onclick="modalAnswer('yes')">Sí, lo siento</button>
     </div>
   </div>
 </div>
@@ -727,28 +744,28 @@ function cardArt(id) {
       <circle cx="64" cy="82" r="9" fill="#F9D5E5" stroke="#B03A6E" stroke-width="1"/>
       <path d="M50 100 C40 108 40 118 50 124 C60 118 60 108 50 100 Z" fill="#B03A6E" opacity="0.85"/>
       <path d="M30 130 Q50 120 70 130" stroke="#6D28D9" stroke-width="1" fill="none"/>
-      ${name('OS AMANTES')}`,
+      ${name('LOS ENAMORADOS')}`,
     star: `${roman('XVII')}
       <path d="M50 30 L54 44 L68 44 L57 53 L61 67 L50 58 L39 67 L43 53 L32 44 L46 44 Z" fill="#C9A24B" stroke="#4C1D95" stroke-width="0.6"/>
       <circle cx="30" cy="55" r="2" fill="#8B5CF6"/><circle cx="70" cy="55" r="2" fill="#8B5CF6"/>
       <circle cx="25" cy="72" r="1.5" fill="#8B5CF6"/><circle cx="75" cy="72" r="1.5" fill="#8B5CF6"/>
       <path d="M40 95 Q50 88 60 95 L58 122 Q50 116 42 122 Z" fill="#DDD6FE" stroke="#6D28D9" stroke-width="0.8"/>
       <path d="M35 128 Q50 122 65 128" stroke="#8B5CF6" stroke-width="1" fill="none"/>
-      ${name('A ESTRELA')}`,
+      ${name('LA ESTRELLA')}`,
     sun: `${roman('XIX')}
       <circle cx="50" cy="60" r="20" fill="#F5D76E" stroke="#C9A24B" stroke-width="1"/>
       ${[...Array(12)].map((_,i)=>{const a=i*30*Math.PI/180;const x1=50+Math.cos(a)*23,y1=60+Math.sin(a)*23,x2=50+Math.cos(a)*32,y2=60+Math.sin(a)*32;return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#C9A24B" stroke-width="1.2"/>`}).join('')}
       <circle cx="44" cy="57" r="1.5" fill="#4C1D95"/><circle cx="56" cy="57" r="1.5" fill="#4C1D95"/>
       <path d="M44 65 Q50 69 56 65" stroke="#4C1D95" stroke-width="1" fill="none"/>
       <path d="M35 100 Q50 94 65 100 L63 128 Q50 122 37 128 Z" fill="#F9E6A8" stroke="#C9A24B" stroke-width="0.8"/>
-      ${name('O SOL')}`,
+      ${name('EL SOL')}`,
     moon: `${roman('XVIII')}
       <path d="M58 32 A18 18 0 1 0 58 68 A14 14 0 1 1 58 32 Z" fill="#EDE9FE" stroke="#6D28D9" stroke-width="1"/>
       ${[...Array(8)].map((_,i)=>{const a=i*45*Math.PI/180;return `<line x1="${50+Math.cos(a)*22}" y1="${50+Math.sin(a)*22}" x2="${50+Math.cos(a)*27}" y2="${50+Math.sin(a)*27}" stroke="#C9A24B" stroke-width="0.8"/>`}).join('')}
       <path d="M32 105 Q40 95 40 88 M68 105 Q60 95 60 88" stroke="#6D28D9" stroke-width="1" fill="none"/>
       <path d="M40 88 Q50 84 60 88 L60 105 L40 105 Z" fill="#DDD6FE" stroke="#6D28D9" stroke-width="0.8"/>
       <path d="M46 130 Q50 118 54 130" stroke="#8B5CF6" stroke-width="1" fill="none"/>
-      ${name('A LUA')}`,
+      ${name('LA LUNA')}`,
     empress: `${roman('III')}
       <path d="M42 26 L44 32 L50 30 L48 36 L54 36 L50 40 L44 40 L42 34 Z" fill="#C9A24B"/>
       <circle cx="50" cy="34" r="2" fill="#B03A6E"/>
@@ -757,21 +774,21 @@ function cardArt(id) {
       <path d="M45 62 Q50 65 55 62" stroke="#4C1D95" stroke-width="0.8" fill="none"/>
       <path d="M35 100 Q50 88 65 100 L68 130 Q50 122 32 130 Z" fill="#F9D5E5" stroke="#B03A6E" stroke-width="0.9"/>
       <circle cx="50" cy="112" r="3" fill="#C9A24B"/>
-      ${name('A IMPERATRIZ')}`,
+      ${name('LA EMPERATRIZ')}`,
     ace: `${roman('I')}
       <path d="M40 55 Q40 42 50 40 Q60 42 60 55 Q60 66 50 70 Q40 66 40 55 Z" fill="#DDD6FE" stroke="#6D28D9" stroke-width="1.2"/>
       <path d="M50 40 L50 30 M45 34 L50 30 L55 34" stroke="#C9A24B" stroke-width="1.2" fill="none"/>
       ${[...Array(5)].map((_,i)=>`<circle cx="${38+i*6}" cy="${78+ (i%2)*4}" r="1.3" fill="#8B5CF6"/>`).join('')}
       <path d="M42 92 Q50 100 58 92 M46 96 Q50 102 54 96" stroke="#8B5CF6" stroke-width="0.8" fill="none"/>
       <path d="M40 108 L60 108 L57 130 L43 130 Z" fill="#EDE9FE" stroke="#6D28D9" stroke-width="0.8"/>
-      ${name('ÁS DE COPAS')}`,
+      ${name('AS DE COPAS')}`,
     two: `${roman('II')}
       <path d="M35 50 Q35 40 42 40 Q49 40 49 50 Q49 58 42 61 Q35 58 35 50 Z" fill="#F9D5E5" stroke="#B03A6E" stroke-width="1"/>
       <path d="M51 50 Q51 40 58 40 Q65 40 65 50 Q65 58 58 61 Q51 58 51 50 Z" fill="#DDD6FE" stroke="#6D28D9" stroke-width="1"/>
       <path d="M50 68 C44 74 44 82 50 87 C56 82 56 74 50 68 Z" fill="#B03A6E"/>
       <path d="M38 98 Q50 90 62 98" stroke="#C9A24B" stroke-width="1.2" fill="none"/>
       <path d="M42 110 Q50 104 58 110 L56 130 L44 130 Z" fill="#EDE9FE" stroke="#6D28D9" stroke-width="0.8"/>
-      ${name('DOIS DE COPAS')}`,
+      ${name('DOS DE COPAS')}`,
     temperance: `${roman('XIV')}
       <circle cx="50" cy="40" r="10" fill="#F9E6A8" stroke="#C9A24B" stroke-width="1"/>
       <path d="M45 38 L48 43 L56 35" stroke="#C9A24B" stroke-width="1.3" fill="none"/>
@@ -779,7 +796,7 @@ function cardArt(id) {
       <path d="M54 62 Q58 55 62 62 L61 75 L55 75 Z" fill="#F9D5E5" stroke="#B03A6E" stroke-width="0.8"/>
       <path d="M46 68 Q50 72 54 68" stroke="#C9A24B" stroke-width="1" fill="none"/>
       <path d="M40 100 Q50 92 60 100 L62 128 Q50 122 38 128 Z" fill="#EDE9FE" stroke="#6D28D9" stroke-width="0.8"/>
-      ${name('TEMPERANÇA')}`,
+      ${name('TEMPLANZA')}`,
     strength: `${roman('VIII')}
       <path d="M42 30 Q50 24 58 30 Q56 26 50 26 Q44 26 42 30 Z" fill="#C9A24B"/>
       <path d="M50 26 L50 20 M46 22 L50 18 L54 22" stroke="#C9A24B" stroke-width="1" fill="none"/>
@@ -788,14 +805,14 @@ function cardArt(id) {
       <path d="M44 63 Q50 67 56 63" stroke="#4C1D95" stroke-width="1" fill="none"/>
       <path d="M38 58 L34 55 M40 64 L35 64 M60 64 L65 64 M62 58 L66 55" stroke="#C9A24B" stroke-width="0.8"/>
       <path d="M40 100 Q50 92 60 100 L62 128 Q50 122 38 128 Z" fill="#F9E6A8" stroke="#C9A24B" stroke-width="0.8"/>
-      ${name('A FORÇA')}`,
+      ${name('LA FUERZA')}`,
     wheel: `${roman('X')}
       <circle cx="50" cy="62" r="24" fill="none" stroke="#C9A24B" stroke-width="1.5"/>
       <circle cx="50" cy="62" r="14" fill="none" stroke="#6D28D9" stroke-width="1"/>
       <circle cx="50" cy="62" r="4" fill="#C9A24B"/>
       ${[...Array(8)].map((_,i)=>{const a=i*45*Math.PI/180;return `<line x1="${50+Math.cos(a)*4}" y1="${62+Math.sin(a)*4}" x2="${50+Math.cos(a)*24}" y2="${62+Math.sin(a)*24}" stroke="#8B5CF6" stroke-width="1"/>`}).join('')}
       <path d="M40 108 Q50 100 60 108 L62 130 L38 130 Z" fill="#EDE9FE" stroke="#6D28D9" stroke-width="0.8"/>
-      ${name('RODA DA FORTUNA')}`
+      ${name('RUEDA DE LA FORTUNA')}`
   };
   return frame(art[id] || art.lovers);
 }
@@ -821,30 +838,30 @@ function cardBack() {
 
 // ============ DATA ============
 const CARDS = {
-  lovers:    { name:"Os Amantes", kw:"União de Almas", meaning:"Os Amantes surgem quando existe uma conexão profunda esperando para florescer.", hook:"Alguém está energeticamente ligado a você neste momento." },
-  star:      { name:"A Estrela", kw:"Esperança Renovada", meaning:"A Estrela é um farol de esperança — um sinal de que a solidão está com os dias contados.", hook:"Uma luz se aproxima para renovar sua fé no amor." },
-  sun:       { name:"O Sol", kw:"Clareza e Verdade", meaning:"O Sol traz clareza radiante sobre quem é verdadeiramente destinado a você.", hook:"A verdade sobre o seu amor está prestes a se revelar." },
-  moon:      { name:"A Lua", kw:"Segredos do Coração", meaning:"A Lua revela que nem tudo é o que parece — há sentimentos ocultos ao seu redor.", hook:"Alguém sente algo forte por você e ainda não teve coragem de dizer." },
-  empress:   { name:"A Imperatriz", kw:"Amor que Floresce", meaning:"A Imperatriz é a carta do amor que floresce. Você está pronta para receber.", hook:"Sua energia está atraindo alguém marcante para a sua vida." },
-  ace:       { name:"Ás de Copas", kw:"Novo Começo", meaning:"O Ás de Copas marca o início de um ciclo amoroso transformador.", hook:"Um novo amor está prestes a transbordar na sua vida." },
-  two:       { name:"Dois de Copas", kw:"Atração Mútua", meaning:"O Dois de Copas fala de atração mútua e do reconhecimento entre duas almas.", hook:"Existe alguém sentindo a mesma atração que você." },
-  temperance:{ name:"Temperança", kw:"Tempo Divino", meaning:"Temperança diz que o universo está preparando o momento certo para o encontro.", hook:"O tempo divino já começou a trabalhar a seu favor." },
-  strength:  { name:"A Força", kw:"Coragem de Amar", meaning:"A Força mostra que você tem a coragem necessária para abrir o coração de novo.", hook:"Sua coragem de amar é exatamente o que vai atrair essa pessoa." },
-  wheel:     { name:"Roda da Fortuna", kw:"Ciclos Mudando", meaning:"A Roda da Fortuna indica que um ciclo de solidão está se encerrando.", hook:"Uma virada importante na sua vida amorosa está chegando." }
+  lovers:    { name:"Los Enamorados", kw:"Unión de Almas", meaning:"Los Enamorados aparecen cuando existe una conexión profunda esperando florecer.", hook:"Alguien está energéticamente unido a ti en este momento." },
+  star:      { name:"La Estrella", kw:"Esperanza Renovada", meaning:"La Estrella es un faro de esperanza — una señal de que la soledad tiene los días contados.", hook:"Una luz se acerca para renovar tu fe en el amor." },
+  sun:       { name:"El Sol", kw:"Claridad y Verdad", meaning:"El Sol trae una claridad radiante sobre quién está verdaderamente destinado a ti.", hook:"La verdad sobre tu amor está a punto de revelarse." },
+  moon:      { name:"La Luna", kw:"Secretos del Corazón", meaning:"La Luna revela que no todo es lo que parece — hay sentimientos ocultos a tu alrededor.", hook:"Alguien siente algo fuerte por ti y aún no ha tenido el valor de decirlo." },
+  empress:   { name:"La Emperatriz", kw:"Amor que Florece", meaning:"La Emperatriz es la carta del amor que florece. Estás lista/o para recibir.", hook:"Tu energía está atrayendo a alguien marcante a tu vida." },
+  ace:       { name:"As de Copas", kw:"Nuevo Comienzo", meaning:"El As de Copas marca el inicio de un ciclo amoroso transformador.", hook:"Un nuevo amor está a punto de desbordarse en tu vida." },
+  two:       { name:"Dos de Copas", kw:"Atracción Mutua", meaning:"El Dos de Copas habla de atracción mutua y del reconocimiento entre dos almas.", hook:"Existe alguien sintiendo la misma atracción que tú." },
+  temperance:{ name:"La Templanza", kw:"Tiempo Divino", meaning:"La Templanza dice que el universo está preparando el momento justo para el encuentro.", hook:"El tiempo divino ya empezó a trabajar a tu favor." },
+  strength:  { name:"La Fuerza", kw:"Coraje de Amar", meaning:"La Fuerza muestra que tienes el coraje necesario para abrir el corazón de nuevo.", hook:"Tu coraje de amar es exactamente lo que va a atraer a esa persona." },
+  wheel:     { name:"La Rueda de la Fortuna", kw:"Ciclos Cambiando", meaning:"La Rueda de la Fortuna indica que un ciclo de soledad se está cerrando.", hook:"Un giro importante en tu vida amorosa está llegando." }
 };
 const CARD_KEYS = Object.keys(CARDS);
 
 const ZODIAC = [
-  ["Áries","♈"],["Touro","♉"],["Gêmeos","♊"],["Câncer","♋"],
-  ["Leão","♌"],["Virgem","♍"],["Libra","♎"],["Escorpião","♏"],
-  ["Sagitário","♐"],["Capricórnio","♑"],["Aquário","♒"],["Peixes","♓"]
+  ["Aries","♈"],["Tauro","♉"],["Géminis","♊"],["Cáncer","♋"],
+  ["Leo","♌"],["Virgo","♍"],["Libra","♎"],["Escorpio","♏"],
+  ["Sagitario","♐"],["Capricornio","♑"],["Acuario","♒"],["Piscis","♓"]
 ];
 
 const SECTIONS = {
-  2:'A Conexão', 3:'A Conexão', 4:'A Conexão', 5:'A Conexão', 6:'A Conexão',
-  7:'Seu Coração', 8:'Seu Coração', 9:'Seu Coração', 10:'Seu Coração', 11:'Seu Coração',
-  12:'Mergulho Profundo', 13:'Mergulho Profundo', 14:'Mergulho Profundo', 15:'Mergulho Profundo', 16:'Mergulho Profundo', 17:'Mergulho Profundo',
-  18:'A Revelação', 19:'A Revelação', 20:'A Revelação'
+  2:'La Conexión', 3:'La Conexión', 4:'La Conexión', 5:'La Conexión', 6:'La Conexión',
+  7:'Tu Corazón', 8:'Tu Corazón', 9:'Tu Corazón', 10:'Tu Corazón', 11:'Tu Corazón',
+  12:'Inmersión Profunda', 13:'Inmersión Profunda', 14:'Inmersión Profunda', 15:'Inmersión Profunda', 16:'Inmersión Profunda', 17:'Inmersión Profunda',
+  18:'La Revelación', 19:'La Revelación', 20:'La Revelación'
 };
 
 let currentSlide = 0;
@@ -891,7 +908,7 @@ function buildZodiac() {
   // add "não sei" to grid 2
   const nd = document.createElement('button');
   nd.className = 'opt';
-  nd.innerHTML = `<span class="emo">❓</span>Não sei ainda`;
+  nd.innerHTML = `<span class="emo">❓</span>No lo sé aún`;
   nd.onclick = () => answer('partner_sign', 'unknown');
   g2.appendChild(nd);
 }
@@ -945,7 +962,7 @@ function updateProgress() {
     const n = currentSlide-1, total = LAST_Q-1;
     document.getElementById('slideCounter').textContent = `${n}/${total}`;
     document.getElementById('progressFill').style.width = `${(n/total)*100}%`;
-    document.getElementById('sectionLabel').textContent = SECTIONS[currentSlide]||'A Revelação';
+    document.getElementById('sectionLabel').textContent = SECTIONS[currentSlide]||'La Revelación';
   } else w.classList.remove('visible');
 }
 
@@ -970,34 +987,34 @@ function updateGenderCopy(g){ G = g==='M' ? 'o' : 'a'; }
 // Inter 1 (slide 6) - based on "met soulmate"
 function fillInter1(met) {
   const map = {
-    yes: "As cartas confirmam: essa pessoa que você acredita ter encontrado deixou uma marca energética profunda em você. Preciso olhar mais fundo para entender essa ligação.",
-    maybe: "Sinto uma presença ao seu redor — alguém que já cruzou seu caminho, mesmo que você ainda não tenha certeza. As cartas querem revelar quem é.",
-    no: "Há uma energia amorosa se aproximando de você. Ela ainda não tem rosto, mas já está em movimento. Deixe-me ver com mais clareza quem é.",
-    lost: "Uma conexão que se perdeu nem sempre se encerra de verdade. As cartas mostram um fio que ainda liga vocês. Vamos descobrir o que ele significa."
+    yes: "Las cartas confirman: esa persona que crees haber encontrado dejó una marca energética profunda en ti. Necesito mirar más a fondo para entender este vínculo.",
+    maybe: "Siento una presencia a tu alrededor — alguien que ya cruzó tu camino, aunque todavía no estés seguro/a. Las cartas quieren revelar quién es.",
+    no: "Hay una energía amorosa acercándose a ti. Todavía no tiene rostro, pero ya está en movimiento. Déjame ver con más claridad quién es.",
+    lost: "Una conexión que se perdió no siempre se cierra de verdad. Las cartas muestran un hilo que aún los une. Vamos a descubrir qué significa."
   };
-  document.getElementById('inter1Text').innerHTML = (map[met]||map.no) + " <span class='hl'>Isso explica muita coisa.</span>";
+  document.getElementById('inter1Text').innerHTML = (map[met]||map.no) + " <span class='hl'>Eso explica muchas cosas.</span>";
 }
 // Inter 2 (slide 11) - compatibility based on partner_sign vs user zodiac
 function fillInter2(partnerSign) {
-  const userSign = data.zodiac || 'seu signo';
+  const userSign = data.zodiac || 'tu signo';
   let txt;
   if (partnerSign === 'unknown') {
-    document.getElementById('inter2Title').textContent = 'Uma alma em movimento';
-    txt = "Mesmo sem saber o signo dela, as cartas sentem uma energia se aproximando da sua. A compatibilidade está escrita — só falta revelá-la.";
+    document.getElementById('inter2Title').textContent = 'Un alma en movimiento';
+    txt = "Aunque no sepas su signo, las cartas sienten una energía acercándose a la tuya. La compatibilidad ya está escrita — solo falta revelarla.";
   } else {
-    document.getElementById('inter2Title').textContent = 'Compatibilidade rara';
-    txt = `${userSign} e ${partnerSign} formam uma das combinações mais magnéticas do zodíaco. Isso explica por que essa atração é tão forte. Mas compatibilidade sozinha não basta — o timing precisa estar certo.`;
+    document.getElementById('inter2Title').textContent = 'Compatibilidad rara';
+    txt = `${userSign} y ${partnerSign} forman una de las combinaciones más magnéticas del zodiaco. Eso explica por qué esta atracción es tan fuerte. Pero la compatibilidad sola no basta — el timing tiene que ser el correcto.`;
   }
   document.getElementById('inter2Text').innerHTML = txt;
 }
 // Inter 3 (slide 14) - based on "block"
 function fillInter3(block) {
   const map = {
-    trust: ["Seu coração aprendeu a se proteger", "Depois de tudo que viveu, seu coração criou uma armadura. Ela te protegeu — mas as cartas mostram que chegou a hora de baixar a guarda para o amor certo."],
-    past: ["Você ainda carrega o passado", "As feridas antigas deixaram marcas, e as cartas sentem esse peso. A boa notícia: elas também mostram que a cura está mais perto do que você imagina."],
-    worth: ["Você vale muito mais do que sente", "As cartas revelam algo que você esqueceu: você merece um amor grande. O bloqueio não está em você — está na história que te contaram sobre você."],
-    timing: ["O tempo certo se aproxima", "Você sente que não é a hora — mas as cartas discordam. Elas mostram um movimento começando agora, mesmo que você ainda não perceba."],
-    none: ["Seu coração está aberto", "Que energia linda! Um coração aberto é um imã para a alma gêmea. As cartas mostram que você está no momento perfeito para receber esse amor."]
+    trust: ["Tu corazón aprendió a protegerse", "Después de todo lo que viviste, tu corazón creó una armadura. Te protegió — pero las cartas muestran que llegó la hora de bajar la guardia ante el amor correcto."],
+    past: ["Todavía cargas el pasado", "Las heridas antiguas dejaron marcas, y las cartas sienten ese peso. La buena noticia: también muestran que la sanación está más cerca de lo que imaginas."],
+    worth: ["Vales mucho más de lo que sientes", "Las cartas revelan algo que olvidaste: mereces un amor grande. El bloqueo no está en ti — está en la historia que te contaron sobre ti."],
+    timing: ["El momento correcto se acerca", "Sientes que no es el momento — pero las cartas no están de acuerdo. Muestran un movimiento que comienza ahora, aunque aún no lo notes."],
+    none: ["Tu corazón está abierto", "¡Qué energía tan hermosa! Un corazón abierto es un imán para el alma gemela. Las cartas muestran que estás en el momento perfecto para recibir este amor."]
   };
   const [t,txt] = map[block]||map.trust;
   document.getElementById('inter3Title').textContent = t;
@@ -1006,12 +1023,12 @@ function fillInter3(block) {
 // Inter 4 (slide 17) - based on "want"
 function fillInter4(want) {
   const map = {
-    who: "Você quer saber quem é. As cartas já estão desenhando o rosto, o jeito e a energia dessa pessoa para você.",
-    when: "Você quer saber quando. As cartas apontam um período específico — e ele está mais próximo do que parece.",
-    where: "Você quer saber onde. As cartas indicam o lugar e o contexto do encontro. Detalhes surpreendentes estão surgindo.",
-    already: "Você quer saber se já a conhece. E as cartas têm uma resposta clara sobre isso — que pode mudar como você enxerga alguém ao seu redor."
+    who: "Quieres saber quién es. Las cartas ya están dibujando el rostro, la forma de ser y la energía de esa persona para ti.",
+    when: "Quieres saber cuándo. Las cartas señalan un período específico — y está más cerca de lo que parece.",
+    where: "Quieres saber dónde. Las cartas indican el lugar y el contexto del encuentro. Están surgiendo detalles sorprendentes.",
+    already: "Quieres saber si ya la conoces. Y las cartas tienen una respuesta clara sobre eso — que puede cambiar cómo ves a alguien a tu alrededor."
   };
-  document.getElementById('inter4Text').innerHTML = (map[want]||map.who) + " <span class='hl'>A carta que você escolheu confirma tudo.</span>";
+  document.getElementById('inter4Text').innerHTML = (map[want]||map.who) + " <span class='hl'>La carta que elegiste lo confirma todo.</span>";
 }
 
 // ============ LOADING ============
@@ -1059,7 +1076,7 @@ async function submitLead() {
 
   if (btn) {
     btn.disabled = true;
-    btn.textContent = 'Salvando...';
+    btn.textContent = 'Guardando...';
   }
 
   try {
@@ -1080,38 +1097,38 @@ async function submitLead() {
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.textContent = 'Revelar minha leitura de alma gêmea';
+      btn.textContent = 'Revelar mi lectura de alma gemela';
     }
   }
 
   showReading();
 }
-function skipReading(){ data.name = data.name || 'você'; showReading(); }
+function skipReading(){ data.name = data.name || 'ti'; showReading(); }
 
 // ============ READING ============
 function showReading() {
   goToSlide(23);
   const c = CARDS[selectedKey];
-  const name = data.name || 'você';
-  const traitMap = {loyalty:'lealdade',passion:'paixão',safety:'paz e segurança',adventure:'cumplicidade',understanding:'ser compreendido(a) de verdade'};
-  const trait = traitMap[data.trait] || 'conexão verdadeira';
+  const name = data.name || 'ti';
+  const traitMap = {loyalty:'lealtad',passion:'pasión',safety:'paz y seguridad',adventure:'complicidad',understanding:'ser comprendido/a de verdad'};
+  const trait = traitMap[data.trait] || 'conexión verdadera';
   document.getElementById('readingName').textContent = name;
   document.getElementById('readingCardArt').innerHTML = cardArt(selectedKey);
   document.getElementById('readingText').innerHTML = `
-    <p>Você foi atraíd${G} por <span class="bd">${c.name}</span>.</p>
+    <p>Fuiste atraíd${G} por <span class="bd">${c.name}</span>.</p>
     <p>${c.meaning}</p>
-    <p>${name.charAt(0).toUpperCase()+name.slice(1)}, quando essa carta aparece numa leitura de alma gêmea, ela me diz uma coisa com clareza:</p>
-    <p><span class="em">Existe alguém pensando em você neste exato momento.</span></p>
-    <p>Essa pessoa carrega uma energia que completa a sua. O que ela mais busca é justamente ${trait} — e é isso que você tem para oferecer.</p>
-    <p>Não foi coincidência você escolher essa carta. ${c.hook}</p>
-    <span class="rev">E aqui está o que as cartas revelam:</span>
-    <p>Eu vejo essa pessoa se aproximando. Pode ser alguém que já está na sua vida — ou alguém prestes a chegar.</p>
-    <p>Ela tem uma presença que te faz sentir…</p>
-    <p><span class="em">Em casa.</span></p>
-    <p>Como se você pudesse baixar a guarda e ser exatamente quem é. Sem medo. Sem julgamento.</p>
-    <p>As cartas mostram que essa conexão é rara — o tipo de amor que faz a gente acreditar de novo.</p>
-    <p class="cliff">${c.name} me diz que essa pessoa está começando a…</p>
-    <p class="prompt">Para descobrir o resto, peça sua leitura completa com a Martha 👇</p>
+    <p>${name.charAt(0).toUpperCase()+name.slice(1)}, cuando esta carta aparece en una lectura de alma gemela, me dice algo con claridad:</p>
+    <p><span class="em">Hay alguien pensando en ti en este exacto momento.</span></p>
+    <p>Esta persona carga una energía que completa la tuya. Lo que más busca es justamente ${trait} — y eso es lo que tú tienes para ofrecer.</p>
+    <p>No fue coincidencia que eligieras esta carta. ${c.hook}</p>
+    <span class="rev">Y esto es lo que revelan las cartas:</span>
+    <p>Veo a esta persona acercándose. Puede ser alguien que ya está en tu vida — o alguien a punto de llegar.</p>
+    <p>Tiene una presencia que te hace sentir…</p>
+    <p><span class="em">En casa.</span></p>
+    <p>Como si pudieras bajar la guardia y ser exactamente quien eres. Sin miedo. Sin juicio.</p>
+    <p>Las cartas muestran que esta conexión es rara — el tipo de amor que hace creer de nuevo.</p>
+    <p class="cliff">${c.name} me dice que esta persona está empezando a…</p>
+    <p class="prompt">Para descubrir el resto, pide tu lectura completa con Martha 👇</p>
   `;
 }
 
