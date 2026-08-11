@@ -959,30 +959,12 @@ body {
             <span class="t">🔒 100% confidencial</span>
             <span class="t">💜 +12 mil lecturas</span>
           </div>
-          <div class="pay-note">Pago seguro · Entrega inmediata</div>
+          <div class="pay-note">Pago seguro · Entrega inmediata · Garantía 7 días</div>
         </div>
 
-        <div class="order-bump" id="orderBump">
-          <label>
-            <input type="checkbox" id="bumpCheck" checked onchange="updateTotal()">
-            <span>SÍ, quiero el audio de Martha por WhatsApp con mi inicial + mes exacto del encuentro en 2h por <strong>+$9 USD</strong> (70% de las mujeres eligen esto)</span>
-          </label>
-        </div>
-        <div class="total-line" id="totalLine">Total hoy: $28 USD</div>
-
-        <a class="btn-cta pulse" href="https://pay.hotmart.com/J107108736M?checkoutMode=10" id="ctaLink" style="min-height:60px;background:#a855f7;" onclick="goCheckout(event)">SÍ, QUIERO MI LECTURA COMPLETA POR $28 USD →</a>
+        <a class="btn-cta pulse" href="https://pay.hotmart.com/J107108736M?checkoutMode=10" id="ctaLink" style="min-height:60px;background:#a855f7;" onclick="goCheckout(event)" target="_blank" rel="noopener noreferrer">SÍ, QUIERO MI LECTURA COMPLETA POR $19 USD →</a>
         <div class="guar-soft">Garantía de 7 días · Si no resuena contigo, te devolvemos el 100%</div>
         <button type="button" class="decline-link" onclick="openDownsell()">No, gracias</button>
-
-        <div class="checkout-form">
-          <div class="cf-title">¿Dónde te envía Martha tu lectura completa?</div>
-          <div class="fg"><input type="email" id="inEmail" placeholder="Tu mejor correo" autocomplete="email" required oninput="onLeadChange()"></div>
-          <div class="fg"><input type="tel" id="inPhone" placeholder="+52 1 55..." autocomplete="tel" oninput="onLeadChange()"></div>
-          <div class="checkbox">
-            <input type="checkbox" id="optin" checked onchange="onLeadChange()">
-            <label for="optin">Sí, quiero recibir mi lectura y mensajes de Martha por correo y WhatsApp. El consentimiento no es obligatorio para la compra.</label>
-          </div>
-        </div>
       </div>
       </div>
     </div>
@@ -1146,6 +1128,11 @@ const CARDS = {
   wheel:     { name:"La Rueda de la Fortuna", kw:"Ciclos Cambiando", meaning:"La Rueda de la Fortuna indica que un ciclo de soledad se está cerrando.", hook:"Un giro importante en tu vida amorosa está llegando." }
 };
 const CARD_KEYS = Object.keys(CARDS);
+
+// Hotmart checkouts
+const HOTMART_MAIN_URL = 'https://pay.hotmart.com/J107108736M?checkoutMode=10';
+// Cole aqui o link do produto "Mini Lectura Extendida" $6,90 (criar na Hotmart):
+const HOTMART_DOWNSELL_URL = 'https://pay.hotmart.com/J107108736M?checkoutMode=10';
 
 const ZODIAC = [
   ["Aries","♈"],["Tauro","♉"],["Géminis","♊"],["Cáncer","♋"],
@@ -1508,27 +1495,18 @@ function modalAnswer(v){ data.feels_close = v; closeModal(); }
 // ============ LEAD / CHECKOUT ============
 function readLeadFields() {
   const name = (data.name || localStorage.getItem('nombre') || '').trim();
-  const email = (document.getElementById('inEmail')?.value || '').trim().toLowerCase();
-  const phone = (document.getElementById('inPhone')?.value || '').trim();
   const birthDate = (data.birthDate || localStorage.getItem('fecha_nacimiento') || '').trim();
-  const optin = !!document.getElementById('optin')?.checked;
-  return { name, email, phone, birthDate, optin };
-}
-function onLeadChange() {
-  const lead = readLeadFields();
-  saveLeadLocal(lead);
+  return { name, email: '', phone: '', birthDate, optin: true };
 }
 function saveLeadLocal(lead) {
-  Object.assign(data, lead);
-  if (lead.name) data.name = lead.name;
-  if (lead.birthDate) data.birthDate = lead.birthDate;
   try {
     localStorage.setItem('almagemela_lead', JSON.stringify(lead));
     localStorage.setItem('almagemela_data', JSON.stringify(data));
     const v4 = JSON.parse(localStorage.getItem('almagemele_quiz_v4') || '{}');
     v4.lead = lead;
-    v4.name = lead.name || v4.name || '';
-    v4.birthDate = lead.birthDate || v4.birthDate || '';
+    v4.name = lead.name || v4.name || data.name || '';
+    v4.birthDate = lead.birthDate || v4.birthDate || data.birthDate || '';
+    v4.fecha = data.fecha || v4.fecha || '';
     v4.answers = data; v4.card = selectedKey; v4.updatedAt = new Date().toISOString();
     localStorage.setItem('almagemele_quiz_v4', JSON.stringify(v4));
   } catch(e){}
@@ -1536,49 +1514,13 @@ function saveLeadLocal(lead) {
 async function persistLead() {
   const lead = readLeadFields();
   saveLeadLocal(lead);
-  if (!lead.email || !lead.email.includes('@')) return lead;
-  try {
-    await fetch('/api/lead', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: lead.name || 'Visitante',
-        email: lead.email,
-        phone: lead.phone,
-        optin: lead.optin,
-        card: selectedKey,
-        answers: data,
-      }),
-    });
-  } catch (err) {
-    console.error('Lead send failed:', err);
-  }
   return lead;
 }
-function updateTotal() {
-  const bump = document.getElementById('bumpCheck')?.checked;
-  const total = bump ? 28 : 19;
-  const el = document.getElementById('totalLine');
-  const cta = document.getElementById('ctaLink');
-  if (el) el.textContent = 'Total hoy: $' + total + ' USD';
-  if (cta) cta.textContent = bump
-    ? 'SÍ, QUIERO MI LECTURA COMPLETA POR $28 USD →'
-    : 'SÍ, QUIERO MI LECTURA COMPLETA POR $19 USD →';
-  return total;
-}
-async function goCheckout(e) {
-  e.preventDefault();
-  const lead = readLeadFields();
-  if (!lead.email || !lead.email.includes('@')) {
-    document.getElementById('inEmail')?.focus();
-    alert('Ingresa tu correo para que Martha te envíe la lectura.');
-    return;
-  }
-  const url = 'https://pay.hotmart.com/J107108736M?checkoutMode=10';
-  const total = updateTotal();
-  await persistLead();
-  try { if (typeof fbq === 'function') fbq('track', 'Purchase', { value: total, currency: 'USD' }); } catch(err){}
-  window.open(url, '_blank', 'noopener,noreferrer');
+function goCheckout(e) {
+  if (e) e.preventDefault();
+  persistLead();
+  try { if (typeof fbq === 'function') fbq('track', 'Purchase', { value: 19, currency: 'USD' }); } catch(err){}
+  window.open(HOTMART_MAIN_URL, '_blank', 'noopener,noreferrer');
 }
 function openDownsell() {
   const name = (data.name || localStorage.getItem('nombre') || '').trim();
@@ -1592,11 +1534,11 @@ function closeDownsell(force) {
   document.getElementById('downsellModal').classList.remove('visible');
   if (force) downsellShown = true;
 }
-async function takeDownsell() {
-  await persistLead();
+function takeDownsell() {
+  persistLead();
   try { if (typeof fbq === 'function') fbq('track', 'Purchase', { value: 6.9, currency: 'USD' }); } catch(e){}
   closeDownsell(true);
-  window.open('https://pay.hotmart.com/J107108736M?checkoutMode=10', '_blank', 'noopener,noreferrer');
+  window.open(HOTMART_DOWNSELL_URL, '_blank', 'noopener,noreferrer');
 }
 let downsellShown = false;
 function bindExitIntent() {
@@ -1757,7 +1699,6 @@ function revealMiniLectura() {
     clearInterval(timer);
     setReadingState('letter');
     renderReadingLetter();
-    updateTotal();
     bindExitIntent();
     try { if (typeof fbq === 'function') fbq('track', 'InitiateCheckout'); } catch(e){}
     window.scrollTo(0, 0);
@@ -1766,7 +1707,6 @@ function revealMiniLectura() {
 function showReading() {
   goToSlide(SLIDE_READING);
   restoreLeadFields();
-  updateTotal();
   showReadingConfirm();
   persistQuiz();
 }
@@ -1784,9 +1724,6 @@ function restoreLeadFields() {
     data.birthDate = lead.birthDate || localStorage.getItem('fecha_nacimiento');
   }
   if (!data.fecha && localStorage.getItem('fecha')) data.fecha = localStorage.getItem('fecha');
-  if (lead.email) document.getElementById('inEmail').value = lead.email;
-  if (lead.phone) document.getElementById('inPhone').value = lead.phone;
-  if (typeof lead.optin === 'boolean') document.getElementById('optin').checked = lead.optin;
 }
 
 // ============ BOOT ============
@@ -1812,7 +1749,6 @@ requestAnimationFrame(() => {
     buildFan();
     buildZodiac();
     bindPersonaInputs();
-    updateTotal();
     const qn = document.getElementById('quizName');
     const qb = document.getElementById('quizBirth');
     if (qn && data.name) qn.value = data.name;
