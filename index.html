@@ -18,6 +18,7 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '38539014385698035');
 fbq('track', 'PageView');
+fbq('track', 'ViewContent');
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=38539014385698035&ev=PageView&noscript=1"
@@ -121,34 +122,35 @@ body {
 
 /* ============ PROGRESS (global sticky) ============ */
 .progress-wrap {
-  display: none; position: sticky; top: 0; z-index: 40;
-  padding: 12px 18px 10px; background: rgba(255,255,255,0.96);
-  backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+  display: none; position: sticky; top: 0; z-index: 50;
+  padding: 10px 16px 12px; background: #1a102a;
+  border-bottom: 1px solid rgba(168,85,247,0.25);
 }
 .progress-wrap.visible { display: block; }
 .progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
 .back-btn {
-  background: none; border: none; font-size: 22px; color: var(--text-soft);
+  background: none; border: none; font-size: 22px; color: #c4b5fd;
   cursor: pointer; padding: 0 6px; line-height: 1; font-family: serif;
 }
-.section-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 2px; text-transform: uppercase; flex: 1; text-align: center; }
-.slide-counter {
-  font-size: 11px; font-weight: 700; color: var(--white);
-  background: linear-gradient(135deg, var(--purple), #C9A24B);
-  border-radius: 999px; padding: 5px 11px; letter-spacing: 0.2px;
-  white-space: nowrap; text-align: center;
+.section-label {
+  font-size: 11px; font-weight: 600; color: #e9d5ff; letter-spacing: 0.2px;
+  flex: 1; text-align: left; text-transform: none;
 }
-.progress-bar { width: 100%; height: 5px; background: #EDE4F8; border-radius: 5px; overflow: hidden; }
+.slide-counter { display: none; }
+.progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.12); border-radius: 6px; overflow: hidden; }
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--purple), #C9A24B);
-  border-radius: 5px; transition: width 0.45s cubic-bezier(0.4,0,0.2,1); width: 0;
+  background: linear-gradient(90deg, #a855f7, #facc15);
+  border-radius: 6px; transition: width 0.35s ease; width: 0;
 }
 
 /* ============ SLIDES ============ */
 .slide { display: none; }
-.slide.active { display: block; animation: slideIn 0.45s cubic-bezier(0.16,1,0.3,1); }
-@keyframes slideIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.slide.active { display: block; animation: slideLeft 0.3s ease; }
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: translateX(0); }
+}
 
 /* ============ CARD PICKER ============ */
 .picker { text-align: center; padding: 34px 24px 30px; }
@@ -207,22 +209,81 @@ body {
 }
 .btn-know {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  margin-top: 8px; padding: 16px 28px; border: none; border-radius: 14px;
-  background: linear-gradient(135deg, var(--purple), var(--purple-bright));
-  color: #fff; font-size: 15px; font-weight: 800; letter-spacing: 0.4px;
-  font-family: var(--font-sans); cursor: pointer;
-  box-shadow: 0 8px 24px rgba(109,40,217,0.4);
+  margin-top: 14px; min-height: 56px; width: 100%; max-width: 340px;
+  padding: 16px 28px; border: none; border-radius: 16px;
+  background: #a855f7; color: #fff; font-size: 16px; font-weight: 800;
+  letter-spacing: 0.4px; font-family: var(--font-sans); cursor: pointer;
+  box-shadow: 0 8px 24px rgba(168,85,247,0.45);
   animation: knowPulse 1.6s ease-in-out infinite;
 }
+.reveal-seals { font-size: 12px; color: var(--text-soft); margin: 12px auto 4px; }
+.reveal-foot { font-size: 12px; color: var(--text-soft); margin-top: 14px; }
 .btn-know:hover { transform: translateY(-1px); }
 @keyframes knowPulse {
   0%,100% { box-shadow: 0 8px 24px rgba(109,40,217,0.35); transform: scale(1); }
   50% { box-shadow: 0 12px 34px rgba(109,40,217,0.55); transform: scale(1.03); }
 }
 .barnum {
-  font-size: 13px; color: var(--text-soft); line-height: 1.55;
-  max-width: 340px; margin: -4px auto 16px; font-style: italic;
+  font-size: 16px; color: #7c3aed; line-height: 1.55;
+  max-width: 340px; margin: 6px auto 16px; font-style: italic;
 }
+.loading-status {
+  font-size: 13px; color: var(--text-soft); min-height: 40px;
+  margin: 0 auto 18px; max-width: 300px; line-height: 1.4;
+}
+.loading-bar-wrap {
+  width: 100%; max-width: 280px; height: 8px; margin: 0 auto 28px;
+  background: #ede9fe; border-radius: 8px; overflow: hidden;
+}
+.loading-bar-fill {
+  height: 100%; width: 0; border-radius: 8px;
+  background: linear-gradient(90deg, #a855f7, #facc15);
+  transition: width 0.15s linear;
+}
+.offer-box {
+  margin: 8px 0 16px; padding: 18px 16px; border-radius: 16px;
+  background: linear-gradient(160deg, #faf5ff, #fff);
+  border: 1.5px solid #e9d5ff; text-align: center;
+}
+.offer-box .ob-price { font-size: 15px; color: var(--text-soft); margin-bottom: 6px; }
+.offer-box .ob-price .old { text-decoration: line-through; }
+.offer-box .ob-price .new { color: #7c3aed; font-weight: 800; font-size: 22px; font-family: var(--font-serif); }
+.offer-box .ob-items { font-size: 13px; color: var(--text); margin: 8px 0 10px; line-height: 1.45; }
+.order-bump {
+  margin: 14px 0; padding: 14px; border-radius: 14px;
+  border: 2px dashed #a855f7; background: #f3e8ff; text-align: left;
+}
+.order-bump label { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #581c87; line-height: 1.45; cursor: pointer; }
+.order-bump input { margin-top: 3px; accent-color: #a855f7; width: 18px; height: 18px; flex-shrink: 0; }
+.total-line { font-size: 14px; font-weight: 700; color: #581c87; margin: 8px 0 12px; text-align: center; }
+.decline-link {
+  display: block; margin-top: 12px; font-size: 13px; color: var(--text-soft);
+  text-decoration: underline; cursor: pointer; background: none; border: none;
+  font-family: var(--font-sans); width: 100%;
+}
+.downsell-overlay {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  background: rgba(26,16,42,0.72); align-items: center; justify-content: center; padding: 20px;
+}
+.downsell-overlay.visible { display: flex; }
+.downsell-modal {
+  background: #fff; border-radius: 20px; padding: 28px 22px; max-width: 360px; width: 100%;
+  text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+.downsell-modal h3 { font-family: var(--font-serif); font-size: 22px; color: var(--ink); margin-bottom: 12px; line-height: 1.3; }
+.downsell-modal p { font-size: 14px; color: var(--text); line-height: 1.55; margin-bottom: 18px; }
+.btn-downsell {
+  width: 100%; min-height: 56px; border: none; border-radius: 14px;
+  background: #16a34a; color: #fff; font-size: 15px; font-weight: 800;
+  font-family: var(--font-sans); cursor: pointer; margin-bottom: 10px;
+}
+.btn-downsell-skip {
+  background: none; border: none; color: var(--text-soft); font-size: 13px;
+  text-decoration: underline; cursor: pointer; font-family: var(--font-sans);
+}
+.r-list { list-style: none; margin: 16px 0 8px; padding: 0; }
+.r-list li { font-size: 14.5px; color: var(--ink); line-height: 1.5; margin-bottom: 10px; }
+.guar-soft { font-size: 12px; color: var(--text-soft); margin-top: 10px; line-height: 1.4; }
 .cta .btn-cta.pulse {
   animation: knowPulse 1.6s ease-in-out infinite;
   text-transform: uppercase; letter-spacing: 0.3px; font-size: 14px; line-height: 1.35;
@@ -251,15 +312,18 @@ body {
 .options { display: flex; flex-direction: column; gap: 12px; }
 .opt {
   display: flex; align-items: center; gap: 14px;
-  padding: 18px 20px; background: #F3EEFB;
-  border: none; border-radius: 16px;
+  min-height: 56px; padding: 16px 18px; background: #fff;
+  border: 2px solid #ede9fe; border-radius: 16px;
   cursor: pointer; transition: all 0.18s ease;
   font-size: 16px; color: var(--ink); text-align: left; width: 100%;
   font-family: var(--font-sans); font-weight: 600;
   box-shadow: none;
 }
-.opt:hover { background: #E9DFF8; transform: translateY(-1px); }
-.opt:active { transform: scale(0.98); background: #E0D4F5; }
+.opt:hover { background: #faf5ff; border-color: #d8b4fe; }
+.opt.selected, .opt:active {
+  background: #f3e8ff; border-color: #a855f7; color: #581c87;
+  transform: scale(0.99);
+}
 .opt .emo {
   font-size: 24px; width: auto; height: auto; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
@@ -438,8 +502,8 @@ body {
   <div class="progress-wrap" id="progressWrap">
     <div class="progress-top">
       <button class="back-btn" onclick="prevSlide()">‹</button>
-      <span class="section-label" id="sectionLabel">Sobre ti</span>
-      <span class="slide-counter" id="slideCounter">Paso 1/19 · 5%</span>
+      <span class="section-label" id="sectionLabel">Paso 1/19 · 5% - Leyendo tu energía</span>
+      <span class="slide-counter" id="slideCounter"></span>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
   </div>
@@ -459,16 +523,14 @@ body {
     </div>
   </div>
 
-  <!-- SLIDE 1: REVEAL -->
+  <!-- SLIDE 1: REVEAL / SOBRE TI -->
   <div class="slide" id="slide-1">
     <div class="reveal">
-      <h2 class="reveal-hook">¿Por qué sientes que tu alma gemela está cerca, pero algo lo bloquea?</h2>
-      <p class="reveal-sub">Martha va a leer tu energía en 60 segundos. +12.431 lecturas, 100% confidencial</p>
-      <div class="big-card" id="revealCardArt"></div>
-      <h2 id="revealName"></h2>
-      <div class="kw" id="revealKw"></div>
-      <p id="revealMeaning"></p>
+      <h1 class="reveal-hook">¿Por qué sientes que tu alma gemela está cerca, pero algo invisible lo bloquea?</h1>
+      <p class="reveal-sub">Martha va a leer tu energía en 60 segundos. Más de 12.431 lecturas. 100% confidencial.</p>
+      <p class="reveal-seals">🔒 100% confidencial 💜 +12 mil lecturas · ⭐ 4.8/5</p>
       <button type="button" class="btn-know" onclick="skipReveal()">SÍ, QUIERO SABER →</button>
+      <p class="reveal-foot">Toca para continuar · 1/19</p>
     </div>
   </div>
 
@@ -524,7 +586,7 @@ body {
     <div class="inter">
       <div class="orb">🔮</div>
       <h2>Siento una energía fuerte</h2>
-      <p class="barnum">No es casualidad que estés aquí hoy. Tu energía está llamando a alguien desde hace meses.</p>
+      <p class="barnum">No es casualidad que estés aquí hoy. Tu energía está llamando a alguien desde hace meses y no sabes por qué.</p>
       <p id="inter1Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar lectura</button>
     </div>
@@ -583,7 +645,7 @@ body {
     <div class="inter">
       <div class="orb">💞</div>
       <h2 id="inter2Title">Compatibilidad rara</h2>
-      <p class="barnum">Veo una compatibilidad que no es común. 7 de cada 100 mujeres tienen este tipo de hilo rojo.</p>
+      <p class="barnum">Veo una compatibilidad que no es común. Solo 7 de cada 100 mujeres tienen este tipo de Hilo Rojo. Por eso atraes miradas que no se olvidan.</p>
       <p id="inter2Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
@@ -622,7 +684,7 @@ body {
     <div class="inter">
       <div class="orb">🧿</div>
       <h2 id="inter3Title">Tu corazón se protege</h2>
-      <p class="barnum">Desde 2023 tu corazón aprendió a protegerse. Por eso das mucho y recibes poco.</p>
+      <p class="barnum">Desde 2023 tu corazón aprendió a protegerse. Das mucho, recibes poco. Y te cansas de repetir el mismo patrón con caras diferentes.</p>
       <p id="inter3Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
@@ -660,7 +722,7 @@ body {
     <div class="inter">
       <div class="orb">🃏</div>
       <h2>Las cartas confirman</h2>
-      <p class="barnum">Las cartas no mienten. Él ya sintió tu energía, pero tu bloqueo lo confunde.</p>
+      <p class="barnum">Las cartas no mienten. Él ya sintió tu energía, pero tu bloqueo lo confunde. Por eso aparece y desaparece.</p>
       <p id="inter4Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Ya casi llego</button>
     </div>
@@ -709,43 +771,26 @@ body {
   <div class="slide" id="slide-loading">
     <div class="loading">
       <h2>Leyendo tu energía amorosa…</h2>
+      <p class="loading-status" id="loadingStatus">Analizando tu fecha de nacimiento y tu signo...</p>
       <div class="ring">
         <svg width="150" height="150" viewBox="0 0 150 150">
           <circle cx="75" cy="75" r="66" fill="none" stroke="#F3EEFB" stroke-width="10"/>
-          <circle id="ringFill" cx="75" cy="75" r="66" fill="none" stroke="#8B5CF6" stroke-width="10" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="415"/>
+          <circle id="ringFill" cx="75" cy="75" r="66" fill="none" stroke="#a855f7" stroke-width="10" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="415"/>
         </svg>
         <span class="pct" id="loadingPct">0%</span>
       </div>
+      <div class="loading-bar-wrap"><div class="loading-bar-fill" id="loadingBarFill"></div></div>
       <div class="checklist">
-        <div class="check" data-i="0"><span class="ci">○</span> Analizando la energía de <span id="chkSign" style="font-weight:600;margin-left:3px;"></span></div>
-        <div class="check" data-i="1"><span class="ci">○</span> Identificando bloqueos del corazón</div>
-        <div class="check" data-i="2"><span class="ci">○</span> Localizando tu alma gemela</div>
-        <div class="check" data-i="3"><span class="ci">○</span> Verificando la agenda de Martha</div>
+        <div class="check" data-i="0"><span class="ci">○</span> Analizando la energía de <span id="chkName" style="font-weight:600;margin-left:3px;">tu alma</span>...</div>
+        <div class="check" data-i="1"><span class="ci">○</span> Identificando bloqueos del corazón...</div>
+        <div class="check" data-i="2"><span class="ci">○</span> Localizando tu alma gemela...</div>
+        <div class="check" data-i="3"><span class="ci">○</span> Verificando la agenda de Martha...</div>
       </div>
     </div>
   </div>
 
-  <!-- LEAD (moved into Mini Lectura checkout) -->
-  <div class="slide" id="slide-lead" style="display:none!important" aria-hidden="true">
-    <div class="lead">
-      <div class="lead-icon">💌</div>
-      <h2>Tu lectura está lista</h2>
-      <p class="sub">Dime a dónde debe enviarla Martha</p>
-      <div class="fg"><input type="text" id="inName" placeholder="Tu primer nombre" required></div>
-      <div class="fg"><input type="email" id="inEmail" placeholder="Tu mejor correo" required></div>
-      <div class="fg"><input type="tel" id="inPhone" placeholder="WhatsApp (opcional)"></div>
-      <div class="checkbox">
-        <input type="checkbox" id="optin" checked>
-        <label for="optin">Sí, quiero recibir mi lectura y mensajes de Martha por correo y WhatsApp. El consentimiento no es obligatorio para la compra.</label>
-      </div>
-      <button class="submit" onclick="submitLead()">Revelar mi lectura de alma gemela</button>
-      <span class="skip" onclick="skipReading()">Martha ya tiene mis datos</span>
-      <div class="trust-row">
-        <span class="t">🔒 100% confidencial</span>
-        <span class="t">💜 +12 mil lecturas</span>
-      </div>
-    </div>
-  </div>
+  <!-- LEAD (captura movida al checkout de Mini Lectura) -->
+  <div class="slide" id="slide-lead" style="display:none!important" aria-hidden="true"></div>
 
   <!-- READING + CHECKOUT CAPTURE -->
   <div class="slide" id="slide-reading">
@@ -756,26 +801,54 @@ body {
       <h3 class="r-headline" id="readingHeadline"></h3>
       <div class="r-text" id="readingText"></div>
       <div class="cta">
-        <a class="btn-cta pulse" href="https://pay.hotmart.com/J107108736M?checkoutMode=10" id="ctaLink" target="_blank" rel="noopener noreferrer" onclick="goCheckout(event)">DESBLOQUEAR MI LECTURA COMPLETA POR $19 USD</a>
-        <div class="trust-row">
-          <span class="t">🔒 100% confidencial</span>
-          <span class="t">💜 +12 mil lecturas</span>
+        <div class="offer-box">
+          <div class="ob-price"><span class="old">De $49 USD</span> por <span class="new">$19 USD</span> hoy</div>
+          <div style="font-weight:700;color:var(--ink);margin-bottom:6px;">Lectura Completa del Alma Gemela por Martha</div>
+          <div class="ob-items">PDF + Audio de 5 minutos canalizado + 3 bonos de desbloqueo</div>
+          <div class="trust-row">
+            <span class="t">🔒 100% confidencial</span>
+            <span class="t">💜 +12 mil lecturas</span>
+          </div>
+          <div class="pay-note">Pago seguro · Entrega inmediata</div>
         </div>
-        <div class="pay-note">Pago seguro · Entrega inmediata</div>
+
+        <div class="order-bump" id="orderBump">
+          <label>
+            <input type="checkbox" id="bumpCheck" checked onchange="updateTotal()">
+            <span>SÍ, quiero el audio de Martha por WhatsApp con mi inicial + mes exacto del encuentro en 2h por <strong>+$9 USD</strong> (70% de las mujeres eligen esto)</span>
+          </label>
+        </div>
+        <div class="total-line" id="totalLine">Total hoy: $28 USD</div>
+
+        <a class="btn-cta pulse" href="https://pay.hotmart.com/J107108736M?checkoutMode=10" id="ctaLink" style="min-height:60px;background:#a855f7;" onclick="goCheckout(event)">SÍ, QUIERO MI LECTURA COMPLETA POR $28 USD →</a>
+        <div class="guar-soft">Garantía de 7 días · Si no resuena contigo, te devolvemos el 100%</div>
+        <button type="button" class="decline-link" onclick="openDownsell()">No, gracias</button>
+
         <div class="checkout-form">
-          <div class="cf-title">¿Dónde te envía Martha la lectura completa?</div>
-          <div class="fg"><input type="text" id="inName" placeholder="Tu primer nombre" autocomplete="given-name"></div>
-          <div class="fg"><input type="email" id="inEmail" placeholder="Tu mejor correo" autocomplete="email"></div>
-          <div class="fg"><input type="tel" id="inPhone" placeholder="WhatsApp (opcional)" autocomplete="tel"></div>
+          <div class="cf-title">¿Dónde te envía Martha tu lectura completa?</div>
+          <div class="fg"><input type="text" id="inName" placeholder="Tu primer nombre" autocomplete="given-name" required oninput="onLeadChange()"></div>
+          <div class="fg"><input type="email" id="inEmail" placeholder="Tu mejor correo" autocomplete="email" required oninput="onLeadChange()"></div>
+          <div class="fg"><input type="date" id="inBirth" placeholder="Fecha de nacimiento" autocomplete="bday" onchange="onLeadChange()"></div>
+          <div class="fg"><input type="tel" id="inPhone" placeholder="+52 1 55..." autocomplete="tel" oninput="onLeadChange()"></div>
           <div class="checkbox">
-            <input type="checkbox" id="optin" checked>
-            <label for="optin">Sí, quiero recibir mi lectura y mensajes de Martha por correo y WhatsApp.</label>
+            <input type="checkbox" id="optin" checked onchange="onLeadChange()">
+            <label for="optin">Sí, quiero recibir mi lectura y mensajes de Martha por correo y WhatsApp. El consentimiento no es obligatorio para la compra.</label>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+</div>
+
+<!-- DOWNSELL -->
+<div class="downsell-overlay" id="downsellModal">
+  <div class="downsell-modal">
+    <h3 id="downsellTitle">Espera... ¿$19 es mucho para ti hoy?</h3>
+    <p>No quiero que te vayas con las manos vacías. Llévate la Mini Lectura Extendida en texto (con tu bloqueo y tu ventana de encuentro) por solo <strong>$6,90 USD</strong></p>
+    <button type="button" class="btn-downsell" onclick="takeDownsell()">SÍ, QUIERO POR $6,90</button>
+    <button type="button" class="btn-downsell-skip" onclick="closeDownsell(true)">No, prefiero perder esta oportunidad</button>
+  </div>
 </div>
 
 <!-- MODAL -->
@@ -991,7 +1064,7 @@ function buildZodiac() {
 // ============ PICKER ============
 function pickCard(el) {
   selectedKey = CARD_KEYS[Math.floor(Math.random()*CARD_KEYS.length)];
-  try { localStorage.setItem('almagemela_card', selectedKey); } catch(e){}
+  try { localStorage.setItem('almagemela_card', selectedKey); persistQuiz(); } catch(e){}
   document.querySelectorAll('.tcard').forEach(c => c.style.pointerEvents='none');
   el.classList.add('lifted');
   el.style.transform = 'rotate(0deg) translateY(-30px) scale(1.15)';
@@ -1006,11 +1079,7 @@ function skipReveal(e) {
   goToSlide(2);
 }
 function fillReveal() {
-  const c = CARDS[selectedKey];
-  document.getElementById('revealCardArt').innerHTML = cardArt(selectedKey);
-  document.getElementById('revealName').textContent = c.name;
-  document.getElementById('revealKw').textContent = c.kw;
-  document.getElementById('revealMeaning').textContent = c.meaning;
+  // copy de conversión en slide 1 (sin carta visible)
 }
 
 // ============ NAV ============
@@ -1041,15 +1110,20 @@ function updateProgress() {
   const w = document.getElementById('progressWrap');
   const total = 19;
   let paso = 0;
-  if (currentSlide >= 1 && currentSlide <= LAST_Q) paso = Math.max(1, currentSlide - 1);
-  else if (currentSlide === 21) paso = 19;
-  else if (currentSlide >= 22) paso = 19;
+  let label = 'Leyendo tu energía';
+  if (currentSlide >= 1 && currentSlide <= LAST_Q) {
+    paso = Math.max(1, currentSlide - 1);
+    label = SECTIONS[currentSlide] || 'Leyendo tu energía';
+  } else if (currentSlide === 21) {
+    paso = 19; label = 'Leyendo tu energía';
+  } else if (currentSlide >= 22) {
+    paso = 19; label = 'Tu lectura';
+  }
   if (currentSlide >= 1) {
     w.classList.add('visible');
     const pct = Math.min(100, Math.round((paso / total) * 100));
-    document.getElementById('slideCounter').textContent = `Paso ${paso}/${total} · ${pct}%`;
+    document.getElementById('sectionLabel').textContent = `Paso ${paso}/${total} · ${pct}% - ${label}`;
     document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('sectionLabel').textContent = SECTIONS[currentSlide] || (currentSlide >= 21 ? 'Tu lectura' : 'Sobre ti');
   } else {
     w.classList.remove('visible');
   }
@@ -1058,15 +1132,40 @@ function updateProgress() {
 // ============ ANSWER ============
 function answer(key, val) {
   data[key] = val;
-  try { localStorage.setItem('almagemela_data', JSON.stringify(data)); } catch(e){}
-  if (key==='zodiac') document.getElementById('chkSign').textContent = val;
+  persistQuiz();
+  const btn = event && event.currentTarget;
+  if (btn && btn.classList) {
+    const wrap = btn.closest('.options');
+    if (wrap) wrap.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+  if (key==='zodiac') {
+    const n = (data.name || '').trim();
+    const el = document.getElementById('chkName');
+    if (el && !n) el.textContent = val;
+  }
   if (key==='gender') updateGenderCopy(val);
   if (key==='met') fillInter1(val);
   if (key==='partner_sign') fillInter2(val);
   if (key==='block') fillInter3(val);
   if (key==='want') fillInter4(val);
-  if (key==='ready') { setTimeout(() => startLoading(), 400); return; }
-  setTimeout(() => nextSlide(), 400);
+  if (key==='ready') {
+    try { if (typeof fbq === 'function') fbq('track', 'Lead'); } catch(e){}
+    setTimeout(() => startLoading(), 350);
+    return;
+  }
+  setTimeout(() => nextSlide(), 350);
+}
+
+function persistQuiz() {
+  const payload = {
+    answers: data,
+    card: selectedKey,
+    name: data.name || '',
+    birthDate: data.birthDate || '',
+    updatedAt: new Date().toISOString()
+  };
+  try { localStorage.setItem('almagemele_quiz_v4', JSON.stringify(payload)); } catch(e){}
 }
 
 // gender-aware wording
@@ -1126,23 +1225,45 @@ function startLoading() {
   goToSlide(21);
   const pctEl = document.getElementById('loadingPct');
   const ring = document.getElementById('ringFill');
+  const bar = document.getElementById('loadingBarFill');
+  const statusEl = document.getElementById('loadingStatus');
   const items = Array.from(document.querySelectorAll('.check'));
   items.forEach(el => { el.classList.remove('on','done'); el.querySelector('.ci').textContent='○'; });
+  const chkName = document.getElementById('chkName');
+  if (chkName) {
+    const n = (data.name || '').trim();
+    chkName.textContent = n || data.zodiac || 'tu alma';
+  }
   const CIRC = 415;
   const duration = 7000;
   const start = performance.now();
-  let step = 0, modal = false;
+  let step = 0, modal = false, statusIdx = 0;
+  const statuses = [
+    'Analizando tu fecha de nacimiento y tu signo...',
+    'Identificando tu Herida de la Diosa...',
+    'Veo compatibilidad rara... signo de fuego/aire...',
+    'Las cartas confirman... él ya sintió tu energía...',
+    'Martha está canalizando tu lectura final...'
+  ];
+  statusEl.textContent = statuses[0];
+  const statusTimer = setInterval(() => {
+    statusIdx = Math.min(statuses.length - 1, statusIdx + 1);
+    statusEl.textContent = statuses[statusIdx];
+  }, 1500);
+
   function frame(now) {
     const t = Math.min(1, (now - start) / duration);
     const pct = Math.floor(t * 100);
     pctEl.textContent = pct + '%';
     ring.style.strokeDashoffset = CIRC - (CIRC * pct / 100);
-    if (pct >= 8 && step === 0) { mark(items[0],'done'); mark(items[1],'on'); step = 1; }
-    if (pct >= 32 && step === 1) { mark(items[1],'done'); mark(items[2],'on'); step = 2; }
+    if (bar) bar.style.width = pct + '%';
+    if (pct >= 25 && step === 0) { mark(items[0],'done'); mark(items[1],'on'); step = 1; }
+    if (pct >= 50 && step === 1) { mark(items[1],'done'); mark(items[2],'on'); step = 2; }
     if (pct >= 48 && !modal) { showModal(); modal = true; }
-    if (pct >= 68 && step === 2) { mark(items[2],'done'); mark(items[3],'on'); step = 3; }
+    if (pct >= 75 && step === 2) { mark(items[2],'done'); mark(items[3],'on'); step = 3; }
     if (pct >= 100) {
       mark(items[3],'done');
+      clearInterval(statusTimer);
       setTimeout(() => showReading(), 450);
       return;
     }
@@ -1167,12 +1288,36 @@ function readLeadFields() {
   const name = (document.getElementById('inName')?.value || '').trim();
   const email = (document.getElementById('inEmail')?.value || '').trim().toLowerCase();
   const phone = (document.getElementById('inPhone')?.value || '').trim();
+  const birthDate = (document.getElementById('inBirth')?.value || '').trim();
   const optin = !!document.getElementById('optin')?.checked;
-  return { name, email, phone, optin };
+  return { name, email, phone, birthDate, optin };
+}
+function onLeadChange() {
+  const lead = readLeadFields();
+  if (lead.name) data.name = lead.name;
+  if (lead.birthDate) data.birthDate = lead.birthDate;
+  saveLeadLocal(lead);
+  if (lead.name) {
+    const hn = document.getElementById('readingName');
+    const hh = document.getElementById('readingHeadline');
+    if (hn) hn.textContent = lead.name;
+    if (hh) hh.textContent = lead.name + ', tu energía no es común. Tengo que decirte algo que no le digo a todas...';
+  }
 }
 function saveLeadLocal(lead) {
   Object.assign(data, lead);
-  try { localStorage.setItem('almagemela_lead', JSON.stringify(lead)); localStorage.setItem('almagemela_data', JSON.stringify(data)); } catch(e){}
+  if (lead.name) data.name = lead.name;
+  if (lead.birthDate) data.birthDate = lead.birthDate;
+  try {
+    localStorage.setItem('almagemela_lead', JSON.stringify(lead));
+    localStorage.setItem('almagemela_data', JSON.stringify(data));
+    const v4 = JSON.parse(localStorage.getItem('almagemele_quiz_v4') || '{}');
+    v4.lead = lead;
+    v4.name = lead.name || v4.name || '';
+    v4.birthDate = lead.birthDate || v4.birthDate || '';
+    v4.answers = data; v4.card = selectedKey; v4.updatedAt = new Date().toISOString();
+    localStorage.setItem('almagemele_quiz_v4', JSON.stringify(v4));
+  } catch(e){}
 }
 async function persistLead() {
   const lead = readLeadFields();
@@ -1196,83 +1341,147 @@ async function persistLead() {
   }
   return lead;
 }
+function updateTotal() {
+  const bump = document.getElementById('bumpCheck')?.checked;
+  const total = bump ? 28 : 19;
+  const el = document.getElementById('totalLine');
+  const cta = document.getElementById('ctaLink');
+  if (el) el.textContent = 'Total hoy: $' + total + ' USD';
+  if (cta) cta.textContent = bump
+    ? 'SÍ, QUIERO MI LECTURA COMPLETA POR $28 USD →'
+    : 'SÍ, QUIERO MI LECTURA COMPLETA POR $19 USD →';
+  return total;
+}
 async function goCheckout(e) {
   e.preventDefault();
-  const url = document.getElementById('ctaLink').href;
-  const lead = await persistLead();
-  if (lead.name) {
-    document.getElementById('readingName').textContent = lead.name;
-    const hl = document.getElementById('readingHeadline');
-    if (hl) hl.textContent = lead.name + ', tu energía es de las que no se olvidan';
+  const lead = readLeadFields();
+  if (!lead.email || !lead.email.includes('@')) {
+    document.getElementById('inEmail')?.focus();
+    alert('Ingresa tu correo para que Martha te envíe la lectura.');
+    return;
   }
+  const url = 'https://pay.hotmart.com/J107108736M?checkoutMode=10';
+  const total = updateTotal();
+  await persistLead();
+  try { if (typeof fbq === 'function') fbq('track', 'Purchase', { value: total, currency: 'USD' }); } catch(err){}
   window.open(url, '_blank', 'noopener,noreferrer');
 }
-
-const STATUS_LABEL = {
-  single: 'soltero/a y abierto/a al amor',
-  complicated: 'en una etapa complicada',
-  someone: 'con alguien en la mente',
-  relationship: 'en una relación',
-  healing: 'sanando de una ruptura'
-};
-const BLOCK_TIME = {
-  trust: 'mucho tiempo',
-  past: 'años',
-  worth: 'demasiado tiempo',
-  timing: 'meses',
-  none: 'poco'
-};
-const FIRE_AIR = new Set(['Aries','Leo','Sagitario','Géminis','Libra','Acuario']);
-
-function elementEnergy() {
-  const sign = data.partner_sign && data.partner_sign !== 'unknown' ? data.partner_sign : data.zodiac;
-  if (sign && FIRE_AIR.has(sign)) return 'fuego/aire';
-  return 'fuego/aire';
+function openDownsell() {
+  const name = (document.getElementById('inName')?.value || data.name || '').trim();
+  const title = document.getElementById('downsellTitle');
+  if (title) title.textContent = name
+    ? 'Espera, ' + name + '... ¿$19 es mucho para ti hoy?'
+    : 'Espera... ¿$19 es mucho para ti hoy?';
+  document.getElementById('downsellModal').classList.add('visible');
+}
+function closeDownsell(force) {
+  document.getElementById('downsellModal').classList.remove('visible');
+  if (force) downsellShown = true;
+}
+async function takeDownsell() {
+  await persistLead();
+  try { if (typeof fbq === 'function') fbq('track', 'Purchase', { value: 6.9, currency: 'USD' }); } catch(e){}
+  closeDownsell(true);
+  window.open('https://pay.hotmart.com/J107108736M?checkoutMode=10', '_blank', 'noopener,noreferrer');
+}
+let downsellShown = false;
+function bindExitIntent() {
+  if (window._exitBound) return;
+  window._exitBound = true;
+  document.addEventListener('mouseout', (ev) => {
+    if (downsellShown || currentSlide < 23) return;
+    if (ev.clientY < 12) openDownsell();
+  });
 }
 
-// ============ READING ============
+function protectSinceLabel() {
+  const map = { trust: 'hace más de un año', past: '2023', worth: 'hace demasiado tiempo', timing: 'hace meses', none: 'poco tiempo' };
+  return map[data.block] || '2023';
+}
+
 function showReading() {
   goToSlide(23);
+  try { if (typeof fbq === 'function') fbq('track', 'InitiateCheckout'); } catch(e){}
   restoreLeadFields();
+  updateTotal();
   const c = CARDS[selectedKey] || CARDS.lovers;
-  const saved = (()=>{ try { return JSON.parse(localStorage.getItem('almagemela_lead')||'{}'); } catch(e){ return {}; }})();
-  const name = (saved.name || data.name || 'tú');
-  const statusTxt = STATUS_LABEL[data.status] || 'buscando claridad en el amor';
-  const tiempo = BLOCK_TIME[data.block] || 'tiempo';
-  const elem = elementEnergy();
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem('almagemele_quiz_v4') || '{}'); } catch(e){}
+  const name = (document.getElementById('inName')?.value || saved.name || data.name || 'tú').trim() || 'tú';
+  const display = name === 'tú' ? 'tú' : name;
+  const since = protectSinceLabel();
 
-  document.getElementById('readingName').textContent = name === 'tú' ? 'ti' : name;
+  document.getElementById('readingName').textContent = display === 'tú' ? 'ti' : display;
   document.getElementById('readingHeadline').textContent =
-    (name === 'tú' ? 'Tu' : name) + (name === 'tú' ? ' energía es de las que no se olvidan' : ', tu energía es de las que no se olvidan');
+    (display === 'tú' ? 'Tu' : display) + (display === 'tú'
+      ? ' energía no es común. Tengo que decirte algo que no le digo a todas...'
+      : ', tu energía no es común. Tengo que decirte algo que no le digo a todas...');
   document.getElementById('readingCardArt').innerHTML = cardArt(selectedKey);
 
+  const n = display === 'tú' ? 'tú' : display;
   document.getElementById('readingText').innerHTML = `
-    <p>Veo que estás <span class="bd">${statusTxt}</span> y desde hace <span class="bd">${tiempo}</span> te proteges. Eso creó lo que llamo <span class="em">'Herida de la Diosa'</span> — tu Hilo Rojo está enredado.</p>
-    <p>Tu alma gemela tiene energía de signo de <span class="bd">${elem}</span>. La carta <span class="bd">${c.name}</span> lo confirma. Hay una ventana de encuentro en los próximos 4 meses en un lugar cotidiano.</p>
-    <p><span class="em">${c.hook}</span></p>
-    <p class="cliff">Lo que aún no te revelé es cómo desenredar ese Hilo Rojo…</p>
+    <p>Hoy sentí tu energía fuerte, <span class="bd">${n}</span>.</p>
+    <p>Hay un hombre en tu vida que hace que sea difícil pensar con claridad. Cuando está contigo, todo es magnético. Sientes que te mira como si intentara memorizar tu rostro. En esos momentos piensas: <span class="em">esta es</span>.</p>
+    <p>Pero luego... los mensajes tardan. Está "ocupado". "Con mucho trabajo".</p>
+    <p>Y de repente te encuentras despierta a las 2am, revisando conversaciones antiguas, tratando de encontrar el momento exacto en que todo cambió.</p>
+    <p>Es agotador. Y sé que llevas meses así.</p>
+    <span class="rev">La Reina de Bastos. Esta eres TÚ.</span>
+    <p>Y eres... wow.</p>
+    <p>Eres magnética. Cálida. La mujer que entra a un lugar y todos sienten su energía sin saber por qué.</p>
+    <p>El problema es que desde <span class="bd">${since}</span> tu corazón aprendió a protegerse. Y empezaste a verter toda esa energía hermosa en personas que te dejan en incertidumbre.</p>
+    <p>No eres demasiado. Eres justo lo que tu alma gemela está buscando.</p>
+    <span class="rev">Lo que veo es lo que llamo "El Hilo Enredado".</span>
+    <p>Es una memoria de alma, una herida de la Diosa que hace que atraigas siempre al mismo tipo de patrón, aunque sean hombres diferentes por fuera.</p>
+    <p>Por eso das mucho y recibes poco. Por eso sientes que tu alma gemela está cerca, pero algo invisible lo bloquea.</p>
+    <p>Las cartas que elegiste lo confirman. Tu compatibilidad rara es con energía de signo de <span class="bd">fuego/aire</span>. Eso no es casualidad. <span class="em">${c.hook}</span></p>
+    <p class="cliff">Necesito parar aquí un momento.</p>
+    <p>Hay algo que las cartas me están mostrando desde el inicio y no quiero apurarlo...</p>
+    <p>Veo una ventana de encuentro muy clara en los próximos 4 meses. En un lugar cotidiano, no donde imaginas.</p>
+    <p>Veo una inicial. Veo cómo lo vas a reconocer por su mirada.</p>
+    <p>Martha canalizó tu Lectura Completa con todo lo que no puedo decirte aquí:</p>
+    <ul class="r-list">
+      <li>🔮 Quién es realmente tu alma gemela (¿es él o alguien nuevo?)</li>
+      <li>🔮 Inicial, descripción física y emocional completa</li>
+      <li>🔮 Cuándo y dónde lo reconocerás - fecha y lugar</li>
+      <li>🔮 Qué está enredando tu Hilo Rojo y cómo limpiarlo en 7 días</li>
+    </ul>
   `;
+  bindExitIntent();
+  persistQuiz();
 }
 function restoreLeadFields() {
   let lead = {};
-  try { lead = JSON.parse(localStorage.getItem('almagemela_lead') || '{}'); } catch(e){}
+  try {
+    const v4 = JSON.parse(localStorage.getItem('almagemele_quiz_v4') || '{}');
+    lead = v4.lead || {};
+    if (v4.name && !lead.name) lead.name = v4.name;
+    if (v4.birthDate && !lead.birthDate) lead.birthDate = v4.birthDate;
+  } catch(e){}
+  try { Object.assign(lead, JSON.parse(localStorage.getItem('almagemela_lead') || '{}')); } catch(e){}
   if (lead.name) document.getElementById('inName').value = lead.name;
   if (lead.email) document.getElementById('inEmail').value = lead.email;
   if (lead.phone) document.getElementById('inPhone').value = lead.phone;
+  if (lead.birthDate && document.getElementById('inBirth')) document.getElementById('inBirth').value = lead.birthDate;
   if (typeof lead.optin === 'boolean') document.getElementById('optin').checked = lead.optin;
 }
 
 // ============ BOOT ============
 try {
+  const v4 = JSON.parse(localStorage.getItem('almagemele_quiz_v4') || '{}');
+  if (v4.answers) data = v4.answers;
+  if (v4.card && CARDS[v4.card]) selectedKey = v4.card;
+  if (v4.name) data.name = v4.name;
+  if (v4.birthDate) data.birthDate = v4.birthDate;
+} catch(e){}
+try {
   const savedData = JSON.parse(localStorage.getItem('almagemela_data') || '{}');
-  if (savedData && typeof savedData === 'object') data = savedData;
-  const savedCard = localStorage.getItem('almagemela_card');
-  if (savedCard && CARDS[savedCard]) selectedKey = savedCard;
+  if (savedData && typeof savedData === 'object') data = Object.assign({}, savedData, data);
 } catch(e){}
 requestAnimationFrame(() => {
   requestAnimationFrame(() => {
     buildFan();
     buildZodiac();
+    updateTotal();
   });
 });
 </script>
