@@ -343,18 +343,54 @@ body {
 .reading-letter .r-list li {
   font-size: 16px; color: #f3e8ff; line-height: 1.55; margin-bottom: 14px;
 }
-.letter-persona {
-  max-width: 650px; margin: 0 auto 22px; display: grid; gap: 10px;
+.letter-persona { display: none !important; }
+.q-sub {
+  text-align: center; font-size: 15px; color: var(--text-soft);
+  margin: -12px 0 22px; line-height: 1.45;
 }
-.letter-persona label {
-  font-size: 13px; color: #c4b5fd; line-height: 1.4;
+.persona-capture .fg { margin-bottom: 16px; }
+.persona-capture input {
+  width: 100%; min-height: 56px; border-radius: 16px; border: 2px solid #ede9fe;
+  padding: 14px 16px; font-size: 17px; font-family: var(--font-sans); color: var(--ink);
+  background: #fff;
 }
-.letter-persona input {
-  width: 100%; min-height: 48px; border-radius: 12px; border: 1px solid #4c1d95;
-  background: #1a102a; color: #fff; padding: 12px 14px; font-size: 16px;
-  font-family: var(--font-sans);
+.persona-capture input:focus { outline: none; border-color: #a855f7; }
+.confirm-gate {
+  text-align: center; padding: 28px 8px 40px; max-width: 420px; margin: 0 auto;
 }
-.letter-persona input::placeholder { color: #a78bfa; }
+.confirm-title {
+  font-family: var(--font-serif); font-size: 28px; font-weight: 700;
+  color: var(--ink); line-height: 1.3; margin-bottom: 14px;
+}
+.confirm-sub {
+  font-size: 15px; color: var(--text); line-height: 1.55; margin-bottom: 22px;
+}
+.confirm-card {
+  background: #faf5ff; border: 2px solid #e9d5ff; border-radius: 16px;
+  padding: 16px 18px; margin-bottom: 22px; text-align: left;
+}
+.cc-row {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid #ede9fe;
+}
+.cc-row:last-child { border-bottom: none; }
+.cc-label { font-size: 12px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.4px; }
+.cc-val { font-size: 16px; font-weight: 700; color: #581c87; text-align: right; }
+.channel-loading {
+  text-align: center; padding: 72px 24px; min-height: 50vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.channel-loading[hidden] { display: none !important; }
+.channel-orb {
+  font-size: 48px; margin-bottom: 22px;
+  animation: glow 2s ease-in-out infinite;
+}
+.channel-line {
+  font-size: 17px; color: var(--ink); line-height: 1.5; max-width: 300px;
+  font-family: var(--font-serif); font-weight: 600;
+}
+.letter-reveal[hidden] { display: none !important; }
+.confirm-gate[hidden] { display: none !important; }
 .letter-block {
   opacity: 0;
   transform: translateY(14px);
@@ -599,8 +635,18 @@ body {
     </div>
   </div>
 
-  <!-- SLIDE 2 -->
+  <!-- SLIDE 2: NOMBRE -->
   <div class="slide" id="slide-2">
+    <div class="q-wrap persona-capture">
+      <h2 class="q-title">Para conectar con tu energía, ¿cómo te gusta que te llame Martha?</h2>
+      <div class="fg"><input type="text" id="quizName" placeholder="Tu primer nombre" autocomplete="given-name" maxlength="40"></div>
+      <button type="button" class="btn-know" onclick="submitQuizName()">Continuar</button>
+      <p class="reveal-foot">Tu nombre hace la lectura más precisa · 2/19</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide" id="slide-3">
     <div class="q-wrap">
       <h2 class="q-title">¿Cuál es tu género?</h2>
       <div class="options">
@@ -612,15 +658,27 @@ body {
   </div>
 
   <!-- SLIDE 3: signo do usuário -->
-  <div class="slide" id="slide-3">
+  <div class="slide" id="slide-4">
     <div class="q-wrap">
       <h2 class="q-title">¿Cuál es tu signo?</h2>
       <div class="options grid" id="zodiacGrid"></div>
     </div>
   </div>
 
+
+  <!-- SLIDE 5: FECHA -->
+  <div class="slide" id="slide-5">
+    <div class="q-wrap persona-capture">
+      <h2 class="q-title">¿Cuál es tu fecha de nacimiento?</h2>
+      <p class="q-sub">Martha la usa para ver tu Hilo Rojo</p>
+      <div class="fg"><input type="text" id="quizBirth" placeholder="dd/mm/aaaa" inputmode="numeric" maxlength="10" autocomplete="bday"></div>
+      <button type="button" class="btn-know" onclick="submitQuizBirth()">Continuar</button>
+      <p class="reveal-foot">100% confidencial · 5/19</p>
+    </div>
+  </div>
+
   <!-- SLIDE 4: situação amorosa -->
-  <div class="slide" id="slide-4">
+  <div class="slide" id="slide-6">
     <div class="q-wrap">
       <h2 class="q-title">¿Cómo está tu corazón hoy?</h2>
       <div class="options">
@@ -634,7 +692,7 @@ body {
   </div>
 
   <!-- SLIDE 5: já conheceu -->
-  <div class="slide" id="slide-5">
+  <div class="slide" id="slide-7">
     <div class="q-wrap">
       <h2 class="q-title">¿Sientes que tu alma gemela ya cruzó tu camino?</h2>
       <div class="options">
@@ -647,7 +705,7 @@ body {
   </div>
 
   <!-- SLIDE 6: INTER 1 -->
-  <div class="slide" id="slide-6">
+  <div class="slide" id="slide-8">
     <div class="inter">
       <div class="orb">🔮</div>
       <h2>Siento una energía fuerte</h2>
@@ -658,7 +716,7 @@ body {
   </div>
 
   <!-- SLIDE 7: faixa etária -->
-  <div class="slide" id="slide-7">
+  <div class="slide" id="slide-9">
     <div class="q-wrap">
       <h2 class="q-title">¿En qué etapa de la vida estás?</h2>
       <div class="options">
@@ -671,7 +729,7 @@ body {
   </div>
 
   <!-- SLIDE 8: o que mais deseja -->
-  <div class="slide" id="slide-8">
+  <div class="slide" id="slide-10">
     <div class="q-wrap">
       <h2 class="q-title">¿Qué es lo que más pide tu corazón en este momento?</h2>
       <div class="options">
@@ -684,7 +742,7 @@ body {
   </div>
 
   <!-- SLIDE 9: como imagina a energia dela -->
-  <div class="slide" id="slide-9">
+  <div class="slide" id="slide-11">
     <div class="q-wrap">
       <h2 class="q-title">¿Qué tipo de energía sientes que combina con la tuya?</h2>
       <div class="options">
@@ -698,7 +756,7 @@ body {
   </div>
 
   <!-- SLIDE 10: signo que mais atrai -->
-  <div class="slide" id="slide-10">
+  <div class="slide" id="slide-12">
     <div class="q-wrap">
       <h2 class="q-title">¿Qué signo más te atrae — o ya te marcó?</h2>
       <div class="options grid" id="zodiacGrid2"></div>
@@ -706,7 +764,7 @@ body {
   </div>
 
   <!-- SLIDE 11: INTER 2 (compatibilidade) -->
-  <div class="slide" id="slide-11">
+  <div class="slide" id="slide-13">
     <div class="inter">
       <div class="orb">💞</div>
       <h2 id="inter2Title">Compatibilidad rara</h2>
@@ -717,7 +775,7 @@ body {
   </div>
 
   <!-- SLIDE 12: bloqueio -->
-  <div class="slide" id="slide-12">
+  <div class="slide" id="slide-14">
     <div class="q-wrap">
       <h2 class="q-title">¿Qué sientes que te impide vivir un amor verdadero?</h2>
       <div class="options">
@@ -731,7 +789,7 @@ body {
   </div>
 
   <!-- SLIDE 13: último amor -->
-  <div class="slide" id="slide-13">
+  <div class="slide" id="slide-15">
     <div class="q-wrap">
       <h2 class="q-title">¿Cómo terminó tu último amor importante?</h2>
       <div class="options">
@@ -745,7 +803,7 @@ body {
   </div>
 
   <!-- SLIDE 14: INTER 3 (proteção) -->
-  <div class="slide" id="slide-14">
+  <div class="slide" id="slide-16">
     <div class="inter">
       <div class="orb">🧿</div>
       <h2 id="inter3Title">Tu corazón se protege</h2>
@@ -756,7 +814,7 @@ body {
   </div>
 
   <!-- SLIDE 15: sinais -->
-  <div class="slide" id="slide-15">
+  <div class="slide" id="slide-17">
     <div class="q-wrap">
       <h2 class="q-title">¿El universo te ha enviado alguna señal?</h2>
       <div class="options">
@@ -770,7 +828,7 @@ body {
   </div>
 
   <!-- SLIDE 16: o que quer descobrir -->
-  <div class="slide" id="slide-16">
+  <div class="slide" id="slide-18">
     <div class="q-wrap">
       <h2 class="q-title">¿Qué es lo que más quieres descubrir sobre tu alma gemela?</h2>
       <div class="options">
@@ -783,7 +841,7 @@ body {
   </div>
 
   <!-- SLIDE 17: INTER 4 (cartas confirmam) -->
-  <div class="slide" id="slide-17">
+  <div class="slide" id="slide-19">
     <div class="inter">
       <div class="orb">🃏</div>
       <h2>Las cartas confirman</h2>
@@ -794,7 +852,7 @@ body {
   </div>
 
   <!-- SLIDE 18: o que valoriza -->
-  <div class="slide" id="slide-18">
+  <div class="slide" id="slide-20">
     <div class="q-wrap">
       <h2 class="q-title">¿Qué es lo más importante para ti en un gran amor?</h2>
       <div class="options">
@@ -808,7 +866,7 @@ body {
   </div>
 
   <!-- SLIDE 19: crença -->
-  <div class="slide" id="slide-19">
+  <div class="slide" id="slide-21">
     <div class="q-wrap">
       <h2 class="q-title">¿Crees en las almas gemelas?</h2>
       <div class="options">
@@ -821,7 +879,7 @@ body {
   </div>
 
   <!-- SLIDE 20: pronta? -->
-  <div class="slide" id="slide-20">
+  <div class="slide" id="slide-22">
     <div class="q-wrap">
       <h2 class="q-title">¿Estás listo/a para ver lo que revelan las cartas?</h2>
       <div class="options">
@@ -857,19 +915,31 @@ body {
   <!-- LEAD (captura movida al checkout de Mini Lectura) -->
   <div class="slide" id="slide-lead" style="display:none!important" aria-hidden="true"></div>
 
-  <!-- READING + CHECKOUT CAPTURE -->
+  <!-- READING: confirm → channel loading → carta + oferta -->
   <div class="slide" id="slide-reading">
     <div class="reading">
-      <div class="reading-letter" id="readingLetter">
-        <div class="r-title">Mini lectura para <span class="nm" id="readingName">ti</span></div>
-        <div class="letter-persona">
-          <label for="letterNameInput">Escribe tu primer nombre para que Martha te hable directamente</label>
-          <input type="text" id="letterNameInput" placeholder="Tu primer nombre" autocomplete="given-name" oninput="syncLetterPersona()">
-          <input type="date" id="letterBirthInput" aria-label="Fecha de nacimiento" onchange="syncLetterPersona()">
+      <div class="confirm-gate" id="confirmGate">
+        <h2 class="confirm-title" id="confirmTitle">Tu lectura está casi lista</h2>
+        <p class="confirm-sub">Martha está verificando su agenda. Confirma que estos son tus datos para canalizar:</p>
+        <div class="confirm-card">
+          <div class="cc-row"><span class="cc-label">Nombre</span><span class="cc-val" id="confirmName">—</span></div>
+          <div class="cc-row"><span class="cc-label">Fecha de nacimiento</span><span class="cc-val" id="confirmBirth">—</span></div>
         </div>
-        <div class="r-text" id="readingText"></div>
+        <button type="button" class="btn-know" onclick="revealMiniLectura()">SÍ, REVELAR MI MINI LECTURA AHORA →</button>
+        <p class="reveal-foot">Paso 19/19 · 100% confidencial</p>
       </div>
-      <div class="cta">
+
+      <div class="channel-loading" id="channelLoading" hidden>
+        <div class="channel-orb">🔮</div>
+        <p class="channel-line" id="channelLine">Canalizando tu energía...</p>
+      </div>
+
+      <div class="letter-reveal" id="letterReveal" hidden>
+        <div class="reading-letter" id="readingLetter">
+          <div class="r-title">Mini lectura para <span class="nm" id="readingName">ti</span></div>
+          <div class="r-text" id="readingText"></div>
+        </div>
+        <div class="cta">
         <div class="offer-box">
           <div class="ob-price"><span class="old">De $49 USD</span> por <span class="new">$19 USD</span> hoy</div>
           <div style="font-weight:700;color:var(--ink);margin-bottom:6px;">Lectura Completa del Alma Gemela por Martha</div>
@@ -895,15 +965,14 @@ body {
 
         <div class="checkout-form">
           <div class="cf-title">¿Dónde te envía Martha tu lectura completa?</div>
-          <div class="fg"><input type="text" id="inName" placeholder="Tu primer nombre" autocomplete="given-name" required oninput="onLeadChange()"></div>
           <div class="fg"><input type="email" id="inEmail" placeholder="Tu mejor correo" autocomplete="email" required oninput="onLeadChange()"></div>
-          <div class="fg"><input type="date" id="inBirth" placeholder="Fecha de nacimiento" autocomplete="bday" onchange="onLeadChange()"></div>
           <div class="fg"><input type="tel" id="inPhone" placeholder="+52 1 55..." autocomplete="tel" oninput="onLeadChange()"></div>
           <div class="checkbox">
             <input type="checkbox" id="optin" checked onchange="onLeadChange()">
             <label for="optin">Sí, quiero recibir mi lectura y mensajes de Martha por correo y WhatsApp. El consentimiento no es obligatorio para la compra.</label>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -1074,17 +1143,20 @@ const ZODIAC = [
 ];
 
 const SECTIONS = {
-  2:'Sobre ti', 3:'Sobre ti', 4:'Sobre ti', 5:'Sobre ti', 6:'Sobre ti',
-  7:'Tu corazón', 8:'Tu corazón', 9:'Tu corazón', 10:'Tu corazón', 11:'Tu corazón',
-  12:'Inmersión profunda', 13:'Inmersión profunda', 14:'Inmersión profunda', 15:'Inmersión profunda', 16:'Inmersión profunda', 17:'Inmersión profunda',
-  18:'La revelación', 19:'La revelación', 20:'La revelación',
-  21:'Tu lectura', 23:'Tu lectura'
+  1:'Leyendo tu energía', 2:'Sobre ti', 3:'Sobre ti', 4:'Sobre ti', 5:'Sobre ti',
+  6:'Sobre ti', 7:'Sobre ti', 8:'Sobre ti',
+  9:'Tu corazón', 10:'Tu corazón', 11:'Tu corazón', 12:'Tu corazón', 13:'Tu corazón',
+  14:'Inmersión profunda', 15:'Inmersión profunda', 16:'Inmersión profunda', 17:'Inmersión profunda', 18:'Inmersión profunda', 19:'Inmersión profunda',
+  20:'La revelación', 21:'La revelación', 22:'La revelación',
+  23:'Leyendo tu energía', 25:'Tu lectura'
 };
 
 let currentSlide = 0;
 let selectedKey = null;
 let data = {};
-const LAST_Q = 20;
+const LAST_Q = 22;
+const SLIDE_LOADING = 23;
+const SLIDE_READING = 25;
 
 // ============ INIT ============
 function buildFan() {
@@ -1153,17 +1225,15 @@ function fillReveal() {
 
 // ============ NAV ============
 function goToSlide(n) {
-  // Skip old lead screen: loading(21) -> reading(22)
-  if (n === 22 && document.getElementById('slide-lead')?.getAttribute('aria-hidden') === 'true') {
-    n = 23;
-  }
+  // Skip old lead screen: loading(23) -> reading(25)
+  if (n === 24) n = SLIDE_READING;
   document.querySelectorAll('.slide').forEach(s => {
     if (s.id === 'slide-lead') return;
     s.classList.remove('active');
   });
   let id;
   if (n <= LAST_Q) id = `slide-${n}`;
-  else if (n === 21) id = 'slide-loading';
+  else if (n === SLIDE_LOADING) id = 'slide-loading';
   else id = 'slide-reading';
   const el = document.getElementById(id);
   if (el) el.classList.add('active');
@@ -1181,11 +1251,11 @@ function updateProgress() {
   let paso = 0;
   let label = 'Leyendo tu energía';
   if (currentSlide >= 1 && currentSlide <= LAST_Q) {
-    paso = Math.max(1, currentSlide - 1);
+    paso = Math.min(19, Math.max(1, currentSlide - 1));
     label = SECTIONS[currentSlide] || 'Leyendo tu energía';
-  } else if (currentSlide === 21) {
+  } else if (currentSlide === SLIDE_LOADING) {
     paso = 19; label = 'Leyendo tu energía';
-  } else if (currentSlide >= 22) {
+  } else if (currentSlide >= SLIDE_READING) {
     paso = 19; label = 'Tu lectura';
   }
   if (currentSlide >= 1) {
@@ -1195,6 +1265,72 @@ function updateProgress() {
     document.getElementById('progressFill').style.width = pct + '%';
   } else {
     w.classList.remove('visible');
+  }
+}
+
+function submitQuizName() {
+  const input = document.getElementById('quizName');
+  const name = (input?.value || '').trim();
+  if (!name || name.length < 2) {
+    input?.focus();
+    input?.classList.add('shake');
+    setTimeout(() => input?.classList.remove('shake'), 400);
+    return;
+  }
+  data.name = name;
+  try {
+    localStorage.setItem('nombre', name);
+    localStorage.setItem('name', name);
+  } catch(e){}
+  persistQuiz();
+  const chk = document.getElementById('chkName');
+  if (chk) chk.textContent = name;
+  nextSlide();
+}
+function parseBirthInput(raw) {
+  const s = String(raw || '').trim();
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (!m) return null;
+  const d = parseInt(m[1], 10), mo = parseInt(m[2], 10), y = parseInt(m[3], 10);
+  if (mo < 1 || mo > 12 || d < 1 || d > 31 || y < 1940 || y > 2015) return null;
+  const iso = `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const display = `${String(d).padStart(2,'0')}/${String(mo).padStart(2,'0')}/${y}`;
+  return { iso, display };
+}
+function maskBirthInput(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 8);
+  if (v.length >= 5) v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4);
+  else if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+  el.value = v;
+}
+function submitQuizBirth() {
+  const input = document.getElementById('quizBirth');
+  const parsed = parseBirthInput(input?.value);
+  if (!parsed) {
+    input?.focus();
+    alert('Ingresa tu fecha en formato dd/mm/aaaa');
+    return;
+  }
+  data.birthDate = parsed.iso;
+  data.fecha = parsed.display;
+  try {
+    localStorage.setItem('fecha', parsed.display);
+    localStorage.setItem('fecha_nacimiento', parsed.iso);
+  } catch(e){}
+  persistQuiz();
+  nextSlide();
+}
+function bindPersonaInputs() {
+  const birth = document.getElementById('quizBirth');
+  if (birth && !birth._bound) {
+    birth._bound = true;
+    birth.addEventListener('input', () => maskBirthInput(birth));
+    birth.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitQuizBirth(); });
+  }
+  const name = document.getElementById('quizName');
+  if (name && !name._bound) {
+    name._bound = true;
+    name.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitQuizName(); });
   }
 }
 
@@ -1232,9 +1368,15 @@ function persistQuiz() {
     card: selectedKey,
     name: data.name || '',
     birthDate: data.birthDate || '',
+    fecha: data.fecha || '',
     updatedAt: new Date().toISOString()
   };
-  try { localStorage.setItem('almagemele_quiz_v4', JSON.stringify(payload)); } catch(e){}
+  try {
+    localStorage.setItem('almagemele_quiz_v4', JSON.stringify(payload));
+    if (data.name) { localStorage.setItem('nombre', data.name); localStorage.setItem('name', data.name); }
+    if (data.fecha) localStorage.setItem('fecha', data.fecha);
+    if (data.birthDate) localStorage.setItem('fecha_nacimiento', data.birthDate);
+  } catch(e){}
 }
 
 // gender-aware wording
@@ -1291,7 +1433,7 @@ function fillInter4(want) {
 
 // ============ LOADING ============
 function startLoading() {
-  goToSlide(21);
+  goToSlide(SLIDE_LOADING);
   const pctEl = document.getElementById('loadingPct');
   const ring = document.getElementById('ringFill');
   const bar = document.getElementById('loadingBarFill');
@@ -1354,21 +1496,16 @@ function modalAnswer(v){ data.feels_close = v; closeModal(); }
 
 // ============ LEAD / CHECKOUT ============
 function readLeadFields() {
-  const name = (document.getElementById('inName')?.value || '').trim();
+  const name = (data.name || localStorage.getItem('nombre') || '').trim();
   const email = (document.getElementById('inEmail')?.value || '').trim().toLowerCase();
   const phone = (document.getElementById('inPhone')?.value || '').trim();
-  const birthDate = (document.getElementById('inBirth')?.value || '').trim();
+  const birthDate = (data.birthDate || localStorage.getItem('fecha_nacimiento') || '').trim();
   const optin = !!document.getElementById('optin')?.checked;
   return { name, email, phone, birthDate, optin };
 }
 function onLeadChange() {
   const lead = readLeadFields();
-  if (lead.name) data.name = lead.name;
-  if (lead.birthDate) data.birthDate = lead.birthDate;
   saveLeadLocal(lead);
-  if (currentSlide >= 23 && document.getElementById('slide-reading')?.classList.contains('active')) {
-    renderReadingLetter();
-  }
 }
 function saveLeadLocal(lead) {
   Object.assign(data, lead);
@@ -1433,7 +1570,7 @@ async function goCheckout(e) {
   window.open(url, '_blank', 'noopener,noreferrer');
 }
 function openDownsell() {
-  const name = (document.getElementById('inName')?.value || data.name || '').trim();
+  const name = (data.name || localStorage.getItem('nombre') || '').trim();
   const title = document.getElementById('downsellTitle');
   if (title) title.textContent = name
     ? 'Espera, ' + name + '... ¿$19 es mucho para ti hoy?'
@@ -1455,7 +1592,7 @@ function bindExitIntent() {
   if (window._exitBound) return;
   window._exitBound = true;
   document.addEventListener('mouseout', (ev) => {
-    if (downsellShown || currentSlide < 23) return;
+    if (downsellShown || currentSlide < SLIDE_READING) return;
     if (ev.clientY < 12) openDownsell();
   });
 }
@@ -1468,25 +1605,20 @@ function escHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function formatBirthLabel(raw) {
-  if (!raw) return 'que me compartiste';
+  if (!raw) {
+    const f = localStorage.getItem('fecha') || '';
+    if (f) return f;
+    return 'que me compartiste';
+  }
+  const dm = String(raw).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (dm) {
+    const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    return `${parseInt(dm[1],10)} de ${months[parseInt(dm[2],10)-1]} de ${dm[3]}`;
+  }
   const m = String(raw).match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!m) return raw;
   const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   return `${parseInt(m[3],10)} de ${months[parseInt(m[2],10)-1]} de ${m[1]}`;
-}
-function syncLetterPersona() {
-  const n = document.getElementById('letterNameInput')?.value || '';
-  const b = document.getElementById('letterBirthInput')?.value || '';
-  const inName = document.getElementById('inName');
-  const inBirth = document.getElementById('inBirth');
-  if (inName) inName.value = n;
-  if (inBirth && b) inBirth.value = b;
-  if (n.trim()) data.name = n.trim();
-  if (b) data.birthDate = b;
-  try { localStorage.setItem('nombre', n.trim()); localStorage.setItem('name', n.trim()); } catch(e){}
-  saveLeadLocal(readLeadFields());
-  clearTimeout(window._personaTimer);
-  window._personaTimer = setTimeout(() => renderReadingLetter(true), 250);
 }
 function resolveReadingPersona() {
   let saved = {};
@@ -1494,16 +1626,13 @@ function resolveReadingPersona() {
   let legacy = {};
   try { legacy = JSON.parse(localStorage.getItem('almagemela_lead') || '{}'); } catch(e){}
   const nombreRaw = (
-    document.getElementById('letterNameInput')?.value ||
-    document.getElementById('inName')?.value ||
     data.name || saved.name || saved.nombre || legacy.name ||
     localStorage.getItem('nombre') || localStorage.getItem('name') || ''
   ).trim();
   const nombre = nombreRaw || 'Hermosa';
   const birthRaw = (
-    document.getElementById('letterBirthInput')?.value ||
-    document.getElementById('inBirth')?.value ||
-    data.birthDate || saved.birthDate || saved.fecha_nacimiento || legacy.birthDate || ''
+    data.fecha || data.birthDate || saved.fecha || saved.birthDate || saved.fecha_nacimiento ||
+    legacy.birthDate || localStorage.getItem('fecha') || localStorage.getItem('fecha_nacimiento') || ''
   ).trim();
   const c = CARDS[selectedKey] || CARDS.lovers;
   const partner = data.partner_sign;
@@ -1515,6 +1644,7 @@ function resolveReadingPersona() {
     nombreHtml: escHtml(nombre),
     tiempoProteccion: protectSinceLabel(),
     fecha: formatBirthLabel(birthRaw),
+    fechaDisplay: data.fecha || localStorage.getItem('fecha') || formatBirthLabel(birthRaw),
     carta: c.name,
     signo,
     isFallbackName: !nombreRaw
@@ -1531,25 +1661,16 @@ function bindLetterReveal() {
   }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
   window._letterObs = obs;
   blocks.forEach((el, i) => {
-    if (i < 2) {
-      setTimeout(() => el.classList.add('in'), 80 + i * 120);
-    } else {
-      obs.observe(el);
-    }
+    if (i < 2) setTimeout(() => el.classList.add('in'), 80 + i * 120);
+    else obs.observe(el);
   });
 }
-function renderReadingLetter(keepScroll) {
-  const scrollY = keepScroll ? window.scrollY : null;
+function renderReadingLetter() {
   const p = resolveReadingPersona();
   const n = p.nombreHtml;
   const titleName = p.isFallbackName ? 'ti' : p.nombre;
   const nameEl = document.getElementById('readingName');
   if (nameEl) nameEl.textContent = titleName;
-
-  const letterName = document.getElementById('letterNameInput');
-  const letterBirth = document.getElementById('letterBirthInput');
-  if (letterName && !letterName.value && !p.isFallbackName) letterName.value = p.nombre;
-  if (letterBirth && !letterBirth.value && p.fecha && data.birthDate) letterBirth.value = data.birthDate || '';
 
   document.getElementById('readingText').innerHTML = `
     <div class="letter-block"><h1>${n}, tu energía no es común. Tengo que decirte algo que no le digo a todas...</h1></div>
@@ -1586,23 +1707,59 @@ function renderReadingLetter(keepScroll) {
     <div class="letter-block"><p>Siento que la respuesta está más cerca de la superficie hoy que nunca.</p></div>
   `;
   bindLetterReveal();
-  if (scrollY != null) window.scrollTo(0, scrollY);
+}
+function showReadingConfirm() {
+  const gate = document.getElementById('confirmGate');
+  const ch = document.getElementById('channelLoading');
+  const letter = document.getElementById('letterReveal');
+  if (gate) gate.hidden = false;
+  if (ch) ch.hidden = true;
+  if (letter) letter.hidden = true;
+  const p = resolveReadingPersona();
+  const title = document.getElementById('confirmTitle');
+  if (title) title.textContent = 'Tu lectura está casi lista, ' + p.nombre;
+  const cn = document.getElementById('confirmName');
+  const cb = document.getElementById('confirmBirth');
+  if (cn) cn.textContent = p.nombre;
+  if (cb) cb.textContent = p.fechaDisplay || p.fecha || '—';
+}
+function revealMiniLectura() {
+  const gate = document.getElementById('confirmGate');
+  const ch = document.getElementById('channelLoading');
+  const letter = document.getElementById('letterReveal');
+  if (gate) gate.hidden = true;
+  if (letter) letter.hidden = true;
+  if (ch) ch.hidden = false;
+  window.scrollTo(0, 0);
+  const p = resolveReadingPersona();
+  const lines = [
+    'Canalizando la energía de ' + p.nombre + '...',
+    'Conectando con tu Hilo Rojo...',
+    'Martha está escribiendo...'
+  ];
+  const lineEl = document.getElementById('channelLine');
+  let i = 0;
+  if (lineEl) lineEl.textContent = lines[0];
+  const timer = setInterval(() => {
+    i += 1;
+    if (i < lines.length && lineEl) lineEl.textContent = lines[i];
+  }, 1000);
+  setTimeout(() => {
+    clearInterval(timer);
+    if (ch) ch.hidden = true;
+    if (letter) letter.hidden = false;
+    renderReadingLetter();
+    updateTotal();
+    bindExitIntent();
+    try { if (typeof fbq === 'function') fbq('track', 'InitiateCheckout'); } catch(e){}
+    window.scrollTo(0, 0);
+  }, 3000);
 }
 function showReading() {
-  goToSlide(23);
-  try { if (typeof fbq === 'function') fbq('track', 'InitiateCheckout'); } catch(e){}
+  goToSlide(SLIDE_READING);
   restoreLeadFields();
-  try {
-    const n = (document.getElementById('inName')?.value || data.name || localStorage.getItem('nombre') || '').trim();
-    const b = (document.getElementById('inBirth')?.value || data.birthDate || '').trim();
-    const ln = document.getElementById('letterNameInput');
-    const lb = document.getElementById('letterBirthInput');
-    if (ln && n) ln.value = n;
-    if (lb && b) lb.value = b;
-  } catch(e){}
   updateTotal();
-  renderReadingLetter();
-  bindExitIntent();
+  showReadingConfirm();
   persistQuiz();
 }
 function restoreLeadFields() {
@@ -1614,10 +1771,13 @@ function restoreLeadFields() {
     if (v4.birthDate && !lead.birthDate) lead.birthDate = v4.birthDate;
   } catch(e){}
   try { Object.assign(lead, JSON.parse(localStorage.getItem('almagemela_lead') || '{}')); } catch(e){}
-  if (lead.name) document.getElementById('inName').value = lead.name;
+  if (!data.name && (lead.name || localStorage.getItem('nombre'))) data.name = lead.name || localStorage.getItem('nombre');
+  if (!data.birthDate && (lead.birthDate || localStorage.getItem('fecha_nacimiento'))) {
+    data.birthDate = lead.birthDate || localStorage.getItem('fecha_nacimiento');
+  }
+  if (!data.fecha && localStorage.getItem('fecha')) data.fecha = localStorage.getItem('fecha');
   if (lead.email) document.getElementById('inEmail').value = lead.email;
   if (lead.phone) document.getElementById('inPhone').value = lead.phone;
-  if (lead.birthDate && document.getElementById('inBirth')) document.getElementById('inBirth').value = lead.birthDate;
   if (typeof lead.optin === 'boolean') document.getElementById('optin').checked = lead.optin;
 }
 
@@ -1628,16 +1788,27 @@ try {
   if (v4.card && CARDS[v4.card]) selectedKey = v4.card;
   if (v4.name) data.name = v4.name;
   if (v4.birthDate) data.birthDate = v4.birthDate;
+  if (v4.fecha) data.fecha = v4.fecha;
 } catch(e){}
 try {
   const savedData = JSON.parse(localStorage.getItem('almagemela_data') || '{}');
   if (savedData && typeof savedData === 'object') data = Object.assign({}, savedData, data);
 } catch(e){}
+try {
+  if (!data.name && localStorage.getItem('nombre')) data.name = localStorage.getItem('nombre');
+  if (!data.fecha && localStorage.getItem('fecha')) data.fecha = localStorage.getItem('fecha');
+  if (!data.birthDate && localStorage.getItem('fecha_nacimiento')) data.birthDate = localStorage.getItem('fecha_nacimiento');
+} catch(e){}
 requestAnimationFrame(() => {
   requestAnimationFrame(() => {
     buildFan();
     buildZodiac();
+    bindPersonaInputs();
     updateTotal();
+    const qn = document.getElementById('quizName');
+    const qb = document.getElementById('quizBirth');
+    if (qn && data.name) qn.value = data.name;
+    if (qb && data.fecha) qb.value = data.fecha;
   });
 });
 </script>
