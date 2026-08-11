@@ -127,10 +127,14 @@ body {
   background: none; border: none; font-size: 22px; color: var(--text-soft);
   cursor: pointer; padding: 0 6px; line-height: 1; font-family: serif;
 }
-.section-label { font-size: 11px; font-weight: 600; color: var(--purple); letter-spacing: 2px; text-transform: uppercase; }
-.slide-counter { font-size: 12px; font-weight: 700; color: var(--text-soft); }
-.progress-bar { width: 100%; height: 5px; background: var(--purple-soft); border-radius: 5px; overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--purple), var(--purple-bright)); border-radius: 5px; transition: width 0.55s cubic-bezier(0.4,0,0.2,1); width: 0; }
+.section-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 2px; text-transform: uppercase; }
+.slide-counter {
+  font-size: 12px; font-weight: 700; color: var(--white);
+  background: var(--purple); border-radius: 999px;
+  padding: 5px 12px; letter-spacing: 0.3px; min-width: 44px; text-align: center;
+}
+.progress-bar { width: 100%; height: 4px; background: #EDE4F8; border-radius: 5px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--purple); border-radius: 5px; transition: width 0.55s cubic-bezier(0.4,0,0.2,1); width: 0; }
 
 /* ============ SLIDES ============ */
 .slide { display: none; }
@@ -192,31 +196,32 @@ body {
 @keyframes pulse { 0%,100%{ opacity: 0.4; } 50%{ opacity: 0.8; } }
 
 /* ============ QUESTIONS ============ */
-.q-wrap { padding: 30px 24px 40px; }
+.q-wrap { padding: 36px 22px 48px; }
 .q-title {
-  font-family: var(--font-serif); font-size: 25px; font-weight: 700;
-  color: var(--ink); text-align: center; margin-bottom: 26px; line-height: 1.3;
+  font-family: var(--font-serif); font-size: 28px; font-weight: 700;
+  color: var(--ink); text-align: center; margin-bottom: 28px; line-height: 1.25;
 }
-.options { display: flex; flex-direction: column; gap: 11px; }
+.options { display: flex; flex-direction: column; gap: 12px; }
 .opt {
   display: flex; align-items: center; gap: 14px;
-  padding: 16px 18px; background: var(--white);
-  border: 1.5px solid var(--line); border-radius: 15px;
+  padding: 18px 20px; background: #F3EEFB;
+  border: none; border-radius: 16px;
   cursor: pointer; transition: all 0.18s ease;
-  font-size: 15px; color: var(--text); text-align: left; width: 100%;
-  font-family: var(--font-sans); font-weight: 500;
+  font-size: 16px; color: var(--ink); text-align: left; width: 100%;
+  font-family: var(--font-sans); font-weight: 600;
+  box-shadow: none;
 }
-.opt:hover { border-color: var(--purple-bright); background: var(--purple-mist); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(109,40,217,0.1); }
-.opt:active { transform: scale(0.98); }
+.opt:hover { background: #E9DFF8; transform: translateY(-1px); }
+.opt:active { transform: scale(0.98); background: #E0D4F5; }
 .opt .emo {
-  font-size: 22px; width: 42px; height: 42px; flex-shrink: 0;
+  font-size: 24px; width: auto; height: auto; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  background: var(--purple-soft); border-radius: 11px;
+  background: transparent; border-radius: 0;
 }
 
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.grid .opt { flex-direction: column; text-align: center; gap: 7px; padding: 15px 8px; }
-.grid .opt .emo { background: linear-gradient(135deg, var(--purple-soft), var(--purple-mist)); }
+.grid .opt { flex-direction: column; text-align: center; gap: 7px; padding: 16px 8px; font-size: 14px; }
+.grid .opt .emo { font-size: 22px; }
 
 /* ============ INTERSTITIAL ============ */
 .inter { text-align: center; padding: 44px 26px; }
@@ -384,7 +389,7 @@ body {
   <div class="progress-wrap" id="progressWrap">
     <div class="progress-top">
       <button class="back-btn" onclick="prevSlide()">‹</button>
-      <span class="section-label" id="sectionLabel">La Conexión</span>
+      <span class="section-label" id="sectionLabel">Sobre ti</span>
       <span class="slide-counter" id="slideCounter">1/19</span>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -419,11 +424,11 @@ body {
   <!-- SLIDE 2 -->
   <div class="slide" id="slide-2">
     <div class="q-wrap">
-      <h2 class="q-title">¿Para quién estoy leyendo hoy?</h2>
+      <h2 class="q-title">¿Cuál es tu género?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('gender','F')"><span class="emo">🌙</span>Soy mujer</button>
-        <button class="opt" onclick="answer('gender','M')"><span class="emo">☀️</span>Soy hombre</button>
-        <button class="opt" onclick="answer('gender','NB')"><span class="emo">✨</span>Prefiero no decirlo</button>
+        <button class="opt" onclick="answer('gender','F')"><span class="emo">👩</span>Mujer</button>
+        <button class="opt" onclick="answer('gender','M')"><span class="emo">👨</span>Hombre</button>
+        <button class="opt" onclick="answer('gender','NB')"><span class="emo">✨</span>No binario / Otro</button>
       </div>
     </div>
   </div>
@@ -696,7 +701,7 @@ body {
       <div class="r-text" id="readingText"></div>
       <div class="cta">
         <div class="price"><span class="old">De $97</span> · <span class="new">$6,90</span></div>
-        <a class="btn-cta" href="#" id="ctaLink">Quiero mi lectura completa</a>
+        <a class="btn-cta" href="https://pay.hotmart.com/J107108736M?checkoutMode=10" id="ctaLink" target="_blank" rel="noopener noreferrer">Quiero mi lectura completa</a>
         <div class="guar">🔒 Garantía de 60 días — o tu dinero de vuelta</div>
       </div>
     </div>
@@ -858,10 +863,10 @@ const ZODIAC = [
 ];
 
 const SECTIONS = {
-  2:'La Conexión', 3:'La Conexión', 4:'La Conexión', 5:'La Conexión', 6:'La Conexión',
-  7:'Tu Corazón', 8:'Tu Corazón', 9:'Tu Corazón', 10:'Tu Corazón', 11:'Tu Corazón',
-  12:'Inmersión Profunda', 13:'Inmersión Profunda', 14:'Inmersión Profunda', 15:'Inmersión Profunda', 16:'Inmersión Profunda', 17:'Inmersión Profunda',
-  18:'La Revelación', 19:'La Revelación', 20:'La Revelación'
+  2:'Sobre ti', 3:'Sobre ti', 4:'Sobre ti', 5:'Sobre ti', 6:'Sobre ti',
+  7:'Tu corazón', 8:'Tu corazón', 9:'Tu corazón', 10:'Tu corazón', 11:'Tu corazón',
+  12:'Inmersión profunda', 13:'Inmersión profunda', 14:'Inmersión profunda', 15:'Inmersión profunda', 16:'Inmersión profunda', 17:'Inmersión profunda',
+  18:'La revelación', 19:'La revelación', 20:'La revelación'
 };
 
 let currentSlide = 0;
