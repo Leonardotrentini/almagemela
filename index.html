@@ -298,9 +298,74 @@ body {
 }
 .cta .trust-row { margin-top: 12px; }
 .cta .pay-note { font-size: 12px; color: var(--text-soft); margin-top: 10px; }
-.reading .r-headline {
-  font-family: var(--font-serif); font-size: 24px; font-weight: 700;
-  color: var(--ink); text-align: center; line-height: 1.3; margin: 0 0 18px;
+.reading .r-headline { display: none; }
+.reading-letter {
+  background: #0f0a1a;
+  color: #ffffff;
+  padding: 36px 22px 40px;
+  margin: 0 -26px 28px;
+  border-radius: 0;
+}
+.reading-letter .r-title {
+  color: #e9d5ff;
+  margin-bottom: 8px;
+}
+.reading-letter .r-title .nm { color: #facc15; }
+.reading-letter .r-text {
+  max-width: 650px;
+  margin: 0 auto;
+  font-size: 18px;
+  line-height: 1.8;
+  color: #ffffff;
+}
+.reading-letter .r-text h1 {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.35;
+  margin: 18px 0 28px;
+  text-align: left;
+}
+.reading-letter .r-text h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: #c084fc;
+  line-height: 1.35;
+  margin: 36px 0 20px;
+}
+.reading-letter .r-text p { margin: 0 0 24px; color: #ffffff; }
+.reading-letter .r-text b, .reading-letter .r-text strong { color: #f5e9ff; font-weight: 700; }
+.reading-letter .r-text i, .reading-letter .r-text em { font-style: italic; color: #e9d5ff; }
+.reading-letter .r-text .hl-name { color: #facc15; font-weight: 700; }
+.reading-letter .r-list { list-style: none; margin: 16px 0 28px; padding: 0; }
+.reading-letter .r-list li {
+  font-size: 16px; color: #f3e8ff; line-height: 1.55; margin-bottom: 14px;
+}
+.letter-persona {
+  max-width: 650px; margin: 0 auto 22px; display: grid; gap: 10px;
+}
+.letter-persona label {
+  font-size: 13px; color: #c4b5fd; line-height: 1.4;
+}
+.letter-persona input {
+  width: 100%; min-height: 48px; border-radius: 12px; border: 1px solid #4c1d95;
+  background: #1a102a; color: #fff; padding: 12px 14px; font-size: 16px;
+  font-family: var(--font-sans);
+}
+.letter-persona input::placeholder { color: #a78bfa; }
+.letter-block {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.letter-block.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (min-width: 680px) {
+  .reading-letter { margin: 0 0 28px; border-radius: 18px; padding: 44px 40px 48px; }
 }
 
 /* ============ QUESTIONS ============ */
@@ -795,11 +860,15 @@ body {
   <!-- READING + CHECKOUT CAPTURE -->
   <div class="slide" id="slide-reading">
     <div class="reading">
-      <div class="r-title">Mini lectura para <span class="nm" id="readingName">ti</span></div>
-      <div class="r-sep"></div>
-      <div class="r-card" id="readingCardArt"></div>
-      <h3 class="r-headline" id="readingHeadline"></h3>
-      <div class="r-text" id="readingText"></div>
+      <div class="reading-letter" id="readingLetter">
+        <div class="r-title">Mini lectura para <span class="nm" id="readingName">ti</span></div>
+        <div class="letter-persona">
+          <label for="letterNameInput">Escribe tu primer nombre para que Martha te hable directamente</label>
+          <input type="text" id="letterNameInput" placeholder="Tu primer nombre" autocomplete="given-name" oninput="syncLetterPersona()">
+          <input type="date" id="letterBirthInput" aria-label="Fecha de nacimiento" onchange="syncLetterPersona()">
+        </div>
+        <div class="r-text" id="readingText"></div>
+      </div>
       <div class="cta">
         <div class="offer-box">
           <div class="ob-price"><span class="old">De $49 USD</span> por <span class="new">$19 USD</span> hoy</div>
@@ -1297,11 +1366,8 @@ function onLeadChange() {
   if (lead.name) data.name = lead.name;
   if (lead.birthDate) data.birthDate = lead.birthDate;
   saveLeadLocal(lead);
-  if (lead.name) {
-    const hn = document.getElementById('readingName');
-    const hh = document.getElementById('readingHeadline');
-    if (hn) hn.textContent = lead.name;
-    if (hh) hh.textContent = lead.name + ', tu energía no es común. Tengo que decirte algo que no le digo a todas...';
+  if (currentSlide >= 23 && document.getElementById('slide-reading')?.classList.contains('active')) {
+    renderReadingLetter();
   }
 }
 function saveLeadLocal(lead) {
@@ -1398,54 +1464,144 @@ function protectSinceLabel() {
   const map = { trust: 'hace más de un año', past: '2023', worth: 'hace demasiado tiempo', timing: 'hace meses', none: 'poco tiempo' };
   return map[data.block] || '2023';
 }
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function formatBirthLabel(raw) {
+  if (!raw) return 'que me compartiste';
+  const m = String(raw).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return raw;
+  const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return `${parseInt(m[3],10)} de ${months[parseInt(m[2],10)-1]} de ${m[1]}`;
+}
+function syncLetterPersona() {
+  const n = document.getElementById('letterNameInput')?.value || '';
+  const b = document.getElementById('letterBirthInput')?.value || '';
+  const inName = document.getElementById('inName');
+  const inBirth = document.getElementById('inBirth');
+  if (inName) inName.value = n;
+  if (inBirth && b) inBirth.value = b;
+  if (n.trim()) data.name = n.trim();
+  if (b) data.birthDate = b;
+  try { localStorage.setItem('nombre', n.trim()); localStorage.setItem('name', n.trim()); } catch(e){}
+  saveLeadLocal(readLeadFields());
+  clearTimeout(window._personaTimer);
+  window._personaTimer = setTimeout(() => renderReadingLetter(true), 250);
+}
+function resolveReadingPersona() {
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem('almagemele_quiz_v4') || '{}'); } catch(e){}
+  let legacy = {};
+  try { legacy = JSON.parse(localStorage.getItem('almagemela_lead') || '{}'); } catch(e){}
+  const nombreRaw = (
+    document.getElementById('letterNameInput')?.value ||
+    document.getElementById('inName')?.value ||
+    data.name || saved.name || saved.nombre || legacy.name ||
+    localStorage.getItem('nombre') || localStorage.getItem('name') || ''
+  ).trim();
+  const nombre = nombreRaw || 'Hermosa';
+  const birthRaw = (
+    document.getElementById('letterBirthInput')?.value ||
+    document.getElementById('inBirth')?.value ||
+    data.birthDate || saved.birthDate || saved.fecha_nacimiento || legacy.birthDate || ''
+  ).trim();
+  const c = CARDS[selectedKey] || CARDS.lovers;
+  const partner = data.partner_sign;
+  const signo = (partner && partner !== 'unknown')
+    ? partner
+    : (data.zodiac || 'fuego/aire');
+  return {
+    nombre,
+    nombreHtml: escHtml(nombre),
+    tiempoProteccion: protectSinceLabel(),
+    fecha: formatBirthLabel(birthRaw),
+    carta: c.name,
+    signo,
+    isFallbackName: !nombreRaw
+  };
+}
+function bindLetterReveal() {
+  const blocks = document.querySelectorAll('#readingText .letter-block');
+  if (!blocks.length) return;
+  if (window._letterObs) window._letterObs.disconnect();
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (en.isIntersecting) en.target.classList.add('in');
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  window._letterObs = obs;
+  blocks.forEach((el, i) => {
+    if (i < 2) {
+      setTimeout(() => el.classList.add('in'), 80 + i * 120);
+    } else {
+      obs.observe(el);
+    }
+  });
+}
+function renderReadingLetter(keepScroll) {
+  const scrollY = keepScroll ? window.scrollY : null;
+  const p = resolveReadingPersona();
+  const n = p.nombreHtml;
+  const titleName = p.isFallbackName ? 'ti' : p.nombre;
+  const nameEl = document.getElementById('readingName');
+  if (nameEl) nameEl.textContent = titleName;
 
+  const letterName = document.getElementById('letterNameInput');
+  const letterBirth = document.getElementById('letterBirthInput');
+  if (letterName && !letterName.value && !p.isFallbackName) letterName.value = p.nombre;
+  if (letterBirth && !letterBirth.value && p.fecha && data.birthDate) letterBirth.value = data.birthDate || '';
+
+  document.getElementById('readingText').innerHTML = `
+    <div class="letter-block"><h1>${n}, tu energía no es común. Tengo que decirte algo que no le digo a todas...</h1></div>
+    <div class="letter-block"><p>Hoy sentí tu energía fuerte, <span class="hl-name">${n}</span>. Muy fuerte.</p></div>
+    <div class="letter-block"><p>Hay un hombre en tu vida que hace que sea difícil pensar con claridad. Cuando está contigo, todo es magnético. Sientes que te mira como si intentara memorizar tu rostro. La forma en que dice tu nombre... en esos momentos piensas: <i>esta es. Esto es lo que he estado esperando.</i></p></div>
+    <div class="letter-block"><p><b>Pero luego...</b></p></div>
+    <div class="letter-block"><p>Los mensajes tardan. Está "ocupado". "Con mucho trabajo". "Con muchas cosas en la cabeza".</p></div>
+    <div class="letter-block"><p>Y de repente te encuentras despierta a las 2am, revisando conversaciones antiguas, tratando de encontrar el momento exacto en que todo cambió. Releyendo ese último mensaje donde todo parecía perfecto.</p></div>
+    <div class="letter-block"><p>Es agotador. Y sé que llevas <span class="hl-name">${escHtml(p.tiempoProteccion)}</span> así.</p></div>
+    <div class="letter-block"><p>Cuando las cosas están bien entre ustedes, son TAN buenas que se siente innegable. Pero cuando se pone frío... te encuentras poniendo excusas por comportamientos que nunca aceptarías de nadie más. Y luego te frustras contigo misma por seguir queriéndolo de todos modos.</p></div>
+    <div class="letter-block"><h2>La Reina de Bastos. Esta eres TÚ. ${n}.</h2></div>
+    <div class="letter-block"><p>Y eres... wow.</p></div>
+    <div class="letter-block"><p>Eres magnética. Cálida. La mujer que entra a un lugar y todos sienten su energía sin saber por qué. La mujer que la gente recuerda.</p></div>
+    <div class="letter-block"><p>El problema es que desde <span class="hl-name">${escHtml(p.tiempoProteccion)}</span> tu corazón aprendió a protegerse. Empezaste a verter toda esa energía hermosa en personas que te dejan en incertidumbre.</p></div>
+    <div class="letter-block"><p>No eres demasiado, <span class="hl-name">${n}</span>. Eres justo lo que tu alma gemela está buscando. El hombre para ti no te hará encogerte para caber en su vida.</p></div>
+    <div class="letter-block"><h2>Lo que realmente está pasando - El Hilo Enredado</h2></div>
+    <div class="letter-block"><p>Lo que veo en tu fecha de nacimiento <span class="hl-name">${escHtml(p.fecha)}</span> y en la carta que elegiste <span class="hl-name">${escHtml(p.carta)}</span> es lo que llamo "El Hilo Enredado".</p></div>
+    <div class="letter-block"><p>Es una herida de la Diosa. Una memoria de alma que hace que atraigas siempre al mismo tipo de patrón, aunque sean hombres diferentes por fuera. Por eso das mucho y recibes poco. Por eso sientes que tu alma gemela está cerca, pero algo invisible lo bloquea y lo confunde.</p></div>
+    <div class="letter-block"><p>Tu compatibilidad rara es con energía de signo de <span class="hl-name">${escHtml(p.signo)}</span>. Por eso te atrae sin explicación. 7 de cada 100 mujeres tienen este tipo de Hilo Rojo. Por eso atraes miradas que no se olvidan, pero no retienes al correcto.</p></div>
+    <div class="letter-block"><p><b>Necesito parar aquí un momento, ${n}.</b></p></div>
+    <div class="letter-block"><p>Hay algo que las cartas me están mostrando desde el inicio y no quiero apurarlo aquí en esta mini lectura...</p></div>
+    <div class="letter-block"><p>Veo una ventana de encuentro muy clara en los próximos 4 meses. No es en donde imaginas. Es en un lugar cotidiano. Veo una inicial. Veo cómo lo vas a reconocer al instante por su mirada, como si ya lo conocieras.</p></div>
+    <div class="letter-block"><p>Veo que tu historia de "¿será él?" tiene fecha de vencimiento. Y no sé si estás lista para lo que viene.</p></div>
+    <div class="letter-block"><p><b>Mereces claridad, ${n}. No el "quizás" en el que has estado viviendo.</b></p></div>
+    <div class="letter-block"><p>Martha canalizó tu Lectura Completa del Alma Gemela con todo lo que no puedo decirte aquí, porque necesita tiempo:</p>
+    <ul class="r-list">
+      <li>🔮 ¿Quién es realmente tu alma gemela? ¿Es él o alguien nuevo que ya te vio?</li>
+      <li>🔮 Inicial, descripción física y emocional completa - cómo lo reconocerás</li>
+      <li>🔮 Cuándo y dónde lo reconocerás - fecha y lugar exacto de la ventana</li>
+      <li>🔮 Qué está enredando tu Hilo Rojo y el ritual de 7 días para limpiarlo</li>
+      <li>🔮 Qué siente él por ti en este momento y qué lo frena</li>
+    </ul></div>
+    <div class="letter-block"><p>Has estado haciéndote la misma pregunta por demasiado tiempo: "¿Él va a elegirme? ¿Es él el indicado?"</p></div>
+    <div class="letter-block"><p>Siento que la respuesta está más cerca de la superficie hoy que nunca.</p></div>
+  `;
+  bindLetterReveal();
+  if (scrollY != null) window.scrollTo(0, scrollY);
+}
 function showReading() {
   goToSlide(23);
   try { if (typeof fbq === 'function') fbq('track', 'InitiateCheckout'); } catch(e){}
   restoreLeadFields();
+  try {
+    const n = (document.getElementById('inName')?.value || data.name || localStorage.getItem('nombre') || '').trim();
+    const b = (document.getElementById('inBirth')?.value || data.birthDate || '').trim();
+    const ln = document.getElementById('letterNameInput');
+    const lb = document.getElementById('letterBirthInput');
+    if (ln && n) ln.value = n;
+    if (lb && b) lb.value = b;
+  } catch(e){}
   updateTotal();
-  const c = CARDS[selectedKey] || CARDS.lovers;
-  let saved = {};
-  try { saved = JSON.parse(localStorage.getItem('almagemele_quiz_v4') || '{}'); } catch(e){}
-  const name = (document.getElementById('inName')?.value || saved.name || data.name || 'tú').trim() || 'tú';
-  const display = name === 'tú' ? 'tú' : name;
-  const since = protectSinceLabel();
-
-  document.getElementById('readingName').textContent = display === 'tú' ? 'ti' : display;
-  document.getElementById('readingHeadline').textContent =
-    (display === 'tú' ? 'Tu' : display) + (display === 'tú'
-      ? ' energía no es común. Tengo que decirte algo que no le digo a todas...'
-      : ', tu energía no es común. Tengo que decirte algo que no le digo a todas...');
-  document.getElementById('readingCardArt').innerHTML = cardArt(selectedKey);
-
-  const n = display === 'tú' ? 'tú' : display;
-  document.getElementById('readingText').innerHTML = `
-    <p>Hoy sentí tu energía fuerte, <span class="bd">${n}</span>.</p>
-    <p>Hay un hombre en tu vida que hace que sea difícil pensar con claridad. Cuando está contigo, todo es magnético. Sientes que te mira como si intentara memorizar tu rostro. En esos momentos piensas: <span class="em">esta es</span>.</p>
-    <p>Pero luego... los mensajes tardan. Está "ocupado". "Con mucho trabajo".</p>
-    <p>Y de repente te encuentras despierta a las 2am, revisando conversaciones antiguas, tratando de encontrar el momento exacto en que todo cambió.</p>
-    <p>Es agotador. Y sé que llevas meses así.</p>
-    <span class="rev">La Reina de Bastos. Esta eres TÚ.</span>
-    <p>Y eres... wow.</p>
-    <p>Eres magnética. Cálida. La mujer que entra a un lugar y todos sienten su energía sin saber por qué.</p>
-    <p>El problema es que desde <span class="bd">${since}</span> tu corazón aprendió a protegerse. Y empezaste a verter toda esa energía hermosa en personas que te dejan en incertidumbre.</p>
-    <p>No eres demasiado. Eres justo lo que tu alma gemela está buscando.</p>
-    <span class="rev">Lo que veo es lo que llamo "El Hilo Enredado".</span>
-    <p>Es una memoria de alma, una herida de la Diosa que hace que atraigas siempre al mismo tipo de patrón, aunque sean hombres diferentes por fuera.</p>
-    <p>Por eso das mucho y recibes poco. Por eso sientes que tu alma gemela está cerca, pero algo invisible lo bloquea.</p>
-    <p>Las cartas que elegiste lo confirman. Tu compatibilidad rara es con energía de signo de <span class="bd">fuego/aire</span>. Eso no es casualidad. <span class="em">${c.hook}</span></p>
-    <p class="cliff">Necesito parar aquí un momento.</p>
-    <p>Hay algo que las cartas me están mostrando desde el inicio y no quiero apurarlo...</p>
-    <p>Veo una ventana de encuentro muy clara en los próximos 4 meses. En un lugar cotidiano, no donde imaginas.</p>
-    <p>Veo una inicial. Veo cómo lo vas a reconocer por su mirada.</p>
-    <p>Martha canalizó tu Lectura Completa con todo lo que no puedo decirte aquí:</p>
-    <ul class="r-list">
-      <li>🔮 Quién es realmente tu alma gemela (¿es él o alguien nuevo?)</li>
-      <li>🔮 Inicial, descripción física y emocional completa</li>
-      <li>🔮 Cuándo y dónde lo reconocerás - fecha y lugar</li>
-      <li>🔮 Qué está enredando tu Hilo Rojo y cómo limpiarlo en 7 días</li>
-    </ul>
-  `;
+  renderReadingLetter();
   bindExitIntent();
   persistQuiz();
 }
