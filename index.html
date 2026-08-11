@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
+<meta name="almagemela-build" content="v6.1-confirm-first">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="description" content="Almagemela — lectura gratuita de alma gemela. Elige una carta y recibe tu orientación espiritual.">
 <title>Almagemela · Lectura de Alma Gemela</title>
 <!-- Meta Pixel Code -->
@@ -378,9 +382,8 @@ body {
 .cc-val { font-size: 16px; font-weight: 700; color: #581c87; text-align: right; }
 .channel-loading {
   text-align: center; padding: 72px 24px; min-height: 50vh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  flex-direction: column; align-items: center; justify-content: center;
 }
-.channel-loading[hidden] { display: none !important; }
 .channel-orb {
   font-size: 48px; margin-bottom: 22px;
   animation: glow 2s ease-in-out infinite;
@@ -389,8 +392,16 @@ body {
   font-size: 17px; color: var(--ink); line-height: 1.5; max-width: 300px;
   font-family: var(--font-serif); font-weight: 600;
 }
-.letter-reveal[hidden] { display: none !important; }
-.confirm-gate[hidden] { display: none !important; }
+/* V6 reading states — exclusive panels */
+#slide-reading .confirm-gate,
+#slide-reading .channel-loading,
+#slide-reading .letter-reveal { display: none !important; }
+#slide-reading.v6-confirm .confirm-gate { display: block !important; }
+#slide-reading.v6-channel .channel-loading { display: flex !important; }
+#slide-reading.v6-letter .letter-reveal { display: block !important; }
+#slide-reading .reading-letter input,
+#slide-reading .letter-reveal input[type="text"]:not(#inEmail):not(#inPhone),
+#slide-reading .letter-reveal input[type="date"] { display: none !important; }
 .letter-block {
   opacity: 0;
   transform: translateY(14px);
@@ -915,7 +926,7 @@ body {
   <!-- LEAD (captura movida al checkout de Mini Lectura) -->
   <div class="slide" id="slide-lead" style="display:none!important" aria-hidden="true"></div>
 
-  <!-- READING: confirm → channel loading → carta + oferta -->
+  <!-- READING: confirm → channel loading → carta + oferta · build v6.1 -->
   <div class="slide" id="slide-reading">
     <div class="reading">
       <div class="confirm-gate" id="confirmGate">
@@ -925,16 +936,16 @@ body {
           <div class="cc-row"><span class="cc-label">Nombre</span><span class="cc-val" id="confirmName">—</span></div>
           <div class="cc-row"><span class="cc-label">Fecha de nacimiento</span><span class="cc-val" id="confirmBirth">—</span></div>
         </div>
-        <button type="button" class="btn-know" onclick="revealMiniLectura()">SÍ, REVELAR MI MINI LECTURA AHORA →</button>
+        <button type="button" class="btn-know" id="btnRevealLectura" onclick="revealMiniLectura()">SÍ, REVELAR MI MINI LECTURA AHORA →</button>
         <p class="reveal-foot">Paso 19/19 · 100% confidencial</p>
       </div>
 
-      <div class="channel-loading" id="channelLoading" hidden>
+      <div class="channel-loading" id="channelLoading">
         <div class="channel-orb">🔮</div>
         <p class="channel-line" id="channelLine">Canalizando tu energía...</p>
       </div>
 
-      <div class="letter-reveal" id="letterReveal" hidden>
+      <div class="letter-reveal" id="letterReveal">
         <div class="reading-letter" id="readingLetter">
           <div class="r-title">Mini lectura para <span class="nm" id="readingName">ti</span></div>
           <div class="r-text" id="readingText"></div>
@@ -1708,13 +1719,16 @@ function renderReadingLetter() {
   `;
   bindLetterReveal();
 }
+function setReadingState(state) {
+  const slide = document.getElementById('slide-reading');
+  if (!slide) return;
+  slide.classList.remove('v6-confirm', 'v6-channel', 'v6-letter');
+  slide.classList.add(state === 'channel' ? 'v6-channel' : state === 'letter' ? 'v6-letter' : 'v6-confirm');
+}
 function showReadingConfirm() {
-  const gate = document.getElementById('confirmGate');
-  const ch = document.getElementById('channelLoading');
-  const letter = document.getElementById('letterReveal');
-  if (gate) gate.hidden = false;
-  if (ch) ch.hidden = true;
-  if (letter) letter.hidden = true;
+  setReadingState('confirm');
+  const text = document.getElementById('readingText');
+  if (text) text.innerHTML = '';
   const p = resolveReadingPersona();
   const title = document.getElementById('confirmTitle');
   if (title) title.textContent = 'Tu lectura está casi lista, ' + p.nombre;
@@ -1724,12 +1738,7 @@ function showReadingConfirm() {
   if (cb) cb.textContent = p.fechaDisplay || p.fecha || '—';
 }
 function revealMiniLectura() {
-  const gate = document.getElementById('confirmGate');
-  const ch = document.getElementById('channelLoading');
-  const letter = document.getElementById('letterReveal');
-  if (gate) gate.hidden = true;
-  if (letter) letter.hidden = true;
-  if (ch) ch.hidden = false;
+  setReadingState('channel');
   window.scrollTo(0, 0);
   const p = resolveReadingPersona();
   const lines = [
@@ -1746,8 +1755,7 @@ function revealMiniLectura() {
   }, 1000);
   setTimeout(() => {
     clearInterval(timer);
-    if (ch) ch.hidden = true;
-    if (letter) letter.hidden = false;
+    setReadingState('letter');
     renderReadingLetter();
     updateTotal();
     bindExitIntent();
