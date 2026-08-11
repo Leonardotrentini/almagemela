@@ -119,22 +119,31 @@ body {
   margin-top: 2px;
 }
 
-/* ============ PROGRESS ============ */
-.progress-wrap { display: none; padding: 14px 22px 2px; background: var(--white); }
+/* ============ PROGRESS (global sticky) ============ */
+.progress-wrap {
+  display: none; position: sticky; top: 0; z-index: 40;
+  padding: 12px 18px 10px; background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+}
 .progress-wrap.visible { display: block; }
-.progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
 .back-btn {
   background: none; border: none; font-size: 22px; color: var(--text-soft);
   cursor: pointer; padding: 0 6px; line-height: 1; font-family: serif;
 }
-.section-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 2px; text-transform: uppercase; }
+.section-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 2px; text-transform: uppercase; flex: 1; text-align: center; }
 .slide-counter {
-  font-size: 12px; font-weight: 700; color: var(--white);
-  background: var(--purple); border-radius: 999px;
-  padding: 5px 12px; letter-spacing: 0.3px; min-width: 44px; text-align: center;
+  font-size: 11px; font-weight: 700; color: var(--white);
+  background: linear-gradient(135deg, var(--purple), #C9A24B);
+  border-radius: 999px; padding: 5px 11px; letter-spacing: 0.2px;
+  white-space: nowrap; text-align: center;
 }
-.progress-bar { width: 100%; height: 4px; background: #EDE4F8; border-radius: 5px; overflow: hidden; }
-.progress-fill { height: 100%; background: var(--purple); border-radius: 5px; transition: width 0.55s cubic-bezier(0.4,0,0.2,1); width: 0; }
+.progress-bar { width: 100%; height: 5px; background: #EDE4F8; border-radius: 5px; overflow: hidden; }
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), #C9A24B);
+  border-radius: 5px; transition: width 0.45s cubic-bezier(0.4,0,0.2,1); width: 0;
+}
 
 /* ============ SLIDES ============ */
 .slide { display: none; }
@@ -188,12 +197,50 @@ body {
 }
 .reveal .kw { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 14px; }
 .reveal p { font-size: 15px; color: var(--text); line-height: 1.65; max-width: 340px; margin: 0 auto; }
-.reveal .tap-hint {
-  margin-top: 22px; font-size: 12px; color: var(--text-soft);
-  letter-spacing: 1px; text-transform: uppercase; opacity: 0.7;
-  animation: pulse 1.6s ease-in-out infinite;
+.reveal-hook {
+  font-family: var(--font-serif); font-size: 22px; font-weight: 700;
+  color: var(--ink); line-height: 1.3; margin: 0 auto 10px; max-width: 340px;
 }
-@keyframes pulse { 0%,100%{ opacity: 0.4; } 50%{ opacity: 0.8; } }
+.reveal-sub {
+  font-size: 13px; color: var(--text-soft); line-height: 1.5;
+  margin: 0 auto 18px; max-width: 320px;
+}
+.btn-know {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 8px; padding: 16px 28px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg, var(--purple), var(--purple-bright));
+  color: #fff; font-size: 15px; font-weight: 800; letter-spacing: 0.4px;
+  font-family: var(--font-sans); cursor: pointer;
+  box-shadow: 0 8px 24px rgba(109,40,217,0.4);
+  animation: knowPulse 1.6s ease-in-out infinite;
+}
+.btn-know:hover { transform: translateY(-1px); }
+@keyframes knowPulse {
+  0%,100% { box-shadow: 0 8px 24px rgba(109,40,217,0.35); transform: scale(1); }
+  50% { box-shadow: 0 12px 34px rgba(109,40,217,0.55); transform: scale(1.03); }
+}
+.barnum {
+  font-size: 13px; color: var(--text-soft); line-height: 1.55;
+  max-width: 340px; margin: -4px auto 16px; font-style: italic;
+}
+.cta .btn-cta.pulse {
+  animation: knowPulse 1.6s ease-in-out infinite;
+  text-transform: uppercase; letter-spacing: 0.3px; font-size: 14px; line-height: 1.35;
+  padding: 18px 16px;
+}
+.checkout-form {
+  margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--purple-soft);
+  text-align: left;
+}
+.checkout-form .cf-title {
+  font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 12px; text-align: center;
+}
+.cta .trust-row { margin-top: 12px; }
+.cta .pay-note { font-size: 12px; color: var(--text-soft); margin-top: 10px; }
+.reading .r-headline {
+  font-family: var(--font-serif); font-size: 24px; font-weight: 700;
+  color: var(--ink); text-align: center; line-height: 1.3; margin: 0 0 18px;
+}
 
 /* ============ QUESTIONS ============ */
 .q-wrap { padding: 36px 22px 48px; }
@@ -255,15 +302,17 @@ body {
 .ring svg { transform: rotate(-90deg); }
 .ring .pct {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  font-size: 34px; font-weight: 700; color: var(--purple);
+  font-size: 42px; font-weight: 700; color: var(--purple);
   font-family: var(--font-serif);
 }
 .checklist { text-align: left; max-width: 310px; margin: 0 auto; }
 .check {
   display: flex; align-items: center; gap: 13px; padding: 11px 0;
-  font-size: 14px; color: var(--text-soft); opacity: 0.35; transition: all 0.5s;
+  font-size: 14px; color: var(--text-soft); opacity: 0.28;
+  transform: translateY(8px); transition: all 0.45s ease;
 }
-.check.on { opacity: 1; color: var(--text); }
+.check.on { opacity: 1; color: var(--text); transform: translateY(0); }
+.check.done { opacity: 1; transform: translateY(0); }
 .check .ci {
   width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
   border: 2px solid var(--purple-soft); display: flex; align-items: center; justify-content: center;
@@ -390,7 +439,7 @@ body {
     <div class="progress-top">
       <button class="back-btn" onclick="prevSlide()">‹</button>
       <span class="section-label" id="sectionLabel">Sobre ti</span>
-      <span class="slide-counter" id="slideCounter">1/19</span>
+      <span class="slide-counter" id="slideCounter">Paso 1/19 · 5%</span>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
   </div>
@@ -411,13 +460,15 @@ body {
   </div>
 
   <!-- SLIDE 1: REVEAL -->
-  <div class="slide" id="slide-1" onclick="skipReveal()">
+  <div class="slide" id="slide-1">
     <div class="reveal">
+      <h2 class="reveal-hook">¿Por qué sientes que tu alma gemela está cerca, pero algo lo bloquea?</h2>
+      <p class="reveal-sub">Martha va a leer tu energía en 60 segundos. +12.431 lecturas, 100% confidencial</p>
       <div class="big-card" id="revealCardArt"></div>
       <h2 id="revealName"></h2>
       <div class="kw" id="revealKw"></div>
       <p id="revealMeaning"></p>
-      <p class="tap-hint">toca para continuar</p>
+      <button type="button" class="btn-know" onclick="skipReveal()">SÍ, QUIERO SABER →</button>
     </div>
   </div>
 
@@ -473,6 +524,7 @@ body {
     <div class="inter">
       <div class="orb">🔮</div>
       <h2>Siento una energía fuerte</h2>
+      <p class="barnum">No es casualidad que estés aquí hoy. Tu energía está llamando a alguien desde hace meses.</p>
       <p id="inter1Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar lectura</button>
     </div>
@@ -531,6 +583,7 @@ body {
     <div class="inter">
       <div class="orb">💞</div>
       <h2 id="inter2Title">Compatibilidad rara</h2>
+      <p class="barnum">Veo una compatibilidad que no es común. 7 de cada 100 mujeres tienen este tipo de hilo rojo.</p>
       <p id="inter2Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
@@ -569,6 +622,7 @@ body {
     <div class="inter">
       <div class="orb">🧿</div>
       <h2 id="inter3Title">Tu corazón se protege</h2>
+      <p class="barnum">Desde 2023 tu corazón aprendió a protegerse. Por eso das mucho y recibes poco.</p>
       <p id="inter3Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
@@ -606,6 +660,7 @@ body {
     <div class="inter">
       <div class="orb">🃏</div>
       <h2>Las cartas confirman</h2>
+      <p class="barnum">Las cartas no mienten. Él ya sintió tu energía, pero tu bloqueo lo confunde.</p>
       <p id="inter4Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Ya casi llego</button>
     </div>
@@ -670,8 +725,8 @@ body {
     </div>
   </div>
 
-  <!-- LEAD -->
-  <div class="slide" id="slide-lead">
+  <!-- LEAD (moved into Mini Lectura checkout) -->
+  <div class="slide" id="slide-lead" style="display:none!important" aria-hidden="true">
     <div class="lead">
       <div class="lead-icon">💌</div>
       <h2>Tu lectura está lista</h2>
@@ -692,17 +747,31 @@ body {
     </div>
   </div>
 
-  <!-- READING -->
+  <!-- READING + CHECKOUT CAPTURE -->
   <div class="slide" id="slide-reading">
     <div class="reading">
       <div class="r-title">Mini lectura para <span class="nm" id="readingName">ti</span></div>
       <div class="r-sep"></div>
       <div class="r-card" id="readingCardArt"></div>
+      <h3 class="r-headline" id="readingHeadline"></h3>
       <div class="r-text" id="readingText"></div>
       <div class="cta">
-        <div class="price"><span class="old">De $97</span> · <span class="new">$6,90</span></div>
-        <a class="btn-cta" href="https://pay.hotmart.com/J107108736M?checkoutMode=10" id="ctaLink" target="_blank" rel="noopener noreferrer">Quiero mi lectura completa</a>
-        <div class="guar">🔒 Garantía de 60 días — o tu dinero de vuelta</div>
+        <a class="btn-cta pulse" href="https://pay.hotmart.com/J107108736M?checkoutMode=10" id="ctaLink" target="_blank" rel="noopener noreferrer" onclick="goCheckout(event)">DESBLOQUEAR MI LECTURA COMPLETA POR $19 USD</a>
+        <div class="trust-row">
+          <span class="t">🔒 100% confidencial</span>
+          <span class="t">💜 +12 mil lecturas</span>
+        </div>
+        <div class="pay-note">Pago seguro · Entrega inmediata</div>
+        <div class="checkout-form">
+          <div class="cf-title">¿Dónde te envía Martha la lectura completa?</div>
+          <div class="fg"><input type="text" id="inName" placeholder="Tu primer nombre" autocomplete="given-name"></div>
+          <div class="fg"><input type="email" id="inEmail" placeholder="Tu mejor correo" autocomplete="email"></div>
+          <div class="fg"><input type="tel" id="inPhone" placeholder="WhatsApp (opcional)" autocomplete="tel"></div>
+          <div class="checkbox">
+            <input type="checkbox" id="optin" checked>
+            <label for="optin">Sí, quiero recibir mi lectura y mensajes de Martha por correo y WhatsApp.</label>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -866,7 +935,8 @@ const SECTIONS = {
   2:'Sobre ti', 3:'Sobre ti', 4:'Sobre ti', 5:'Sobre ti', 6:'Sobre ti',
   7:'Tu corazón', 8:'Tu corazón', 9:'Tu corazón', 10:'Tu corazón', 11:'Tu corazón',
   12:'Inmersión profunda', 13:'Inmersión profunda', 14:'Inmersión profunda', 15:'Inmersión profunda', 16:'Inmersión profunda', 17:'Inmersión profunda',
-  18:'La revelación', 19:'La revelación', 20:'La revelación'
+  18:'La revelación', 19:'La revelación', 20:'La revelación',
+  21:'Tu lectura', 23:'Tu lectura'
 };
 
 let currentSlide = 0;
@@ -921,19 +991,18 @@ function buildZodiac() {
 // ============ PICKER ============
 function pickCard(el) {
   selectedKey = CARD_KEYS[Math.floor(Math.random()*CARD_KEYS.length)];
+  try { localStorage.setItem('almagemela_card', selectedKey); } catch(e){}
   document.querySelectorAll('.tcard').forEach(c => c.style.pointerEvents='none');
   el.classList.add('lifted');
   el.style.transform = 'rotate(0deg) translateY(-30px) scale(1.15)';
   setTimeout(() => {
     fillReveal();
     goToSlide(1);
-    revealTimer = setTimeout(() => { if(currentSlide===1) goToSlide(2); }, 1500);
   }, 400);
 }
-let revealTimer = null;
-function skipReveal() {
+function skipReveal(e) {
+  if (e) e.stopPropagation();
   if (currentSlide !== 1) return;
-  clearTimeout(revealTimer);
   goToSlide(2);
 }
 function fillReveal() {
@@ -946,15 +1015,23 @@ function fillReveal() {
 
 // ============ NAV ============
 function goToSlide(n) {
-  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  // Skip old lead screen: loading(21) -> reading(22)
+  if (n === 22 && document.getElementById('slide-lead')?.getAttribute('aria-hidden') === 'true') {
+    n = 23;
+  }
+  document.querySelectorAll('.slide').forEach(s => {
+    if (s.id === 'slide-lead') return;
+    s.classList.remove('active');
+  });
   let id;
   if (n <= LAST_Q) id = `slide-${n}`;
   else if (n === 21) id = 'slide-loading';
-  else if (n === 22) id = 'slide-lead';
   else id = 'slide-reading';
-  document.getElementById(id).classList.add('active');
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
   currentSlide = n;
   updateProgress();
+  try { localStorage.setItem('almagemela_slide', String(n)); localStorage.setItem('almagemela_data', JSON.stringify(data)); } catch(e){}
   document.getElementById('app').scrollIntoView({block:'start'});
   window.scrollTo(0,0);
 }
@@ -962,26 +1039,34 @@ function nextSlide(){ goToSlide(currentSlide+1); }
 function prevSlide(){ if(currentSlide>2) goToSlide(currentSlide-1); }
 function updateProgress() {
   const w = document.getElementById('progressWrap');
-  if (currentSlide>=2 && currentSlide<=LAST_Q) {
+  const total = 19;
+  let paso = 0;
+  if (currentSlide >= 1 && currentSlide <= LAST_Q) paso = Math.max(1, currentSlide - 1);
+  else if (currentSlide === 21) paso = 19;
+  else if (currentSlide >= 22) paso = 19;
+  if (currentSlide >= 1) {
     w.classList.add('visible');
-    const n = currentSlide-1, total = LAST_Q-1;
-    document.getElementById('slideCounter').textContent = `${n}/${total}`;
-    document.getElementById('progressFill').style.width = `${(n/total)*100}%`;
-    document.getElementById('sectionLabel').textContent = SECTIONS[currentSlide]||'La Revelación';
-  } else w.classList.remove('visible');
+    const pct = Math.min(100, Math.round((paso / total) * 100));
+    document.getElementById('slideCounter').textContent = `Paso ${paso}/${total} · ${pct}%`;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('sectionLabel').textContent = SECTIONS[currentSlide] || (currentSlide >= 21 ? 'Tu lectura' : 'Sobre ti');
+  } else {
+    w.classList.remove('visible');
+  }
 }
 
 // ============ ANSWER ============
 function answer(key, val) {
   data[key] = val;
+  try { localStorage.setItem('almagemela_data', JSON.stringify(data)); } catch(e){}
   if (key==='zodiac') document.getElementById('chkSign').textContent = val;
   if (key==='gender') updateGenderCopy(val);
   if (key==='met') fillInter1(val);
   if (key==='partner_sign') fillInter2(val);
   if (key==='block') fillInter3(val);
   if (key==='want') fillInter4(val);
-  if (key==='ready') { startLoading(); return; }
-  nextSlide();
+  if (key==='ready') { setTimeout(() => startLoading(), 400); return; }
+  setTimeout(() => nextSlide(), 400);
 }
 
 // gender-aware wording
@@ -1039,24 +1124,35 @@ function fillInter4(want) {
 // ============ LOADING ============
 function startLoading() {
   goToSlide(21);
-  let pct = 0, step = 0, modal = false;
   const pctEl = document.getElementById('loadingPct');
   const ring = document.getElementById('ringFill');
-  const items = document.querySelectorAll('.check');
+  const items = Array.from(document.querySelectorAll('.check'));
+  items.forEach(el => { el.classList.remove('on','done'); el.querySelector('.ci').textContent='○'; });
   const CIRC = 415;
-  const tick = setInterval(() => {
-    pct += Math.random()*3.5 + 1.2;
-    if (pct>100) pct=100;
-    pctEl.textContent = Math.floor(pct)+'%';
-    ring.style.strokeDashoffset = CIRC - (CIRC*pct/100);
-    if (pct>12 && step===0){ mark(items[0],'done'); mark(items[1],'on'); step=1; }
-    if (pct>38 && step===1){ mark(items[1],'done'); mark(items[2],'on'); step=2; }
-    if (pct>52 && !modal){ showModal(); modal=true; }
-    if (pct>74 && step===2){ mark(items[2],'done'); mark(items[3],'on'); step=3; }
-    if (pct>=100){ mark(items[3],'done'); clearInterval(tick); setTimeout(()=>goToSlide(22),1100); }
-  }, 200);
+  const duration = 7000;
+  const start = performance.now();
+  let step = 0, modal = false;
+  function frame(now) {
+    const t = Math.min(1, (now - start) / duration);
+    const pct = Math.floor(t * 100);
+    pctEl.textContent = pct + '%';
+    ring.style.strokeDashoffset = CIRC - (CIRC * pct / 100);
+    if (pct >= 8 && step === 0) { mark(items[0],'done'); mark(items[1],'on'); step = 1; }
+    if (pct >= 32 && step === 1) { mark(items[1],'done'); mark(items[2],'on'); step = 2; }
+    if (pct >= 48 && !modal) { showModal(); modal = true; }
+    if (pct >= 68 && step === 2) { mark(items[2],'done'); mark(items[3],'on'); step = 3; }
+    if (pct >= 100) {
+      mark(items[3],'done');
+      setTimeout(() => showReading(), 450);
+      return;
+    }
+    requestAnimationFrame(frame);
+  }
+  mark(items[0],'on');
+  requestAnimationFrame(frame);
 }
 function mark(el, cls){
+  if (!el) return;
   el.classList.add('on');
   if(cls==='done'){ el.classList.add('done'); el.querySelector('.ci').textContent='✓'; }
 }
@@ -1066,78 +1162,113 @@ function showModal(){ document.getElementById('modal').classList.add('visible');
 function closeModal(){ document.getElementById('modal').classList.remove('visible'); }
 function modalAnswer(v){ data.feels_close = v; closeModal(); }
 
-// ============ LEAD ============
-async function submitLead() {
-  const name = document.getElementById('inName').value.trim();
-  const email = document.getElementById('inEmail').value.trim();
-  const btn = document.querySelector('#slide-lead .submit');
-  let ok = true;
-  if(!name){ document.getElementById('inName').style.borderColor='#EF4444'; ok=false; }
-  if(!email || !email.includes('@')){ document.getElementById('inEmail').style.borderColor='#EF4444'; ok=false; }
-  if(!ok) return;
-  data.name = name; data.email = email;
-  data.phone = document.getElementById('inPhone').value.trim();
-  data.optin = document.getElementById('optin').checked;
-
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Guardando...';
-  }
-
+// ============ LEAD / CHECKOUT ============
+function readLeadFields() {
+  const name = (document.getElementById('inName')?.value || '').trim();
+  const email = (document.getElementById('inEmail')?.value || '').trim().toLowerCase();
+  const phone = (document.getElementById('inPhone')?.value || '').trim();
+  const optin = !!document.getElementById('optin')?.checked;
+  return { name, email, phone, optin };
+}
+function saveLeadLocal(lead) {
+  Object.assign(data, lead);
+  try { localStorage.setItem('almagemela_lead', JSON.stringify(lead)); localStorage.setItem('almagemela_data', JSON.stringify(data)); } catch(e){}
+}
+async function persistLead() {
+  const lead = readLeadFields();
+  saveLeadLocal(lead);
+  if (!lead.email || !lead.email.includes('@')) return lead;
   try {
     await fetch('/api/lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        optin: data.optin,
+        name: lead.name || 'Visitante',
+        email: lead.email,
+        phone: lead.phone,
+        optin: lead.optin,
         card: selectedKey,
         answers: data,
       }),
     });
   } catch (err) {
     console.error('Lead send failed:', err);
-  } finally {
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = 'Revelar mi lectura de alma gemela';
-    }
   }
-
-  showReading();
+  return lead;
 }
-function skipReading(){ data.name = data.name || 'ti'; showReading(); }
+async function goCheckout(e) {
+  e.preventDefault();
+  const url = document.getElementById('ctaLink').href;
+  const lead = await persistLead();
+  if (lead.name) {
+    document.getElementById('readingName').textContent = lead.name;
+    const hl = document.getElementById('readingHeadline');
+    if (hl) hl.textContent = lead.name + ', tu energía es de las que no se olvidan';
+  }
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+const STATUS_LABEL = {
+  single: 'soltero/a y abierto/a al amor',
+  complicated: 'en una etapa complicada',
+  someone: 'con alguien en la mente',
+  relationship: 'en una relación',
+  healing: 'sanando de una ruptura'
+};
+const BLOCK_TIME = {
+  trust: 'mucho tiempo',
+  past: 'años',
+  worth: 'demasiado tiempo',
+  timing: 'meses',
+  none: 'poco'
+};
+const FIRE_AIR = new Set(['Aries','Leo','Sagitario','Géminis','Libra','Acuario']);
+
+function elementEnergy() {
+  const sign = data.partner_sign && data.partner_sign !== 'unknown' ? data.partner_sign : data.zodiac;
+  if (sign && FIRE_AIR.has(sign)) return 'fuego/aire';
+  return 'fuego/aire';
+}
 
 // ============ READING ============
 function showReading() {
   goToSlide(23);
-  const c = CARDS[selectedKey];
-  const name = data.name || 'ti';
-  const traitMap = {loyalty:'lealtad',passion:'pasión',safety:'paz y seguridad',adventure:'complicidad',understanding:'ser comprendido/a de verdad'};
-  const trait = traitMap[data.trait] || 'conexión verdadera';
-  document.getElementById('readingName').textContent = name;
+  restoreLeadFields();
+  const c = CARDS[selectedKey] || CARDS.lovers;
+  const saved = (()=>{ try { return JSON.parse(localStorage.getItem('almagemela_lead')||'{}'); } catch(e){ return {}; }})();
+  const name = (saved.name || data.name || 'tú');
+  const statusTxt = STATUS_LABEL[data.status] || 'buscando claridad en el amor';
+  const tiempo = BLOCK_TIME[data.block] || 'tiempo';
+  const elem = elementEnergy();
+
+  document.getElementById('readingName').textContent = name === 'tú' ? 'ti' : name;
+  document.getElementById('readingHeadline').textContent =
+    (name === 'tú' ? 'Tu' : name) + (name === 'tú' ? ' energía es de las que no se olvidan' : ', tu energía es de las que no se olvidan');
   document.getElementById('readingCardArt').innerHTML = cardArt(selectedKey);
+
   document.getElementById('readingText').innerHTML = `
-    <p>Fuiste atraíd${G} por <span class="bd">${c.name}</span>.</p>
-    <p>${c.meaning}</p>
-    <p>${name.charAt(0).toUpperCase()+name.slice(1)}, cuando esta carta aparece en una lectura de alma gemela, me dice algo con claridad:</p>
-    <p><span class="em">Hay alguien pensando en ti en este exacto momento.</span></p>
-    <p>Esta persona carga una energía que completa la tuya. Lo que más busca es justamente ${trait} — y eso es lo que tú tienes para ofrecer.</p>
-    <p>No fue coincidencia que eligieras esta carta. ${c.hook}</p>
-    <span class="rev">Y esto es lo que revelan las cartas:</span>
-    <p>Veo a esta persona acercándose. Puede ser alguien que ya está en tu vida — o alguien a punto de llegar.</p>
-    <p>Tiene una presencia que te hace sentir…</p>
-    <p><span class="em">En casa.</span></p>
-    <p>Como si pudieras bajar la guardia y ser exactamente quien eres. Sin miedo. Sin juicio.</p>
-    <p>Las cartas muestran que esta conexión es rara — el tipo de amor que hace creer de nuevo.</p>
-    <p class="cliff">${c.name} me dice que esta persona está empezando a…</p>
-    <p class="prompt">Para descubrir el resto, pide tu lectura completa con Martha 👇</p>
+    <p>Veo que estás <span class="bd">${statusTxt}</span> y desde hace <span class="bd">${tiempo}</span> te proteges. Eso creó lo que llamo <span class="em">'Herida de la Diosa'</span> — tu Hilo Rojo está enredado.</p>
+    <p>Tu alma gemela tiene energía de signo de <span class="bd">${elem}</span>. La carta <span class="bd">${c.name}</span> lo confirma. Hay una ventana de encuentro en los próximos 4 meses en un lugar cotidiano.</p>
+    <p><span class="em">${c.hook}</span></p>
+    <p class="cliff">Lo que aún no te revelé es cómo desenredar ese Hilo Rojo…</p>
   `;
+}
+function restoreLeadFields() {
+  let lead = {};
+  try { lead = JSON.parse(localStorage.getItem('almagemela_lead') || '{}'); } catch(e){}
+  if (lead.name) document.getElementById('inName').value = lead.name;
+  if (lead.email) document.getElementById('inEmail').value = lead.email;
+  if (lead.phone) document.getElementById('inPhone').value = lead.phone;
+  if (typeof lead.optin === 'boolean') document.getElementById('optin').checked = lead.optin;
 }
 
 // ============ BOOT ============
+try {
+  const savedData = JSON.parse(localStorage.getItem('almagemela_data') || '{}');
+  if (savedData && typeof savedData === 'object') data = savedData;
+  const savedCard = localStorage.getItem('almagemela_card');
+  if (savedCard && CARDS[savedCard]) selectedKey = savedCard;
+} catch(e){}
 requestAnimationFrame(() => {
   requestAnimationFrame(() => {
     buildFan();
