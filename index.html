@@ -1169,6 +1169,62 @@ const LAST_Q = 22;
 const SLIDE_LOADING = 23;
 const SLIDE_READING = 25;
 
+// ============ TRACKING (admin) ============
+function getVisitorId() {
+  try {
+    let id = localStorage.getItem('almagemela_vid');
+    if (!id) {
+      id = (crypto.randomUUID && crypto.randomUUID()) ||
+        ('v_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+      localStorage.setItem('almagemela_vid', id);
+    }
+    return id;
+  } catch (e) {
+    return 'v_anon_' + Date.now();
+  }
+}
+function quizPasoInfo(slide) {
+  const total = 19;
+  let paso = 0;
+  let label = 'Inicio';
+  if (slide >= 1 && slide <= LAST_Q) {
+    paso = Math.min(19, Math.max(1, slide - 1));
+    label = SECTIONS[slide] || 'Quiz';
+  } else if (slide === SLIDE_LOADING) {
+    paso = 19; label = 'Loading energía';
+  } else if (slide >= SLIDE_READING) {
+    paso = 19; label = 'Mini Lectura';
+  }
+  return { paso, total, label };
+}
+let _trackTimer = null;
+function trackProgress(extra) {
+  extra = extra || {};
+  clearTimeout(_trackTimer);
+  _trackTimer = setTimeout(() => {
+    try {
+      const info = quizPasoInfo(currentSlide);
+      const payload = {
+        visitor_id: getVisitorId(),
+        name: data.name || localStorage.getItem('nombre') || null,
+        birth_date: data.fecha || data.birthDate || localStorage.getItem('fecha') || null,
+        current_step: typeof extra.current_step === 'number' ? extra.current_step : info.paso,
+        step_label: extra.step_label || info.label,
+        card: selectedKey || null,
+        answers: data || {},
+        status: extra.status || (info.paso > 0 ? 'in_progress' : 'started'),
+        event: extra.event || 'step',
+      };
+      fetch('/api/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      }).catch(() => {});
+    } catch (e) {}
+  }, extra.immediate ? 0 : 280);
+}
+
 // ============ INIT ============
 function buildFan() {
   const fan = document.getElementById('fan');
@@ -1242,6 +1298,7 @@ function pickCard(el) {
     fillReveal();
     goToSlide(1);
     window._pickingCard = false;
+    trackProgress({ event: 'card_pick', status: 'started', current_step: 1, step_label: 'Hook inicial', immediate: true });
   }, 980);
 }
 function skipReveal(e) {
@@ -1270,6 +1327,7 @@ function goToSlide(n) {
   currentSlide = n;
   updateProgress();
   try { localStorage.setItem('almagemela_slide', String(n)); localStorage.setItem('almagemela_data', JSON.stringify(data)); } catch(e){}
+  trackProgress({ event: 'slide_' + n });
   document.getElementById('app').scrollIntoView({block:'start'});
   window.scrollTo(0,0);
 }
@@ -1315,6 +1373,7 @@ function submitQuizName() {
   persistQuiz();
   const chk = document.getElementById('chkName');
   if (chk) chk.textContent = name;
+  trackProgress({ event: 'name', status: 'in_progress', immediate: true });
   nextSlide();
 }
 function parseBirthInput(raw) {
@@ -1348,6 +1407,7 @@ function submitQuizBirth() {
     localStorage.setItem('fecha_nacimiento', parsed.iso);
   } catch(e){}
   persistQuiz();
+  trackProgress({ event: 'birth', status: 'in_progress', immediate: true });
   nextSlide();
 }
 function bindPersonaInputs() {
@@ -1551,6 +1611,7 @@ async function persistLead() {
 function goCheckout(e) {
   if (e) e.preventDefault();
   persistLead();
+  trackProgress({ event: 'checkout_19', status: 'checkout', current_step: 19, step_label: 'Checkout $19', immediate: true });
   try { if (typeof fbq === 'function') fbq('track', 'Purchase', { value: 19, currency: 'USD' }); } catch(err){}
   window.open(HOTMART_MAIN_URL, '_blank', 'noopener,noreferrer');
 }
@@ -1568,6 +1629,7 @@ function closeDownsell(force) {
 }
 function takeDownsell() {
   persistLead();
+  trackProgress({ event: 'downsell_690', status: 'downsell', current_step: 19, step_label: 'Downsell $6,90', immediate: true });
   try { if (typeof fbq === 'function') fbq('track', 'Purchase', { value: 6.9, currency: 'USD' }); } catch(e){}
   closeDownsell(true);
   window.open(HOTMART_DOWNSELL_URL, '_blank', 'noopener,noreferrer');
@@ -1732,6 +1794,7 @@ function revealMiniLectura() {
     setReadingState('letter');
     renderReadingLetter();
     bindExitIntent();
+    trackProgress({ event: 'letter_open', status: 'reading', current_step: 19, step_label: 'Mini Lectura abierta', immediate: true });
     try { if (typeof fbq === 'function') fbq('track', 'InitiateCheckout'); } catch(e){}
     window.scrollTo(0, 0);
   }, 3000);
@@ -1741,6 +1804,7 @@ function showReading() {
   restoreLeadFields();
   showReadingConfirm();
   persistQuiz();
+  trackProgress({ event: 'reading_confirm', status: 'reading', current_step: 19, step_label: 'Confirmación lectura', immediate: true });
 }
 function restoreLeadFields() {
   let lead = {};

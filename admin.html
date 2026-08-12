@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Almagemela · Admin</title>
+<style>
+  :root {
+    --bg: #0f0a1a; --card: #1a102a; --line: #3b2760; --txt: #f5f3ff;
+    --muted: #a78bfa; --accent: #a855f7;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: Inter, system-ui, sans-serif; background:var(--bg); color:var(--txt); min-height:100vh; }
+  header { padding:20px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+  h1 { margin:0; font-size:20px; }
+  .badge { font-size:11px; color:var(--muted); }
+  .login {
+    max-width: 380px; margin: 80px auto; background: var(--card); border:1px solid var(--line);
+    border-radius: 16px; padding: 28px 22px; text-align:center;
+  }
+  .login input {
+    width:100%; min-height:48px; border-radius:12px; border:1px solid var(--line);
+    background:#120a20; color:#fff; padding:12px 14px; font-size:15px; margin:14px 0;
+  }
+  .login button, .btn {
+    width:100%; min-height:48px; border:none; border-radius:12px; background:var(--accent);
+    color:#fff; font-weight:800; cursor:pointer; font-size:14px;
+  }
+  .err { color:#fca5a5; font-size:13px; min-height:18px; }
+  .note { margin:16px 24px 0; padding:12px 14px; border-radius:12px; background:#1e1430; color:#c4b5fd; font-size:13px; border:1px dashed #5b21b6; line-height:1.45; }
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:20px 24px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; }
+  .stat b { display:block; font-size:28px; margin-top:6px; }
+  .stat span { color:var(--muted); font-size:12px; }
+  .toolbar { padding:0 24px 14px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .toolbar input, .toolbar select {
+    background:var(--card); border:1px solid var(--line); color:var(--txt);
+    border-radius:10px; padding:10px 12px; font-size:13px; min-height:40px;
+  }
+  .toolbar input { flex:1; min-width:160px; }
+  .toolbar .btn { width:auto; padding:0 16px; min-height:40px; }
+  .wrap { padding:0 24px 40px; overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border-radius:14px; overflow:hidden; border:1px solid var(--line); min-width:860px; }
+  th, td { padding:12px 14px; text-align:left; border-bottom:1px solid var(--line); font-size:13px; vertical-align:middle; }
+  th { color:var(--muted); font-weight:600; background:#140d22; white-space:nowrap; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:#22153a; cursor:pointer; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:11px; color:#c4b5fd; word-break:break-all; }
+  .pill { display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; white-space:nowrap; }
+  .started, .in_progress { background:#3b2760; color:#e9d5ff; }
+  .reading { background:#1e3a5f; color:#bfdbfe; }
+  .checkout, .purchased { background:#14532d; color:#bbf7d0; }
+  .downsell { background:#422006; color:#fde68a; }
+  .bar { height:6px; background:#2e1a4a; border-radius:6px; overflow:hidden; min-width:90px; margin-bottom:4px; }
+  .bar > i { display:block; height:100%; background:linear-gradient(90deg,#a855f7,#facc15); }
+  .muted { color:#7c6a9a; }
+  .drawer { position:fixed; inset:0; background:rgba(8,4,16,.72); display:none; justify-content:flex-end; z-index:50; }
+  .drawer.open { display:flex; }
+  .panel { width:min(440px,100%); background:#160e24; border-left:1px solid var(--line); padding:22px; overflow-y:auto; }
+  .panel h2 { margin:0 0 8px; font-size:20px; }
+  .panel .close { float:right; background:none; border:none; color:var(--muted); font-size:22px; cursor:pointer; }
+  .kv { margin:14px 0; }
+  .kv label { display:block; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px; }
+  .kv div { font-size:14px; line-height:1.45; word-break:break-word; }
+  #app { display:none; }
+  @media (max-width:800px){ .stats{grid-template-columns:1fr 1fr;} }
+</style>
+</head>
+<body>
+<div id="login" class="login">
+  <h1>Almagemela Admin</h1>
+  <p class="badge">Ingresa la contraseña (env ADMIN_PASSWORD en Vercel)</p>
+  <input type="password" id="pwd" placeholder="Contraseña admin" autocomplete="current-password">
+  <button onclick="doLogin()">Entrar</button>
+  <p class="err" id="loginErr"></p>
+</div>
+
+<div id="app">
+  <header>
+    <div>
+      <h1>Almagemela Admin</h1>
+      <div class="badge">Leads + progreso del quiz en vivo</div>
+    </div>
+    <div class="badge" id="clock">—</div>
+  </header>
+
+  <div class="note" id="hint">
+    Cada visitante genera un <b>visitor_id</b>. El servidor guarda también el <b>IP</b>.
+    Status: en progreso · lectura · checkout $19 · downsell $6,90.
+  </div>
+
+  <section class="stats">
+    <div class="stat"><span>Sesiones (lista)</span><b id="sTotal">0</b></div>
+    <div class="stat"><span>Hoy</span><b id="sToday">0</b></div>
+    <div class="stat"><span>Checkout / compra</span><b id="sCheckout">0</b></div>
+    <div class="stat"><span>Downsell</span><b id="sDownsell">0</b></div>
+  </section>
+
+  <div class="toolbar">
+    <input type="search" id="q" placeholder="Buscar por nombre…">
+    <select id="status">
+      <option value="">Todos los status</option>
+      <option value="started">Started</option>
+      <option value="in_progress">En progreso</option>
+      <option value="reading">Lectura</option>
+      <option value="checkout">Checkout $19</option>
+      <option value="downsell">Downsell</option>
+      <option value="purchased">Purchased</option>
+    </select>
+    <button class="btn" onclick="loadSessions()">Actualizar</button>
+  </div>
+
+  <div class="wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>IP</th>
+          <th>Nombre</th>
+          <th>Progreso</th>
+          <th>Paso</th>
+          <th>Status</th>
+          <th>Última actividad</th>
+        </tr>
+      </thead>
+      <tbody id="rows"><tr><td colspan="7" class="muted">Cargando…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="drawer" id="drawer" onclick="if(event.target===this) closeDetail()">
+  <div class="panel">
+    <button class="close" onclick="closeDetail()">✕</button>
+    <h2 id="dName">—</h2>
+    <div id="dStatus"></div>
+    <div class="kv"><label>Visitor ID</label><div class="mono" id="dVid"></div></div>
+    <div class="kv"><label>Session UUID</label><div class="mono" id="dId"></div></div>
+    <div class="kv"><label>IP</label><div id="dIp"></div></div>
+    <div class="kv"><label>Progreso</label><div id="dProgress"></div></div>
+    <div class="kv"><label>Fecha nacimiento</label><div id="dBirth"></div></div>
+    <div class="kv"><label>Carta</label><div id="dCard"></div></div>
+    <div class="kv"><label>Último evento</label><div id="dEvent"></div></div>
+    <div class="kv"><label>Respuestas (JSON)</label><div class="mono" id="dAnswers"></div></div>
+  </div>
+</div>
+
+<script>
+const STATUS_LABEL = {
+  started: 'started',
+  in_progress: 'en progreso',
+  reading: 'lectura',
+  checkout: 'checkout $19',
+  downsell: 'downsell $6,90',
+  purchased: 'purchased',
+};
+
+let SESSIONS = [];
+let KEY = sessionStorage.getItem('almagemela_admin_key') || '';
+
+function ago(iso) {
+  if (!iso) return '—';
+  const t = new Date(iso).getTime();
+  const s = Math.max(0, Math.floor((Date.now() - t) / 1000));
+  if (s < 60) return 'hace ' + s + 's';
+  if (s < 3600) return 'hace ' + Math.floor(s/60) + ' min';
+  if (s < 86400) return 'hace ' + Math.floor(s/3600) + ' h';
+  return 'hace ' + Math.floor(s/86400) + ' d';
+}
+
+function shortId(id) {
+  if (!id) return '—';
+  return String(id).slice(0, 8) + '…';
+}
+
+async function doLogin() {
+  const pwd = document.getElementById('pwd').value.trim();
+  document.getElementById('loginErr').textContent = '';
+  if (!pwd) {
+    document.getElementById('loginErr').textContent = 'Escribe la contraseña';
+    return;
+  }
+  KEY = pwd;
+  const ok = await loadSessions();
+  if (ok) {
+    sessionStorage.setItem('almagemela_admin_key', KEY);
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
+}
+
+async function loadSessions() {
+  if (!KEY) return false;
+  const q = encodeURIComponent(document.getElementById('q')?.value || '');
+  const st = encodeURIComponent(document.getElementById('status')?.value || '');
+  const url = `/api/admin?limit=150${q ? '&q=' + q : ''}${st ? '&status=' + st : ''}`;
+  try {
+    const res = await fetch(url, { headers: { 'X-Admin-Key': KEY } });
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 401) {
+      document.getElementById('loginErr').textContent = data.error || 'Contraseña inválida';
+      sessionStorage.removeItem('almagemela_admin_key');
+      KEY = '';
+      document.getElementById('login').style.display = 'block';
+      document.getElementById('app').style.display = 'none';
+      return false;
+    }
+    if (!res.ok) {
+      document.getElementById('rows').innerHTML =
+        `<tr><td colspan="7" class="muted">${data.error || 'Error'} ${data.detail ? '· ' + data.detail : ''}<br><br>¿Ya corriste el SQL de quiz_sessions en Supabase? ¿ADMIN_PASSWORD en Vercel?</td></tr>`;
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      return true;
+    }
+    SESSIONS = data.sessions || [];
+    const s = data.stats || {};
+    document.getElementById('sTotal').textContent = s.total || 0;
+    document.getElementById('sToday').textContent = s.today || 0;
+    document.getElementById('sCheckout').textContent = s.checkout || 0;
+    document.getElementById('sDownsell').textContent = s.downsell || 0;
+    document.getElementById('clock').textContent = 'Actualizado ' + new Date().toLocaleTimeString();
+    render();
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    return true;
+  } catch (e) {
+    document.getElementById('loginErr').textContent = 'No se pudo conectar a /api/admin';
+    return false;
+  }
+}
+
+function render() {
+  const q = (document.getElementById('q').value || '').trim().toLowerCase();
+  const st = document.getElementById('status').value;
+  const filtered = SESSIONS.filter(r => {
+    if (st && r.status !== st) return false;
+    if (q && !(String(r.name || '').toLowerCase().includes(q) || String(r.visitor_id || '').includes(q) || String(r.ip || '').includes(q))) return false;
+    return true;
+  });
+  document.getElementById('rows').innerHTML = filtered.map((r) => {
+    const step = r.current_step || 0;
+    const max = Math.max(r.max_step || 0, step);
+    const pct = Math.min(100, Math.round((max / 19) * 100));
+    const name = r.name ? `<b>${escapeHtml(r.name)}</b>` : '<span class="muted">— (sin nombre)</span>';
+    const tag = STATUS_LABEL[r.status] || r.status || '—';
+    return `<tr onclick="openDetail('${r.id}')">
+      <td class="mono" title="${escapeHtml(r.visitor_id || '')}">${shortId(r.visitor_id)}</td>
+      <td class="mono">${escapeHtml(r.ip || '—')}</td>
+      <td>${name}</td>
+      <td><div class="bar"><i style="width:${pct}%"></i></div>${max}/19</td>
+      <td>${escapeHtml(r.step_label || '—')}</td>
+      <td><span class="pill ${r.status || 'started'}">${tag}</span></td>
+      <td>${ago(r.updated_at)}</td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="7" class="muted">Sin sesiones aún. Abre el quiz y avanza algunos pasos.</td></tr>`;
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function openDetail(id) {
+  const r = SESSIONS.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('dName').textContent = r.name || 'Visitante anónima';
+  document.getElementById('dStatus').innerHTML = `<span class="pill ${r.status}">${STATUS_LABEL[r.status] || r.status}</span>`;
+  document.getElementById('dVid').textContent = r.visitor_id || '—';
+  document.getElementById('dId').textContent = r.id || '—';
+  document.getElementById('dIp').textContent = r.ip || '—';
+  document.getElementById('dProgress').textContent = `${r.current_step || 0}/19 (máx ${r.max_step || 0}) · ${r.step_label || ''}`;
+  document.getElementById('dBirth').textContent = r.birth_date || '—';
+  document.getElementById('dCard').textContent = r.card || '—';
+  document.getElementById('dEvent').textContent = r.last_event || '—';
+  document.getElementById('dAnswers').textContent = JSON.stringify(r.answers || {}, null, 2);
+  document.getElementById('drawer').classList.add('open');
+}
+function closeDetail() {
+  document.getElementById('drawer').classList.remove('open');
+}
+
+document.getElementById('q').addEventListener('input', () => render());
+document.getElementById('status').addEventListener('change', () => loadSessions());
+document.getElementById('pwd').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+
+if (KEY) loadSessions();
+setInterval(() => { if (KEY && document.getElementById('app').style.display === 'block') loadSessions(); }, 30000);
+</script>
+</body>
+</html>
