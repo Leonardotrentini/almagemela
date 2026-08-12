@@ -48,7 +48,7 @@
   tr:hover td { background:#22153a; cursor:pointer; }
   .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:11px; color:#c4b5fd; word-break:break-all; }
   .pill { display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; white-space:nowrap; }
-  .started, .in_progress { background:#3b2760; color:#e9d5ff; }
+  .quiz, .started, .in_progress { background:#3b2760; color:#e9d5ff; }
   .reading { background:#1e3a5f; color:#bfdbfe; }
   .checkout, .purchased { background:#14532d; color:#bbf7d0; }
   .downsell { background:#422006; color:#fde68a; }
@@ -87,7 +87,7 @@
 
   <div class="note" id="hint">
     Cada visitante genera un <b>visitor_id</b>. El servidor guarda también el <b>IP</b>.
-    Status: en progreso · lectura · checkout $19 · downsell $6,90.
+    Status: <b>paró en el quiz</b> · <b>mini lectura</b> · <b>checkout</b> · <b>downsell</b>.
   </div>
 
   <section class="stats">
@@ -101,12 +101,10 @@
     <input type="search" id="q" placeholder="Buscar por nombre…">
     <select id="status">
       <option value="">Todos los status</option>
-      <option value="started">Started</option>
-      <option value="in_progress">En progreso</option>
-      <option value="reading">Lectura</option>
-      <option value="checkout">Checkout $19</option>
+      <option value="quiz">Paró en el quiz</option>
+      <option value="reading">Mini lectura</option>
+      <option value="checkout">Checkout</option>
       <option value="downsell">Downsell</option>
-      <option value="purchased">Purchased</option>
     </select>
     <button class="btn" onclick="loadSessions()">Actualizar</button>
   </div>
@@ -147,13 +145,24 @@
 
 <script>
 const STATUS_LABEL = {
-  started: 'started',
-  in_progress: 'en progreso',
-  reading: 'lectura',
-  checkout: 'checkout $19',
-  downsell: 'downsell $6,90',
-  purchased: 'purchased',
+  started: 'paró en el quiz',
+  in_progress: 'paró en el quiz',
+  reading: 'mini lectura',
+  checkout: 'checkout',
+  downsell: 'downsell',
+  purchased: 'checkout',
 };
+
+function funnelKey(status) {
+  if (status === 'checkout' || status === 'purchased') return 'checkout';
+  if (status === 'downsell') return 'downsell';
+  if (status === 'reading') return 'reading';
+  return 'quiz'; // started | in_progress
+}
+
+function statusPillClass(status) {
+  return funnelKey(status);
+}
 
 let SESSIONS = [];
 let KEY = sessionStorage.getItem('almagemela_admin_key') || '';
@@ -192,8 +201,8 @@ async function doLogin() {
 async function loadSessions() {
   if (!KEY) return false;
   const q = encodeURIComponent(document.getElementById('q')?.value || '');
-  const st = encodeURIComponent(document.getElementById('status')?.value || '');
-  const url = `/api/admin?limit=150${q ? '&q=' + q : ''}${st ? '&status=' + st : ''}`;
+  // status se filtra en el front (quiz/checkout/downsell)
+  const url = `/api/admin?limit=150${q ? '&q=' + q : ''}`;
   try {
     const res = await fetch(url, { headers: { 'X-Admin-Key': KEY } });
     const data = await res.json().catch(() => ({}));
@@ -233,7 +242,7 @@ function render() {
   const q = (document.getElementById('q').value || '').trim().toLowerCase();
   const st = document.getElementById('status').value;
   const filtered = SESSIONS.filter(r => {
-    if (st && r.status !== st) return false;
+    if (st && funnelKey(r.status) !== st) return false;
     if (q && !(String(r.name || '').toLowerCase().includes(q) || String(r.visitor_id || '').includes(q) || String(r.ip || '').includes(q))) return false;
     return true;
   });
@@ -242,14 +251,15 @@ function render() {
     const max = Math.max(r.max_step || 0, step);
     const pct = Math.min(100, Math.round((max / 19) * 100));
     const name = r.name ? `<b>${escapeHtml(r.name)}</b>` : '<span class="muted">— (sin nombre)</span>';
-    const tag = STATUS_LABEL[r.status] || r.status || '—';
+    const tag = STATUS_LABEL[r.status] || 'paró en el quiz';
+    const pill = statusPillClass(r.status);
     return `<tr onclick="openDetail('${r.id}')">
       <td class="mono" title="${escapeHtml(r.visitor_id || '')}">${shortId(r.visitor_id)}</td>
       <td class="mono">${escapeHtml(r.ip || '—')}</td>
       <td>${name}</td>
       <td><div class="bar"><i style="width:${pct}%"></i></div>${max}/19</td>
       <td>${escapeHtml(r.step_label || '—')}</td>
-      <td><span class="pill ${r.status || 'started'}">${tag}</span></td>
+      <td><span class="pill ${pill}">${tag}</span></td>
       <td>${ago(r.updated_at)}</td>
     </tr>`;
   }).join('') || `<tr><td colspan="7" class="muted">Sin sesiones aún. Abre el quiz y avanza algunos pasos.</td></tr>`;
@@ -263,7 +273,7 @@ function openDetail(id) {
   const r = SESSIONS.find(x => x.id === id);
   if (!r) return;
   document.getElementById('dName').textContent = r.name || 'Visitante anónima';
-  document.getElementById('dStatus').innerHTML = `<span class="pill ${r.status}">${STATUS_LABEL[r.status] || r.status}</span>`;
+  document.getElementById('dStatus').innerHTML = `<span class="pill ${statusPillClass(r.status)}">${STATUS_LABEL[r.status] || 'paró en el quiz'}</span>`;
   document.getElementById('dVid').textContent = r.visitor_id || '—';
   document.getElementById('dId').textContent = r.id || '—';
   document.getElementById('dIp').textContent = r.ip || '—';
