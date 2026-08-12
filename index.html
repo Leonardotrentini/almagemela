@@ -1612,7 +1612,7 @@ function goCheckout(e) {
   if (e) e.preventDefault();
   persistLead();
   trackProgress({ event: 'checkout_19', status: 'checkout', current_step: 19, step_label: 'Checkout $19', immediate: true });
-  try { if (typeof fbq === 'function') fbq('track', 'Purchase', { value: 19, currency: 'USD' }); } catch(err){}
+  try { if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', { value: 19, currency: 'USD', content_name: 'Lectura Completa $19' }); } catch(err){}
   window.open(HOTMART_MAIN_URL, '_blank', 'noopener,noreferrer');
 }
 function openDownsell() {
@@ -1630,7 +1630,7 @@ function closeDownsell(force) {
 function takeDownsell() {
   persistLead();
   trackProgress({ event: 'downsell_690', status: 'downsell', current_step: 19, step_label: 'Downsell $6,90', immediate: true });
-  try { if (typeof fbq === 'function') fbq('track', 'Purchase', { value: 6.9, currency: 'USD' }); } catch(e){}
+  try { if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', { value: 6.9, currency: 'USD', content_name: 'Mini Lectura Extendida $6,90' }); } catch(e){}
   closeDownsell(true);
   window.open(HOTMART_DOWNSELL_URL, '_blank', 'noopener,noreferrer');
 }
@@ -1795,7 +1795,6 @@ function revealMiniLectura() {
     renderReadingLetter();
     bindExitIntent();
     trackProgress({ event: 'letter_open', status: 'reading', current_step: 19, step_label: 'Mini Lectura abierta', immediate: true });
-    try { if (typeof fbq === 'function') fbq('track', 'InitiateCheckout'); } catch(e){}
     window.scrollTo(0, 0);
   }, 3000);
 }
