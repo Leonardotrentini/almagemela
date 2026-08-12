@@ -1,13 +1,12 @@
 /**
- * Webhook Hotmart → Meta Conversions API (Purchase real)
- * Configure na Hotmart: Ferramentas → Webhook → URL:
- * https://almagemela-steel.vercel.app/api/hotmart-webhook
+ * Webhook Hotmart → admin (status purchased) + Meta CAPI opcional
+ * URL: https://almagemela-steel.vercel.app/api/hotmart-webhook
  *
- * Env Vercel:
- * META_PIXEL_ID=38539014385698035
- * META_CAPI_TOKEN= (token do Events Manager)
- * HOTMART_HOTTOK= (opcional, validação)
+ * Purchase no Meta: use a integração nativa da Hotmart (recomendado).
+ * Só ative CAPI daqui se META_CAPI_FROM_WEBHOOK=true (evita duplicata).
  */
+
+const crypto = require('crypto');
 
 function getSupabaseConfig() {
   const supabaseUrl = (
@@ -19,11 +18,19 @@ function getSupabaseConfig() {
   return { supabaseUrl, supabaseKey };
 }
 
+function sessionEmail(visitorId) {
+  const safe = String(visitorId).toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 64);
+  return `v_${safe}@progress.almagemela.local`;
+}
+
 async function sendMetaPurchase({ email, value, currency, eventId, productName }) {
+  if (process.env.META_CAPI_FROM_WEBHOOK !== 'true') {
+    return { ok: false, reason: 'disabled_use_hotmart_native' };
+  }
+
   const pixelId = (process.env.META_PIXEL_ID || '38539014385698035').trim();
   const token = (process.env.META_CAPI_TOKEN || process.env.META_ACCESS_TOKEN || '').trim();
   if (!token) {
-    console.warn('META_CAPI_TOKEN não configurado — Purchase não enviado ao Meta');
     return { ok: false, reason: 'no_token' };
   }
 
@@ -34,7 +41,7 @@ async function sendMetaPurchase({ email, value, currency, eventId, productName }
       event_id: eventId,
       action_source: 'website',
       user_data: email ? {
-        em: [require('crypto').createHash('sha256').update(email.trim().toLowerCase()).digest('hex')],
+        em: [crypto.createHash('sha256').update(email.trim().toLowerCase()).digest('hex')],
       } : {},
       custom_data: {
         currency: currency || 'USD',
@@ -60,69 +67,89 @@ async function sendMetaPurchase({ email, value, currency, eventId, productName }
   return { ok: true, meta: json };
 }
 
-async function markPurchased(email, value) {
+async function patchLeadPurchased(row, value) {
   const { supabaseUrl, supabaseKey } = getSupabaseConfig();
-  if (!supabaseUrl || !supabaseKey || !email) return;
+  if (!supabaseUrl || !supabaseKey || !row?.id) return false;
+
+  const answers = row.answers || {};
+  answers._meta = {
+    ...(answers._meta || {}),
+    status: 'purchased',
+    purchased_at: new Date().toISOString(),
+    purchase_value: value,
+  };
+
+  const res = await fetch(`${supabaseUrl}/rest/v1/leads?id=eq.${encodeURIComponent(row.id)}`, {
+    method: 'PATCH',
+    headers: {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify({ answers, source: 'almagemela_purchased' }),
+  });
+  return res.ok;
+}
+
+async function markPurchasedByVisitorId(visitorId, value) {
+  const { supabaseUrl, supabaseKey } = getSupabaseConfig();
+  if (!supabaseUrl || !supabaseKey || !visitorId) return false;
+
+  const email = sessionEmail(visitorId);
+  try {
+    const getRes = await fetch(
+      `${supabaseUrl}/rest/v1/leads?email=eq.${encodeURIComponent(email)}&select=*&limit=1`,
+      { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } }
+    );
+    if (!getRes.ok) return false;
+    const rows = await getRes.json();
+    if (rows[0]) return patchLeadPurchased(rows[0], value);
+  } catch (e) {
+    console.error('markPurchasedByVisitorId', e);
+  }
+  return false;
+}
+
+async function markPurchasedByEmail(email, value) {
+  const { supabaseUrl, supabaseKey } = getSupabaseConfig();
+  if (!supabaseUrl || !supabaseKey || !email) return false;
 
   const safe = String(email).trim().toLowerCase();
-  const progressEmail = safe.includes('@progress.almagemela.local')
-    ? safe
-    : null;
-
-  // Atualiza lead por email real ou progress
-  const filter = progressEmail
-    ? `email=eq.${encodeURIComponent(progressEmail)}`
-    : `email=eq.${encodeURIComponent(safe)}`;
+  if (safe.endsWith('@progress.almagemela.local')) {
+    return markPurchasedByVisitorId(safe.split('@')[0].replace(/^v_/, ''), value);
+  }
 
   try {
     const getRes = await fetch(
-      `${supabaseUrl}/rest/v1/leads?${filter}&select=*&limit=1`,
+      `${supabaseUrl}/rest/v1/leads?email=eq.${encodeURIComponent(safe)}&select=*&limit=1`,
       { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } }
     );
-    if (!getRes.ok) return;
+    if (!getRes.ok) return false;
     const rows = await getRes.json();
-    const row = rows[0];
-    if (!row) return;
-
-    const answers = row.answers || {};
-    answers._meta = {
-      ...(answers._meta || {}),
-      status: 'purchased',
-      purchased_at: new Date().toISOString(),
-      purchase_value: value,
-    };
-
-    await fetch(`${supabaseUrl}/rest/v1/leads?id=eq.${encodeURIComponent(row.id)}`, {
-      method: 'PATCH',
-      headers: {
-        apikey: supabaseKey,
-        Authorization: `Bearer ${supabaseKey}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=minimal',
-      },
-      body: JSON.stringify({ answers, source: 'almagemela_purchased' }),
-    });
+    if (rows[0]) return patchLeadPurchased(rows[0], value);
   } catch (e) {
-    console.error('markPurchased', e);
+    console.error('markPurchasedByEmail', e);
   }
+  return false;
 }
 
 function parseHotmartBody(body) {
   if (!body || typeof body !== 'object') return null;
 
-  // Hotmart v2 webhook format
   const event = body.event || body.status || '';
   const data = body.data || body;
+  const purchase = data.purchase || data;
+  const origin = purchase.origin || data.origin || {};
 
   const approved = /APPROVED|COMPLETE|PURCHASE_COMPLETE|approved/i.test(String(event)) ||
-    data.purchase?.status === 'APPROVED' ||
+    purchase.status === 'APPROVED' ||
     body.status === 'approved';
 
   if (!approved && event && !/PURCHASE/i.test(String(event))) {
     return { skip: true, event };
   }
 
-  const purchase = data.purchase || data;
   const buyer = data.buyer || purchase.buyer || {};
   const email = buyer.email || data.email || purchase.email || '';
   const price = purchase.price || purchase.full_price || data.price || {};
@@ -130,14 +157,16 @@ function parseHotmartBody(body) {
   const currency = (price.currency_code || price.currency || data.currency || 'USD').toUpperCase();
   const product = (data.product || purchase.product || {}).name || data.product_name || 'Almagemela';
   const transaction = purchase.transaction || purchase.order_date || data.transaction || Date.now();
+  const visitorId = String(origin.sck || data.sck || body.sck || '').trim();
 
   return {
     approved: approved || value > 0,
     email,
+    visitorId,
     value,
     currency,
     product,
-    eventId: `hotmart_${transaction}_${email}`.slice(0, 64),
+    eventId: `hotmart_${transaction}`.slice(0, 64),
     rawEvent: event,
   };
 }
@@ -148,12 +177,9 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Hotmart-Hottok');
 
   if (req.method === 'OPTIONS') return res.status(204).end();
-
-  // Hotmart sometimes validates with GET
   if (req.method === 'GET') {
     return res.status(200).json({ ok: true, service: 'hotmart-webhook' });
   }
-
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -172,9 +198,7 @@ module.exports = async function handler(req, res) {
   }
 
   const parsed = parseHotmartBody(body);
-  if (!parsed) {
-    return res.status(400).json({ error: 'Payload inválido' });
-  }
+  if (!parsed) return res.status(400).json({ error: 'Payload inválido' });
   if (parsed.skip) {
     return res.status(200).json({ ok: true, skipped: true, event: parsed.event });
   }
@@ -183,11 +207,19 @@ module.exports = async function handler(req, res) {
   }
 
   const meta = await sendMetaPurchase(parsed);
-  if (parsed.email) await markPurchased(parsed.email, parsed.value);
+
+  let marked = false;
+  if (parsed.visitorId) marked = await markPurchasedByVisitorId(parsed.visitorId, parsed.value);
+  if (!marked && parsed.email) marked = await markPurchasedByEmail(parsed.email, parsed.value);
 
   return res.status(200).json({
     ok: true,
-    purchase: { value: parsed.value, currency: parsed.currency, email: parsed.email ? '***' : null },
+    purchase: {
+      value: parsed.value,
+      currency: parsed.currency,
+      visitor_id: parsed.visitorId || null,
+      marked_admin: marked,
+    },
     meta,
   });
 };

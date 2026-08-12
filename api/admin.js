@@ -134,7 +134,8 @@ module.exports = async function handler(req, res) {
     total: sessions.length,
     today: sessions.filter((r) => String(r.created_at || r.updated_at || '').startsWith(today)).length,
     reading: sessions.filter((r) => r.status === 'reading' || (r.max_step || 0) >= 19).length,
-    checkout: sessions.filter((r) => r.status === 'checkout' || r.status === 'purchased').length,
+    checkout: sessions.filter((r) => r.status === 'checkout').length,
+    purchased: sessions.filter((r) => r.status === 'purchased').length,
     downsell: sessions.filter((r) => r.status === 'downsell').length,
     in_progress: sessions.filter((r) => r.status === 'in_progress' || r.status === 'started').length,
   };

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<meta name="almagemela-build" content="v6.1-confirm-first">
+<meta name="almagemela-build" content="v6.2-tracking-audit">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -20,9 +20,18 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '38539014385698035');
-fbq('track', 'PageView');
-fbq('track', 'ViewContent');
+(function(){
+  var k='almagemela_vid',id;
+  try{id=localStorage.getItem(k);}catch(e){}
+  if(!id||id.length<8){
+    id='v_'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+    try{localStorage.setItem(k,id);}catch(e){}
+  }
+  window.__almagemelaVid=id;
+})();
+fbq('init','38539014385698035',{external_id:window.__almagemelaVid||undefined});
+fbq('track','PageView');
+fbq('track','ViewContent',{content_name:'Quiz Almagemela',content_category:'Tarot'});
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=38539014385698035&ev=PageView&noscript=1"
@@ -1169,8 +1178,39 @@ const LAST_Q = 22;
 const SLIDE_LOADING = 23;
 const SLIDE_READING = 25;
 
+// ============ META PIXEL (eventos padronizados) ============
+const META_PIXEL_ID = '38539014385698035';
+const _metaOnceKeys = {};
+function metaEventId(tag) {
+  return String(getVisitorId()) + '_' + tag + '_' + Date.now();
+}
+function metaTrack(event, params) {
+  try {
+    if (typeof fbq !== 'function') return;
+    fbq('track', event, params || {});
+  } catch (e) {}
+}
+function metaTrackOnce(key, event, params) {
+  if (_metaOnceKeys[key]) return;
+  _metaOnceKeys[key] = true;
+  try { sessionStorage.setItem('meta_once_' + key, '1'); } catch (e) {}
+  metaTrack(event, params);
+}
+function initMetaOnceFromSession() {
+  try {
+    ['quiz_lead'].forEach(function(k) {
+      if (sessionStorage.getItem('meta_once_' + k)) _metaOnceKeys[k] = true;
+    });
+  } catch (e) {}
+}
+function hotmartUrl(base) {
+  const sep = base.indexOf('?') >= 0 ? '&' : '?';
+  return base + sep + 'sck=' + encodeURIComponent(getVisitorId());
+}
+
 // ============ TRACKING (admin) ============
 function getVisitorId() {
+  if (window.__almagemelaVid) return window.__almagemelaVid;
   try {
     let id = localStorage.getItem('almagemela_vid');
     if (!id) {
@@ -1178,6 +1218,7 @@ function getVisitorId() {
         ('v_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
       localStorage.setItem('almagemela_vid', id);
     }
+    window.__almagemelaVid = id;
     return id;
   } catch (e) {
     return 'v_anon_' + Date.now();
@@ -1298,7 +1339,6 @@ function pickCard(el) {
     fillReveal();
     goToSlide(1);
     window._pickingCard = false;
-    trackProgress({ event: 'card_pick', status: 'started', current_step: 1, step_label: 'Hook inicial', immediate: true });
   }, 980);
 }
 function skipReveal(e) {
@@ -1327,9 +1367,14 @@ function goToSlide(n) {
   currentSlide = n;
   updateProgress();
   try { localStorage.setItem('almagemela_slide', String(n)); localStorage.setItem('almagemela_data', JSON.stringify(data)); } catch(e){}
-  trackProgress({ event: 'slide_' + n });
+  trackProgress({ event: 'slide_' + n, status: funnelStatusForSlide(n) });
   document.getElementById('app').scrollIntoView({block:'start'});
   window.scrollTo(0,0);
+}
+function funnelStatusForSlide(n) {
+  if (n >= SLIDE_READING) return 'reading';
+  if (n >= 1) return 'in_progress';
+  return 'started';
 }
 function nextSlide(){ goToSlide(currentSlide+1); }
 function prevSlide(){ if(currentSlide>2) goToSlide(currentSlide-1); }
@@ -1445,7 +1490,8 @@ function answer(key, val) {
   if (key==='block') fillInter3(val);
   if (key==='want') fillInter4(val);
   if (key==='ready') {
-    try { if (typeof fbq === 'function') fbq('track', 'Lead'); } catch(e){}
+    metaTrackOnce('quiz_lead', 'Lead', { content_name: 'Quiz completado' });
+    trackProgress({ event: 'quiz_complete', status: 'in_progress', current_step: 19, step_label: 'Quiz completado', immediate: true });
     setTimeout(() => startLoading(), 350);
     return;
   }
@@ -1612,8 +1658,16 @@ function goCheckout(e) {
   if (e) e.preventDefault();
   persistLead();
   trackProgress({ event: 'checkout_19', status: 'checkout', current_step: 19, step_label: 'Checkout $19', immediate: true });
-  try { if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', { value: 19, currency: 'USD', content_name: 'Lectura Completa $19' }); } catch(err){}
-  window.open(HOTMART_MAIN_URL, '_blank', 'noopener,noreferrer');
+  metaTrack('InitiateCheckout', {
+    value: 19,
+    currency: 'USD',
+    content_name: 'Lectura Completa $19',
+    content_ids: ['J107108736M'],
+    content_type: 'product',
+    num_items: 1,
+    eventID: metaEventId('ic19'),
+  });
+  window.open(hotmartUrl(HOTMART_MAIN_URL), '_blank', 'noopener,noreferrer');
 }
 function openDownsell() {
   const name = (data.name || localStorage.getItem('nombre') || '').trim();
@@ -1622,6 +1676,7 @@ function openDownsell() {
     ? 'Espera, ' + name + '... ¿$19 es mucho para ti hoy?'
     : 'Espera... ¿$19 es mucho para ti hoy?';
   document.getElementById('downsellModal').classList.add('visible');
+  trackProgress({ event: 'downsell_open', status: 'reading', current_step: 19, step_label: 'Modal downsell visto', immediate: true });
 }
 function closeDownsell(force) {
   document.getElementById('downsellModal').classList.remove('visible');
@@ -1630,9 +1685,17 @@ function closeDownsell(force) {
 function takeDownsell() {
   persistLead();
   trackProgress({ event: 'downsell_690', status: 'downsell', current_step: 19, step_label: 'Downsell $6,90', immediate: true });
-  try { if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', { value: 6.9, currency: 'USD', content_name: 'Mini Lectura Extendida $6,90' }); } catch(e){}
+  metaTrack('InitiateCheckout', {
+    value: 6.9,
+    currency: 'USD',
+    content_name: 'Mini Lectura Extendida $6,90',
+    content_ids: ['R107109985R'],
+    content_type: 'product',
+    num_items: 1,
+    eventID: metaEventId('ic690'),
+  });
   closeDownsell(true);
-  window.open(HOTMART_DOWNSELL_URL, '_blank', 'noopener,noreferrer');
+  window.open(hotmartUrl(HOTMART_DOWNSELL_URL), '_blank', 'noopener,noreferrer');
 }
 let downsellShown = false;
 function bindExitIntent() {
@@ -1839,6 +1902,7 @@ try {
   if (!data.fecha && localStorage.getItem('fecha')) data.fecha = localStorage.getItem('fecha');
   if (!data.birthDate && localStorage.getItem('fecha_nacimiento')) data.birthDate = localStorage.getItem('fecha_nacimiento');
 } catch(e){}
+initMetaOnceFromSession();
 requestAnimationFrame(() => {
   requestAnimationFrame(() => {
     buildFan();

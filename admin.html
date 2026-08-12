@@ -29,7 +29,7 @@
   }
   .err { color:#fca5a5; font-size:13px; min-height:18px; }
   .note { margin:16px 24px 0; padding:12px 14px; border-radius:12px; background:#1e1430; color:#c4b5fd; font-size:13px; border:1px dashed #5b21b6; line-height:1.45; }
-  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:20px 24px; }
+  .stats { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; padding:20px 24px; }
   .stat { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; }
   .stat b { display:block; font-size:28px; margin-top:6px; }
   .stat span { color:var(--muted); font-size:12px; }
@@ -50,7 +50,8 @@
   .pill { display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; white-space:nowrap; }
   .quiz, .started, .in_progress { background:#3b2760; color:#e9d5ff; }
   .reading { background:#1e3a5f; color:#bfdbfe; }
-  .checkout, .purchased { background:#14532d; color:#bbf7d0; }
+  .checkout { background:#14532d; color:#bbf7d0; }
+  .purchased { background:#064e3b; color:#6ee7b7; }
   .downsell { background:#422006; color:#fde68a; }
   .bar { height:6px; background:#2e1a4a; border-radius:6px; overflow:hidden; min-width:90px; margin-bottom:4px; }
   .bar > i { display:block; height:100%; background:linear-gradient(90deg,#a855f7,#facc15); }
@@ -65,6 +66,7 @@
   .kv div { font-size:14px; line-height:1.45; word-break:break-word; }
   #app { display:none; }
   @media (max-width:800px){ .stats{grid-template-columns:1fr 1fr;} }
+  @media (min-width:801px){ .stats{grid-template-columns:repeat(5,1fr);} }
 </style>
 </head>
 <body>
@@ -87,13 +89,14 @@
 
   <div class="note" id="hint">
     Cada visitante genera un <b>visitor_id</b>. El servidor guarda también el <b>IP</b>.
-    Status: <b>paró en el quiz</b> · <b>mini lectura</b> · <b>checkout</b> · <b>downsell</b>.
+    Status: <b>paró en el quiz</b> · <b>mini lectura</b> · <b>checkout</b> · <b>downsell</b> · <b>comprou</b>.
   </div>
 
   <section class="stats">
     <div class="stat"><span>Sesiones (lista)</span><b id="sTotal">0</b></div>
     <div class="stat"><span>Hoy</span><b id="sToday">0</b></div>
-    <div class="stat"><span>Checkout / compra</span><b id="sCheckout">0</b></div>
+    <div class="stat"><span>Checkout (clic)</span><b id="sCheckout">0</b></div>
+    <div class="stat"><span>Comprou</span><b id="sPurchased">0</b></div>
     <div class="stat"><span>Downsell</span><b id="sDownsell">0</b></div>
   </section>
 
@@ -103,8 +106,9 @@
       <option value="">Todos los status</option>
       <option value="quiz">Paró en el quiz</option>
       <option value="reading">Mini lectura</option>
-      <option value="checkout">Checkout</option>
+      <option value="checkout">Checkout (clic)</option>
       <option value="downsell">Downsell</option>
+      <option value="purchased">Comprou</option>
     </select>
     <button class="btn" onclick="loadSessions()">Actualizar</button>
   </div>
@@ -150,11 +154,12 @@ const STATUS_LABEL = {
   reading: 'mini lectura',
   checkout: 'checkout',
   downsell: 'downsell',
-  purchased: 'checkout',
+  purchased: 'comprou',
 };
 
 function funnelKey(status) {
-  if (status === 'checkout' || status === 'purchased') return 'checkout';
+  if (status === 'purchased') return 'purchased';
+  if (status === 'checkout') return 'checkout';
   if (status === 'downsell') return 'downsell';
   if (status === 'reading') return 'reading';
   return 'quiz'; // started | in_progress
@@ -226,6 +231,7 @@ async function loadSessions() {
     document.getElementById('sTotal').textContent = s.total || 0;
     document.getElementById('sToday').textContent = s.today || 0;
     document.getElementById('sCheckout').textContent = s.checkout || 0;
+    document.getElementById('sPurchased').textContent = s.purchased || 0;
     document.getElementById('sDownsell').textContent = s.downsell || 0;
     document.getElementById('clock').textContent = 'Actualizado ' + new Date().toLocaleTimeString();
     render();
