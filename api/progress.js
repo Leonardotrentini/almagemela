@@ -20,6 +20,23 @@ function cors(res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
+function sessionEmail(visitorId) {
+  const safe = String(visitorId).toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 64);
+  return `v_${safe}@progress.almagemela.local`;
+}
+
+async function sbFetch(supabaseUrl, supabaseKey, path, options = {}) {
+  return fetch(`${supabaseUrl}/rest/v1/${path}`, {
+    ...options,
+    headers: {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    },
+  });
+}
+
 module.exports = async function handler(req, res) {
   cors(res);
   if (req.method === 'OPTIONS') return res.status(204).end();
@@ -47,98 +64,154 @@ module.exports = async function handler(req, res) {
   const stepLabel = body.step_label ? String(body.step_label).trim().slice(0, 80) : null;
   const card = body.card ? String(body.card).trim().slice(0, 64) : null;
   const lastEvent = body.event ? String(body.event).trim().slice(0, 64) : null;
-  const answers = body.answers && typeof body.answers === 'object' ? body.answers : {};
+  const answersIn = body.answers && typeof body.answers === 'object' ? body.answers : {};
   const statusIn = String(body.status || '').trim().toLowerCase();
   const allowed = new Set(['started', 'in_progress', 'reading', 'checkout', 'downsell', 'purchased']);
-  const status = allowed.has(statusIn) ? statusIn : null;
+  const statusWanted = allowed.has(statusIn) ? statusIn : (currentStep > 0 ? 'in_progress' : 'started');
   const ip = clientIp(req);
   const userAgent = String(req.headers['user-agent'] || '').slice(0, 300) || null;
-  const now = new Date().toISOString();
+  const email = sessionEmail(visitorId);
 
-  // Busca sessão existente para preservar max_step / status “maior”
-  let existing = null;
+  const rank = { started: 1, in_progress: 2, reading: 3, checkout: 4, downsell: 4, purchased: 5 };
+
   try {
-    const getRes = await fetch(
-      `${supabaseUrl}/rest/v1/quiz_sessions?visitor_id=eq.${encodeURIComponent(visitorId)}&select=*&limit=1`,
+    // 1) tenta quiz_sessions (se a tabela existir)
+    const qsPayload = {
+      visitor_id: visitorId,
+      ip,
+      name,
+      birth_date: birthDate,
+      current_step: currentStep,
+      max_step: currentStep,
+      step_label: stepLabel,
+      card,
+      answers: answersIn,
+      status: statusWanted,
+      last_event: lastEvent,
+      user_agent: userAgent,
+      updated_at: new Date().toISOString(),
+    };
+
+    const qsRes = await sbFetch(
+      supabaseUrl,
+      supabaseKey,
+      'quiz_sessions?on_conflict=visitor_id',
       {
-        headers: {
-          apikey: supabaseKey,
-          Authorization: `Bearer ${supabaseKey}`,
-        },
+        method: 'POST',
+        headers: { Prefer: 'resolution=merge-duplicates,return=representation' },
+        body: JSON.stringify(qsPayload),
       }
     );
+
+    if (qsRes.ok) {
+      const rows = await qsRes.json();
+      const row = Array.isArray(rows) ? rows[0] : rows;
+      return res.status(200).json({
+        ok: true,
+        storage: 'quiz_sessions',
+        id: row?.id,
+        visitor_id: visitorId,
+        current_step: currentStep,
+        status: statusWanted,
+      });
+    }
+
+    const qsErr = await qsRes.text();
+    const missingTable = qsRes.status === 404 || /PGRST205|quiz_sessions/i.test(qsErr);
+    if (!missingTable) {
+      console.error('quiz_sessions error', qsRes.status, qsErr);
+      // continua fallback leads
+    }
+
+    // 2) fallback: tabela leads (já existe)
+    const getRes = await sbFetch(
+      supabaseUrl,
+      supabaseKey,
+      `leads?email=eq.${encodeURIComponent(email)}&select=*&limit=1`
+    );
+    let existing = null;
     if (getRes.ok) {
       const rows = await getRes.json();
       existing = Array.isArray(rows) && rows[0] ? rows[0] : null;
     }
-  } catch (e) {
-    console.error('progress get error', e);
-  }
 
-  const rank = { started: 1, in_progress: 2, reading: 3, checkout: 4, downsell: 4, purchased: 5 };
-  let nextStatus = status || (existing && existing.status) || (currentStep > 0 ? 'in_progress' : 'started');
-  if (existing && existing.status) {
-    const curR = rank[existing.status] || 0;
-    const newR = rank[nextStatus] || 0;
-    // Não rebaixar checkout/purchased para in_progress
-    if (newR < curR && !(status === 'downsell' || status === 'checkout' || status === 'purchased')) {
-      nextStatus = existing.status;
+    const prevMeta = (existing?.answers && existing.answers._meta) || {};
+    const prevStatus = prevMeta.status || 'started';
+    let nextStatus = statusWanted;
+    if ((rank[nextStatus] || 0) < (rank[prevStatus] || 0) &&
+        !(statusWanted === 'downsell' || statusWanted === 'checkout' || statusWanted === 'purchased')) {
+      nextStatus = prevStatus;
     }
-    // downsell e checkout são ambos “funil final”; se já purchased, mantém
-    if (existing.status === 'purchased') nextStatus = 'purchased';
-  }
+    if (prevStatus === 'purchased') nextStatus = 'purchased';
 
-  const maxStep = Math.max(
-    existing?.max_step || 0,
-    currentStep,
-    existing?.current_step || 0
-  );
+    const maxStep = Math.max(prevMeta.max_step || 0, currentStep, prevMeta.current_step || 0);
+    const mergedAnswers = {
+      ...(existing?.answers || {}),
+      ...answersIn,
+      _meta: {
+        visitor_id: visitorId,
+        ip: ip || prevMeta.ip || null,
+        birth_date: birthDate || prevMeta.birth_date || null,
+        current_step: currentStep || prevMeta.current_step || 0,
+        max_step: maxStep,
+        step_label: stepLabel || prevMeta.step_label || null,
+        status: nextStatus,
+        last_event: lastEvent || prevMeta.last_event || null,
+        user_agent: userAgent || prevMeta.user_agent || null,
+        updated_at: new Date().toISOString(),
+      },
+    };
+    // não vazar meta antiga sobrescrita
+    delete mergedAnswers.name;
+    delete mergedAnswers.email;
+    delete mergedAnswers.phone;
 
-  const payload = {
-    visitor_id: visitorId,
-    ip: ip || existing?.ip || null,
-    name: name || existing?.name || null,
-    birth_date: birthDate || existing?.birth_date || null,
-    current_step: currentStep || existing?.current_step || 0,
-    max_step: maxStep,
-    step_label: stepLabel || existing?.step_label || null,
-    card: card || existing?.card || null,
-    answers: Object.keys(answers).length ? answers : (existing?.answers || {}),
-    status: nextStatus,
-    last_event: lastEvent || existing?.last_event || null,
-    user_agent: userAgent || existing?.user_agent || null,
-    updated_at: now,
-  };
+    const leadPayload = {
+      name: name || existing?.name || 'Anónimo',
+      email,
+      phone: ip || existing?.phone || null,
+      optin: false,
+      card: card || existing?.card || null,
+      answers: mergedAnswers,
+      source: 'almagemela_progress',
+      user_agent: userAgent || existing?.user_agent || null,
+    };
 
-  try {
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/quiz_sessions?on_conflict=visitor_id`,
-      {
+    let saveRes;
+    if (existing?.id) {
+      saveRes = await sbFetch(
+        supabaseUrl,
+        supabaseKey,
+        `leads?id=eq.${encodeURIComponent(existing.id)}`,
+        {
+          method: 'PATCH',
+          headers: { Prefer: 'return=representation' },
+          body: JSON.stringify(leadPayload),
+        }
+      );
+    } else {
+      saveRes = await sbFetch(supabaseUrl, supabaseKey, 'leads', {
         method: 'POST',
-        headers: {
-          apikey: supabaseKey,
-          Authorization: `Bearer ${supabaseKey}`,
-          'Content-Type': 'application/json',
-          Prefer: 'resolution=merge-duplicates,return=representation',
-        },
-        body: JSON.stringify(payload),
-      }
-    );
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('Supabase progress error:', response.status, errText);
-      return res.status(502).json({ error: 'Falha ao salvar progresso', detail: errText.slice(0, 200) });
+        headers: { Prefer: 'return=representation' },
+        body: JSON.stringify(leadPayload),
+      });
     }
 
-    const rows = await response.json();
-    const row = Array.isArray(rows) ? rows[0] : rows;
+    if (!saveRes.ok) {
+      const errText = await saveRes.text();
+      console.error('leads progress error', saveRes.status, errText);
+      return res.status(502).json({ error: 'Falha ao salvar progresso', detail: errText.slice(0, 240) });
+    }
+
+    const saved = await saveRes.json();
+    const row = Array.isArray(saved) ? saved[0] : saved;
     return res.status(200).json({
       ok: true,
+      storage: 'leads',
       id: row?.id,
       visitor_id: visitorId,
-      current_step: payload.current_step,
-      status: payload.status,
+      current_step: maxStep,
+      status: nextStatus,
     });
   } catch (err) {
     console.error('Progress API error:', err);
