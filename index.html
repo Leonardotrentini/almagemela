@@ -941,13 +941,13 @@ body {
     </div>
   </div>
 
-  <!-- SLIDE 6: INTER 1 -->
-  <div class="slide" id="slide-8">
+  <!-- PASO 7: INTER 1 · sentí tu energía -->
+  <div class="slide" id="slide-8" data-inter="1">
     <div class="inter">
       <div class="orb">🔮</div>
       <h2 data-tpl="{{NOME}}, sentí tu energía fuerte.">Sentí tu energía fuerte.</h2>
       <p class="barnum" data-tpl="No es casualidad que estés aquí hoy. Tu energía de {{SIGNO}} lleva meses llamando a alguien y lo sientes en el pecho antes de dormir. Llamas sin saber a quién.">No es casualidad que estés aquí hoy. Tu energía lleva meses llamando a alguien y lo sientes en el pecho antes de dormir. Llamas sin saber a quién.</p>
-      <p id="inter1Text"></p>
+      <p class="inter-extra" id="inter1Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar lectura</button>
     </div>
   </div>
@@ -1001,12 +1001,12 @@ body {
   </div>
 
   <!-- SLIDE 11: INTER 2 (compatibilidade) -->
-  <div class="slide" id="slide-13">
+  <div class="slide" id="slide-13" data-inter="2">
     <div class="inter">
       <div class="orb">💞</div>
       <h2 id="inter2Title">Compatibilidad rara.</h2>
       <p class="barnum" data-tpl="Veo algo que no es común, {{NOME}}. Solo 7 de cada 100 mujeres tienen este tipo de Hilo Rojo. Por eso atraes miradas que no se olvidan, pero hombres que no se quedan. Das mucho, recibes poco.">Veo algo que no es común. Solo 7 de cada 100 mujeres tienen este tipo de Hilo Rojo. Por eso atraes miradas que no se olvidan, pero hombres que no se quedan. Das mucho, recibes poco.</p>
-      <p id="inter2Text"></p>
+      <p class="inter-extra" id="inter2Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
   </div>
@@ -1040,12 +1040,34 @@ body {
   </div>
 
   <!-- SLIDE 14: INTER 3 (proteção) -->
-  <div class="slide" id="slide-16">
+  <div class="slide" id="slide-16" data-inter="3">
     <div class="inter">
       <div class="orb">🧿</div>
       <h2 id="inter3Title">Tu corazón aprendió a protegerse.</h2>
       <p class="barnum" data-tpl="Desde {{ANO}} te cansaste de repetir el mismo patrón con caras diferentes. Ahora bloqueas sin querer al que sí es. Por eso te da ansiedad cuando alguien bueno se acerca.">Desde 2023 te cansaste de repetir el mismo patrón con caras diferentes. Ahora bloqueas sin querer al que sí es. Por eso te da ansiedad cuando alguien bueno se acerca.</p>
-      <p id="inter3Text"></p>
+      <p class="inter-extra" id="inter3Text"></p>
+      <button class="btn-primary" onclick="nextSlide()">Continuar</button>
+    </div>
+  </div>
+
+  <!-- PASO 10: INTER 4 · el patrón enredado -->
+  <div class="slide" id="slide-inter-patron" data-inter="4">
+    <div class="inter">
+      <div class="orb">🪢</div>
+      <h2>Repites el patrón porque tu Hilo Rojo está enredado.</h2>
+      <p class="barnum" data-tpl="Atraes al que necesita ser salvado, no al que viene a quedarse. Tu energía de {{SIGNO}} es muy dadora y eso confunde a quien sí te busca.">Atraes al que necesita ser salvado, no al que viene a quedarse. Tu energía es muy dadora y eso confunde a quien sí te busca.</p>
+      <p class="inter-extra" id="inter4Text"></p>
+      <button class="btn-primary" onclick="nextSlide()">Continuar</button>
+    </div>
+  </div>
+
+  <!-- PASO 11: INTER 5 · él ya sintió tu energía -->
+  <div class="slide" id="slide-inter-sintio" data-inter="5">
+    <div class="inter">
+      <div class="orb">🧵</div>
+      <h2 data-tpl="Él ya sintió tu energía, {{NOME}}.">Él ya sintió tu energía.</h2>
+      <p class="barnum">Pero tu bloqueo lo confunde. Por eso aparece y desaparece. No es que no le gustes. Es que siente tu muro.</p>
+      <p class="inter-extra" id="inter5Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
   </div>
@@ -1078,12 +1100,12 @@ body {
   </div>
 
   <!-- SLIDE 17: INTER 4 (cartas confirmam) -->
-  <div class="slide" id="slide-19">
+  <div class="slide" id="slide-19" data-inter="6">
     <div class="inter">
       <div class="orb">🃏</div>
       <h2>Las cartas confirman. Vi sus iniciales.</h2>
       <p class="barnum" data-tpl="Vi una inicial fuerte cerca de tu Hilo Rojo. Y vi tu ventana de encuentro. Martha lo anotó todo para tu lectura. No es quien piensas.">Vi una inicial fuerte cerca de tu Hilo Rojo. Y vi tu ventana de encuentro. Martha lo anotó todo para tu lectura. No es quien piensas.</p>
-      <p id="inter4Text"></p>
+      <p class="inter-extra" id="inter6Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Ya casi llego</button>
     </div>
   </div>
@@ -1166,7 +1188,7 @@ body {
           <div class="cc-row"><span class="cc-label">Ventana de encuentro</span><span class="cc-val">Detectada ✓</span></div>
         </div>
         <button type="button" class="btn-know" id="btnRevealLectura" onclick="revealMiniLectura()">SÍ, REVELAR MI HILO ROJO AHORA →</button>
-        <p class="reveal-foot">Paso 19/19 · 100% confidencial</p>
+        <p class="reveal-foot">Paso 18/19 · 100% confidencial</p>
       </div>
 
       <div class="channel-loading" id="channelLoading">
@@ -1416,14 +1438,43 @@ const ZODIAC = [
   ["Sagitario","♐"],["Capricornio","♑"],["Acuario","♒"],["Piscis","♓"]
 ];
 
-const SECTIONS = {
+// Orden real del funnel. Cada interstitial abre su paso y las preguntas
+// que vienen después comparten ese mismo número (19 pasos en total).
+const SLIDE_ORDER = [
+  'slide-1',              // 1  hook
+  'slide-2',              // 2  nombre
+  'slide-3',              // 3  fecha
+  'slide-4',              // 4  estado civil
+  'slide-5',              // 5  dolor principal
+  'slide-6',              // 6  tiempo del bloqueo
+  'slide-8',              // 7  INTER sentí tu energía
+  'slide-7',              // 7  ¿ya cruzó tu camino?
+  'slide-13',             // 8  INTER compatibilidad rara
+  'slide-9',              // 8  etapa de la vida
+  'slide-10',             // 8  qué pide el corazón
+  'slide-16',             // 9  INTER tu corazón se protege
+  'slide-11',             // 9  energía que combina
+  'slide-12',             // 9  signo que atrae
+  'slide-inter-patron',   // 10 INTER el patrón enredado
+  'slide-14',             // 10 qué enreda tu Hilo Rojo
+  'slide-15',             // 10 último amor
+  'slide-inter-sintio',   // 11 INTER él ya sintió tu energía
+  'slide-17',             // 11 señales
+  'slide-18',             // 11 qué quieres saber
+  'slide-19',             // 12 INTER las cartas confirman
+  'slide-20',             // 12 qué valoras
+  'slide-21',             // 12 crees en almas gemelas
+  'slide-22'              // 12 ¿lista?
+];
+const PASO_OF = [1, 2, 3, 4, 5, 6, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 12];
+const SECTION_BY_PASO = {
   1:'Leyendo tu energía', 2:'Tu firma energética', 3:'Tu firma energética',
   4:'Tu corazón hoy', 5:'Tu dolor', 6:'Tu bloqueo',
-  7:'Tu corazón', 8:'Tu energía',
-  9:'Tu corazón', 10:'Tu corazón', 11:'Tu corazón', 12:'Tu corazón', 13:'Tu Hilo Rojo',
-  14:'Inmersión profunda', 15:'Inmersión profunda', 16:'Tu bloqueo', 17:'Inmersión profunda', 18:'Inmersión profunda', 19:'La revelación',
-  20:'La revelación', 21:'La revelación', 22:'La revelación',
-  23:'Leyendo tu energía', 25:'Tu lectura'
+  7:'Tu energía', 8:'Compatibilidad', 9:'Tu corazón', 10:'Tu Hilo Rojo',
+  11:'Tu bloqueo', 12:'Las cartas',
+  13:'Leyendo tu energía', 14:'Leyendo tu energía', 15:'Leyendo tu energía',
+  16:'Leyendo tu energía', 17:'Leyendo tu energía',
+  18:'Tu lectura', 19:'Tu lectura'
 };
 
 // ============ PERSONALIZACIÓN {{NOME}} / {{SIGNO}} ============
@@ -1496,9 +1547,12 @@ function logPersona(tag) {
 let currentSlide = 0;
 let selectedKey = null;
 let data = {};
-const LAST_Q = 22;
-const SLIDE_LOADING = 23;
-const SLIDE_READING = 25;
+const LAST_Q = SLIDE_ORDER.length;
+const SLIDE_LOADING = LAST_Q + 1;
+const SLIDE_READING = LAST_Q + 2;
+// El loading cubre los pasos 13 a 17; la lectura es 18 (confirmación) y 19 (oferta)
+let _loadingPaso = 13;
+let _readingPaso = 18;
 
 // ============ META PIXEL (eventos padronizados) ============
 const META_PIXEL_ID = '38539014385698035';
@@ -1551,10 +1605,10 @@ function quizPasoInfo(slide) {
   let paso = 0;
   let label = 'Inicio';
   if (slide >= 1 && slide <= LAST_Q) {
-    paso = Math.min(19, slide);
-    label = SECTIONS[slide] || 'Quiz';
+    paso = PASO_OF[slide - 1] || 1;
+    label = SECTION_BY_PASO[paso] || 'Quiz';
   } else if (slide === SLIDE_LOADING) {
-    paso = 19; label = 'Loading energía';
+    paso = 17; label = 'Loading energía';
   } else if (slide >= SLIDE_READING) {
     paso = 19; label = 'Mini Lectura';
   }
@@ -1666,21 +1720,21 @@ function fillReveal() {
 
 // ============ NAV ============
 function goToSlide(n) {
-  // Skip old lead screen: loading(23) -> reading(25)
-  if (n === 24) n = SLIDE_READING;
   document.querySelectorAll('.slide').forEach(s => {
     if (s.id === 'slide-lead') return;
     s.classList.remove('active');
   });
   let id;
-  if (n <= LAST_Q) id = `slide-${n}`;
+  if (n >= 1 && n <= LAST_Q) id = SLIDE_ORDER[n - 1];
   else if (n === SLIDE_LOADING) id = 'slide-loading';
-  else id = 'slide-reading';
+  else if (n >= SLIDE_READING) id = 'slide-reading';
+  else id = 'slide-0';
   const el = document.getElementById(id);
   if (el) el.classList.add('active');
   currentSlide = n;
   updateProgress();
   applyTemplates();
+  renderInterstitial(el);
   try { localStorage.setItem('almagemela_slide', String(n)); localStorage.setItem('almagemela_data', JSON.stringify(data)); } catch(e){}
   trackProgress({ event: 'slide_' + n, status: funnelStatusForSlide(n) });
   document.getElementById('app').scrollIntoView({block:'start'});
@@ -1699,12 +1753,12 @@ function updateProgress() {
   let paso = 0;
   let label = 'Leyendo tu energía';
   if (currentSlide >= 1 && currentSlide <= LAST_Q) {
-    paso = Math.min(19, currentSlide);
-    label = SECTIONS[currentSlide] || 'Leyendo tu energía';
+    paso = PASO_OF[currentSlide - 1] || 1;
+    label = SECTION_BY_PASO[paso] || 'Leyendo tu energía';
   } else if (currentSlide === SLIDE_LOADING) {
-    paso = 19; label = 'Leyendo tu energía';
+    paso = _loadingPaso; label = 'Leyendo tu energía';
   } else if (currentSlide >= SLIDE_READING) {
-    paso = 19; label = 'Tu lectura';
+    paso = _readingPaso; label = 'Tu lectura';
   }
   if (currentSlide >= 1) {
     w.classList.add('visible');
@@ -1807,10 +1861,6 @@ function answer(key, val) {
     if (wrap) wrap.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
     btn.classList.add('selected');
   }
-  if (key==='met') fillInter1(val);
-  if (key==='partner_sign') fillInter2(val);
-  if (key==='block') fillInter3(val);
-  if (key==='want') fillInter4(val);
   if (key==='ready') {
     metaTrackOnce('quiz_lead', 'Lead', { content_name: 'Quiz completado' });
     trackProgress({ event: 'quiz_complete', status: 'in_progress', current_step: 19, step_label: 'Quiz completado', immediate: true });
@@ -1838,53 +1888,82 @@ function persistQuiz() {
 }
 
 // ============ INTERSTITIALS ============
-// Inter 1 (slide 8) - basado en "met"
-function fillInter1(met) {
-  const map = {
-    yes: "Esa persona que crees haber encontrado dejó una marca energética profunda en ti. Necesito mirar más a fondo este vínculo.",
-    maybe: "Siento una presencia a tu alrededor — alguien que ya cruzó tu camino, aunque todavía dudes. Las cartas quieren revelar quién es.",
-    no: "Hay una energía amorosa acercándose a ti. Todavía no tiene rostro, pero ya está en movimiento hacia ti.",
-    lost: "Una conexión que se perdió no siempre se cierra de verdad. Las cartas muestran un hilo que aún los une."
-  };
-  const el = document.getElementById('inter1Text');
-  if (el) el.innerHTML = (map[met]||map.no) + " <span class='hl'>Eso explica muchas cosas.</span>";
-}
-// Inter 2 (slide 13) - patrón del Hilo Rojo enredado
-function fillInter2(partnerSign) {
-  const userSign = currentSigno();
-  const title = document.getElementById('inter2Title');
-  if (title) title.textContent = 'Compatibilidad rara.';
-  let txt = `Repites el patrón porque tu Hilo Rojo está enredado. Atraes al que necesita ser salvado, no al que viene a quedarse. Tu energía de <span class='hl'>${escHtml(userSign)}</span> es muy dadora y eso confunde a quien sí te busca.`;
-  if (partnerSign && partnerSign !== 'unknown') {
-    txt += ` Y con energía de ${escHtml(partnerSign)} la atracción es tan fuerte que te nubla el juicio.`;
-  }
-  const el = document.getElementById('inter2Text');
-  if (el) el.innerHTML = txt;
-}
-// Inter 3 (slide 16) - él ya sintió tu energía
-function fillInter3(block) {
-  const nombre = (data.name || '').trim() || 'alma';
-  const title = document.getElementById('inter3Title');
-  if (title) title.textContent = 'Tu corazón aprendió a protegerse.';
-  const el = document.getElementById('inter3Text');
-  if (el) {
-    el.innerHTML = `<b>Él ya sintió tu energía, ${escHtml(nombre)}.</b> Pero tu bloqueo lo confunde. Por eso aparece y desaparece. No es que no le gustes. Es que siente tu muro.`;
+// Cada interstitial abre su paso y reacciona a las respuestas del bloque anterior.
+function renderInterstitial(el) {
+  if (!el) return;
+  const k = el.getAttribute('data-inter');
+  if (!k) return;
+  const target = el.querySelector('.inter-extra');
+  if (!target) return;
+  try {
+    target.innerHTML = INTER_EXTRA[k] ? INTER_EXTRA[k]() : '';
+  } catch (e) {
+    target.innerHTML = '';
   }
 }
-// Inter 4 (slide 19) - basado en "want"
-function fillInter4(want) {
-  const map = {
-    who: "Quieres saber quién es. Martha ya anotó su inicial y cómo lo vas a reconocer.",
-    when: "Quieres saber cuándo. Martha ya marcó el período exacto de tu ventana de encuentro.",
-    where: "Quieres saber dónde. Martha ya vio el lugar cotidiano donde se van a cruzar.",
-    already: "Quieres saber si ya lo conoces. Y la respuesta de las cartas puede cambiar cómo ves a alguien cerca de ti."
-  };
-  const el = document.getElementById('inter4Text');
-  if (el) el.innerHTML = (map[want]||map.who) + " <span class='hl'>No es quien piensas.</span>";
-}
+const INTER_EXTRA = {
+  // Paso 7 · reacciona al dolor principal (paso 5)
+  '1': () => {
+    const map = {
+      crumbs: 'Y sé que estás cansada de dar mucho y recibir migajas.',
+      ghosting: 'Y sé lo que es verlo encender todo y desaparecer sin explicación.',
+      cant_forget: 'Y sé que hay un nombre que todavía no logras soltar.',
+      time_block: 'Y sé que sientes el tiempo corriendo mientras bloqueas al que sí es.'
+    };
+    return (map[data.pain] || map.crumbs) + " <span class='hl'>Eso explica muchas cosas.</span>";
+  },
+  // Paso 8 · reacciona a si ya cruzó su camino (paso 7)
+  '2': () => {
+    const map = {
+      yes: 'Esa persona que ya cruzó tu camino dejó una marca energética profunda. Por eso vuelve a tu mente sin permiso.',
+      maybe: 'Sientes una presencia cerca y todavía dudas. Tu duda no es tontería: es tu Hilo Rojo tirando.',
+      no: 'Todavía no tiene rostro para ti, pero ya está en movimiento hacia ti.',
+      lost: 'Una conexión que se perdió no siempre se cierra. Veo un hilo que aún los une.'
+    };
+    return map[data.met] || map.no;
+  },
+  // Paso 9 · reacciona a lo que pide el corazón (paso 8)
+  '3': () => {
+    const map = {
+      find: 'Pides encontrarlo. Pero tu muro decide antes que tú.',
+      clarity: 'Pides claridad sobre alguien. Y hoy la vas a tener.',
+      heal: 'Pides sanar. La herida cierra cuando el Hilo se desenreda.',
+      deepen: 'Pides fortalecer lo que ya tienes. Tu muro también actúa ahí dentro.'
+    };
+    return map[data.desire] || map.find;
+  },
+  // Paso 10 · reacciona al signo que la atrae (paso 9)
+  '4': () => {
+    const p = data.partner_sign;
+    if (!p || p === 'unknown') return 'Aunque no sepas su signo, tu energía ya lo está llamando.';
+    return 'Y con energía de ' + escHtml(p) + ' la atracción es tan fuerte que te nubla el juicio.';
+  },
+  // Paso 11 · reacciona a lo que enreda su Hilo Rojo (paso 10)
+  '5': () => {
+    const map = {
+      trust: 'Tu miedo a confiar levanta el muro sin que te des cuenta.',
+      past: 'La herida que aún no cicatriza es justo lo que él siente cuando se acerca.',
+      worth: 'Crees que no eres suficiente. Él siente esa duda antes que tu belleza.',
+      timing: 'Crees que no es el momento. Y tu energía le dice "no ahora".',
+      none: 'Tu corazón ya está abierto. Ahora falta que él encuentre la puerta.'
+    };
+    return map[data.block] || map.past;
+  },
+  // Paso 12 · reacciona a lo que quiere saber (paso 11)
+  '6': () => {
+    const map = {
+      who: 'Quieres saber quién es. Martha ya anotó su inicial y cómo lo vas a reconocer.',
+      when: 'Quieres saber cuándo. Martha ya marcó el período exacto de tu ventana de encuentro.',
+      where: 'Quieres saber dónde. Martha ya vio el lugar cotidiano donde se van a cruzar.',
+      already: 'Quieres saber si ya lo conoces. La respuesta puede cambiar cómo ves a alguien cerca de ti.'
+    };
+    return (map[data.want] || map.who) + " <span class='hl'>No es quien piensas.</span>";
+  }
+};
 
 // ============ LOADING ============
 function startLoading() {
+  _loadingPaso = 13;
   goToSlide(SLIDE_LOADING);
   const pctEl = document.getElementById('loadingPct');
   const ring = document.getElementById('ringFill');
@@ -1913,6 +1992,8 @@ function startLoading() {
   const statusTimer = setInterval(() => {
     statusIdx = Math.min(statuses.length - 1, statusIdx + 1);
     statusEl.textContent = statuses[statusIdx];
+    _loadingPaso = 13 + statusIdx;
+    updateProgress();
   }, 1500);
 
   function frame(now) {
@@ -2103,6 +2184,8 @@ function setReadingState(state) {
 }
 function showReadingConfirm() {
   setReadingState('confirm');
+  _readingPaso = 18;
+  updateProgress();
   const text = document.getElementById('readingText');
   if (text) text.innerHTML = '';
   // Rellenar primero con los datos crudos: el gate nunca debe quedar en "—"
@@ -2138,6 +2221,8 @@ function revealMiniLectura() {
   setTimeout(() => {
     clearInterval(timer);
     setReadingState('letter');
+    _readingPaso = 19;
+    updateProgress();
     renderReadingLetter();
     applyTemplates();
     startOfferTimer();
@@ -2208,6 +2293,8 @@ requestAnimationFrame(() => {
         if (!selectedKey) selectedKey = 'lovers';
         goToSlide(SLIDE_READING);
         setReadingState('letter');
+        _readingPaso = 19;
+        updateProgress();
         renderReadingLetter();
         applyTemplates();
         startOfferTimer();
