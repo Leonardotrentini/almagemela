@@ -615,15 +615,8 @@ body {
   font-family: var(--font-serif); font-weight: 600;
 }
 /* V6 reading states — exclusive panels */
-#slide-reading .confirm-gate,
-#slide-reading .channel-loading,
-#slide-reading .letter-reveal { display: none !important; }
-#slide-reading.v6-confirm .confirm-gate { display: block !important; }
-#slide-reading.v6-channel .channel-loading { display: flex !important; }
-#slide-reading.v6-letter .letter-reveal { display: block !important; }
-#slide-reading .reading-letter input,
-#slide-reading .letter-reveal input[type="text"]:not(#inEmail):not(#inPhone),
-#slide-reading .letter-reveal input[type="date"] { display: none !important; }
+#slide-reading-confirm .confirm-gate { display: block !important; }
+#slide-offer .cta { display: block !important; }
 .letter-block {
   opacity: 0;
   transform: translateY(14px);
@@ -991,33 +984,111 @@ body {
     </div>
   </div>
 
-  <!-- PASSOS 13-17 LOADING -->
-  <div class="slide" id="slide-loading">
+  <!-- PASSOS 13-17: 5 slides de loading separados -->
+  <div class="slide" id="slide-loading-1">
     <div class="loading">
-      <h2 id="loadingTitle">Leyendo tu energía amorosa…</h2>
-      <p class="loading-status" id="loadingStatus">Analizando tu fecha y tu signo...</p>
+      <h2 data-tpl="Leyendo tu energía amorosa, {{NOME}}...">Leyendo tu energía amorosa...</h2>
+      <p class="loading-status">Conectando con tu Hilo Rojo...</p>
       <div class="ring">
         <svg width="150" height="150" viewBox="0 0 150 150">
           <circle cx="75" cy="75" r="66" fill="none" stroke="#F3EEFB" stroke-width="10"/>
-          <circle id="ringFill" cx="75" cy="75" r="66" fill="none" stroke="#a855f7" stroke-width="10" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="415"/>
+          <circle class="ringFill" cx="75" cy="75" r="66" fill="none" stroke="#a855f7" stroke-width="10" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="415"/>
         </svg>
-        <span class="pct" id="loadingPct">0%</span>
+        <span class="pct loadingPct">35%</span>
       </div>
-      <div class="loading-bar-wrap"><div class="loading-bar-fill" id="loadingBarFill"></div></div>
+      <div class="loading-bar-wrap"><div class="loading-bar-fill loadingBarFill" style="width:35%"></div></div>
       <div class="checklist">
-        <div class="check" data-i="0"><span class="ci">○</span> <span id="chk0">Leyendo la energía...</span></div>
-        <div class="check" data-i="1"><span class="ci">○</span> <span id="chk1">Identificando tu bloqueo del corazón...</span></div>
-        <div class="check" data-i="2"><span class="ci">○</span> <span id="chk2">Localizando tu alma gemela y sus iniciales...</span></div>
-        <div class="check" data-i="3"><span class="ci">○</span> <span id="chk3">Verificando la agenda de Martha · 2 lugares hoy...</span></div>
+        <div class="check on" data-i="0"><span class="ci">○</span> <span data-tpl="Leyendo la energía de {{NOME}}...">Leyendo la energía...</span></div>
+        <div class="check" data-i="1"><span class="ci">○</span> <span data-tpl="Identificando tu bloqueo del corazón desde {{ANO}}...">Identificando tu bloqueo del corazón...</span></div>
+        <div class="check" data-i="2"><span class="ci">○</span> Localizando tu alma gemela y sus iniciales...</div>
       </div>
-      <p class="reveal-foot" id="loadingPasoHint">Paso 13/19</p>
     </div>
   </div>
 
-  <!-- PASSO 18 confirm + PASSO 19 oferta -->
-  <div class="slide" id="slide-reading">
+  <div class="slide" id="slide-loading-2">
+    <div class="loading">
+      <h2 data-tpl="Analizando tu fecha y tu signo {{SIGNO}}...">Analizando tu fecha y tu signo...</h2>
+      <p class="loading-status">Leyendo tu mapa energético...</p>
+      <div class="ring">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="66" fill="none" stroke="#F3EEFB" stroke-width="10"/>
+          <circle class="ringFill" cx="75" cy="75" r="66" fill="none" stroke="#a855f7" stroke-width="10" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="415"/>
+        </svg>
+        <span class="pct loadingPct">52%</span>
+      </div>
+      <div class="loading-bar-wrap"><div class="loading-bar-fill loadingBarFill" style="width:52%"></div></div>
+      <div class="checklist">
+        <div class="check done" data-i="0"><span class="ci">✓</span> <span data-tpl="Leyendo la energía de {{NOME}}...">Leyendo la energía...</span></div>
+        <div class="check on" data-i="1"><span class="ci">○</span> <span data-tpl="Identificando tu bloqueo del corazón desde {{ANO}}...">Identificando tu bloqueo del corazón...</span></div>
+        <div class="check" data-i="2"><span class="ci">○</span> Localizando tu alma gemela y sus iniciales...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-loading-3">
+    <div class="loading">
+      <h2 data-tpl="Identificando tu bloqueo del corazón desde {{ANO}}...">Identificando tu bloqueo del corazón...</h2>
+      <p class="loading-status">Detectando el muro emocional...</p>
+      <div class="ring">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="66" fill="none" stroke="#F3EEFB" stroke-width="10"/>
+          <circle class="ringFill" cx="75" cy="75" r="66" fill="none" stroke="#a855f7" stroke-width="10" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="415"/>
+        </svg>
+        <span class="pct loadingPct">68%</span>
+      </div>
+      <div class="loading-bar-wrap"><div class="loading-bar-fill loadingBarFill" style="width:68%"></div></div>
+      <div class="checklist">
+        <div class="check done" data-i="0"><span class="ci">✓</span> <span data-tpl="Leyendo la energía de {{NOME}}...">Leyendo la energía...</span></div>
+        <div class="check on" data-i="1"><span class="ci">○</span> <span data-tpl="Identificando tu bloqueo del corazón desde {{ANO}}...">Identificando tu bloqueo del corazón...</span></div>
+        <div class="check" data-i="2"><span class="ci">○</span> Localizando tu alma gemela y sus iniciales...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-loading-4">
+    <div class="loading">
+      <h2>Localizando tu alma gemela y sus iniciales...</h2>
+      <p class="loading-status">Buscando la señal del encuentro...</p>
+      <div class="ring">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="66" fill="none" stroke="#F3EEFB" stroke-width="10"/>
+          <circle class="ringFill" cx="75" cy="75" r="66" fill="none" stroke="#a855f7" stroke-width="10" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="415"/>
+        </svg>
+        <span class="pct loadingPct">81%</span>
+      </div>
+      <div class="loading-bar-wrap"><div class="loading-bar-fill loadingBarFill" style="width:81%"></div></div>
+      <div class="checklist">
+        <div class="check done" data-i="0"><span class="ci">✓</span> <span data-tpl="Leyendo la energía de {{NOME}}...">Leyendo la energía...</span></div>
+        <div class="check done" data-i="1"><span class="ci">✓</span> <span data-tpl="Identificando tu bloqueo del corazón desde {{ANO}}...">Identificando tu bloqueo del corazón...</span></div>
+        <div class="check on" data-i="2"><span class="ci">○</span> Localizando tu alma gemela y sus iniciales...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="slide-loading-5">
+    <div class="loading">
+      <h2 data-tpl="Verificando la agenda de Martha... 2 lugares hoy, {{NOME}}...">Verificando la agenda de Martha...</h2>
+      <p class="loading-status">Confirmando cupo de lectura...</p>
+      <div class="ring">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="66" fill="none" stroke="#F3EEFB" stroke-width="10"/>
+          <circle class="ringFill" cx="75" cy="75" r="66" fill="none" stroke="#a855f7" stroke-width="10" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="415"/>
+        </svg>
+        <span class="pct loadingPct">89%</span>
+      </div>
+      <div class="loading-bar-wrap"><div class="loading-bar-fill loadingBarFill" style="width:89%"></div></div>
+      <div class="checklist">
+        <div class="check done" data-i="0"><span class="ci">✓</span> <span data-tpl="Leyendo la energía de {{NOME}}...">Leyendo la energía...</span></div>
+        <div class="check done" data-i="1"><span class="ci">✓</span> <span data-tpl="Identificando tu bloqueo del corazón desde {{ANO}}...">Identificando tu bloqueo del corazón...</span></div>
+        <div class="check done" data-i="2"><span class="ci">✓</span> Localizando tu alma gemela y sus iniciales...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASSO 18 confirm -->
+  <div class="slide" id="slide-reading-confirm">
     <div class="reading">
-      <div class="confirm-gate" id="confirmGate">
+      <div class="confirm-gate" id="confirmGate" style="display:block">
         <h2 class="confirm-title" id="confirmTitle" data-tpl="Tu lectura está casi lista, {{NOME}}.">Tu lectura está casi lista</h2>
         <p class="confirm-sub">Confirma para canalizar:</p>
         <div class="confirm-card">
@@ -1030,87 +1101,85 @@ body {
         <button type="button" class="btn-know" id="btnRevealLectura" onclick="revealOferta()">SÍ, REVELAR MI HILO ROJO AHORA →</button>
         <p class="reveal-foot">Paso 18/19 · 100% confidencial</p>
       </div>
+    </div>
+  </div>
 
-      <div class="channel-loading" id="channelLoading">
-        <div class="channel-orb">🔮</div>
-        <p class="channel-line" id="channelLine">Canalizando tu energía...</p>
-      </div>
-
-      <div class="letter-reveal" id="letterReveal">
-        <div class="cta" style="margin-top:0;padding-top:8px;">
-          <div class="offer-wrap">
-            <div class="offer-glow" aria-hidden="true"></div>
-            <div class="offer-box">
-              <div class="offer-badge">🔥 OFERTA DE HOY · 94% OFF</div>
-              <div class="offer-scarcity">
-                <span class="dot"></span>
-                <span>Verificando agenda de Martha · <b>2 lugares hoy</b></span>
+  <!-- PASSO 19 oferta -->
+  <div class="slide" id="slide-offer">
+    <div class="reading">
+      <div class="cta" style="margin-top:0;padding-top:8px;">
+        <div class="offer-wrap">
+          <div class="offer-glow" aria-hidden="true"></div>
+          <div class="offer-box">
+            <div class="offer-badge">🔥 OFERTA DE HOY · 94% OFF</div>
+            <div class="offer-scarcity">
+              <span class="dot"></span>
+              <span>Verificando agenda de Martha · <b>2 lugares hoy</b></span>
+            </div>
+            <div class="offer-price-row">
+              De <span class="old">$147 USD</span> por <span class="new">$9 USD</span> hoy
+            </div>
+            <div class="offer-anchor">Entrega en 2 minutos en tu email</div>
+            <h3 class="offer-title" data-tpl="{{NOME}}, tu Hilo Rojo está listo.">Tu Hilo Rojo está listo.</h3>
+            <ul class="offer-stack">
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span class="item-main">Lectura Completa del Alma Gemela por Martha (PDF)</span>
+                <span class="val">$47</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span class="item-main">Audio de 5 min canalizado por Martha</span>
+                <span class="val">$37</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span class="item-main"><span class="bono">BONUS 1:</span> Iniciales de tu alma gemela</span>
+                <span class="val">$27</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span class="item-main"><span class="bono">BONUS 2:</span> Ventana de encuentro: cuándo y dónde</span>
+                <span class="val">$19</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span class="item-main"><span class="bono">BONUS 3:</span> Qué lo está bloqueando y cómo desbloquearlo</span>
+                <span class="val">$17</span>
+              </li>
+            </ul>
+            <div class="offer-divider"></div>
+            <div class="offer-total">Valor total $147 <span class="arrow">→</span> Hoy solo <span class="today">$9</span></div>
+            <div class="offer-timer" id="offerTimer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+              <span>Esta lectura expira en <b id="offerTimerClock">15:00</b></span>
+            </div>
+            <div class="offer-trust">
+              <div class="t">
+                <svg class="lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                100% confidencial
               </div>
-              <div class="offer-price-row">
-                De <span class="old">$147 USD</span> por <span class="new">$9 USD</span> hoy
-              </div>
-              <div class="offer-anchor">Entrega en 2 minutos en tu email</div>
-              <h3 class="offer-title" data-tpl="{{NOME}}, tu Hilo Rojo está listo.">Tu Hilo Rojo está listo.</h3>
-              <ul class="offer-stack">
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  <span class="item-main">Lectura Completa del Alma Gemela por Martha (PDF)</span>
-                  <span class="val">$47</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  <span class="item-main">Audio de 5 min canalizado por Martha</span>
-                  <span class="val">$37</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  <span class="item-main"><span class="bono">BONUS 1:</span> Iniciales de tu alma gemela</span>
-                  <span class="val">$27</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  <span class="item-main"><span class="bono">BONUS 2:</span> Ventana de encuentro: cuándo y dónde</span>
-                  <span class="val">$19</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  <span class="item-main"><span class="bono">BONUS 3:</span> Qué lo está bloqueando y cómo desbloquearlo</span>
-                  <span class="val">$17</span>
-                </li>
-              </ul>
-              <div class="offer-divider"></div>
-              <div class="offer-total">Valor total $147 <span class="arrow">→</span> Hoy solo <span class="today">$9</span></div>
-              <div class="offer-timer" id="offerTimer">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
-                <span>Esta lectura expira en <b id="offerTimerClock">15:00</b></span>
-              </div>
-              <div class="offer-trust">
-                <div class="t">
-                  <svg class="lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                  100% confidencial
-                </div>
-                <div class="t">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                  12.431 lecturas · 4.8/5
-                </div>
-              </div>
-              <div class="offer-pay">
-                <div class="offer-pay-icons" aria-label="Métodos de pago">
-                  <span class="pay-chip visa">VISA</span>
-                  <span class="pay-chip mc">MC</span>
-                  <span class="pay-chip pp">PayPal</span>
-                  <span class="pay-chip pix">Pix</span>
-                </div>
-                <div class="offer-pay-note">Pago seguro · Entrega inmediata en 2 min · Garantía 7 días</div>
+              <div class="t">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                12.431 lecturas · 4.8/5
               </div>
             </div>
+            <div class="offer-pay">
+              <div class="offer-pay-icons" aria-label="Métodos de pago">
+                <span class="pay-chip visa">VISA</span>
+                <span class="pay-chip mc">MC</span>
+                <span class="pay-chip pp">PayPal</span>
+                <span class="pay-chip pix">Pix</span>
+              </div>
+              <div class="offer-pay-note">Pago seguro · Entrega inmediata en 2 min · Garantía 7 días</div>
+            </div>
           </div>
+        </div>
 
-          <a class="btn-cta pulse" href="https://pay.hotmart.com/J107108736M?checkoutMode=10" id="ctaLink" style="min-height:60px;" onclick="goCheckout(event)" target="_blank" rel="noopener noreferrer">SÍ, QUIERO VER MI HILO ROJO AHORA POR $9 →</a>
-          <div class="guar-soft">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>Garantía de 7 días · Si no resuena contigo, te devolvemos el 100% sin preguntas</span>
-          </div>
+        <a class="btn-cta pulse" href="https://pay.hotmart.com/J107108736M?checkoutMode=10" id="ctaLink" style="min-height:60px;" onclick="goCheckout(event)" target="_blank" rel="noopener noreferrer">SÍ, QUIERO VER MI HILO ROJO AHORA POR $9 →</a>
+        <div class="guar-soft">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Garantía de 7 días · Si no resuena contigo, te devolvemos el 100% sin preguntas</span>
         </div>
       </div>
     </div>
@@ -1176,14 +1245,34 @@ const CARDS = {
 const CARD_KEYS = Object.keys(CARDS);
 const HOTMART_MAIN_URL = 'https://pay.hotmart.com/J107108736M?checkoutMode=10';
 
-// Ordem linear: 0 picker, 1..12 passos, 13 loading (13-17), 14 confirm(18), 15 oferta(19)
+// Ordem linear EXATA: índice = passo (0 picker ... 19 oferta)
 const SLIDE_IDS = [
-  'slide-0',
-  'slide-1','slide-2','slide-3','slide-4','slide-5','slide-6',
-  'slide-8','slide-13','slide-16','slide-inter-patron','slide-inter-sintio','slide-19',
-  'slide-loading','slide-reading','slide-reading'
+  'slide-0',              // 0 picker
+  'slide-1',              // 1
+  'slide-2',              // 2
+  'slide-3',              // 3
+  'slide-4',              // 4
+  'slide-5',              // 5
+  'slide-6',              // 6
+  'slide-8',              // 7
+  'slide-13',             // 8
+  'slide-16',             // 9
+  'slide-inter-patron',   // 10
+  'slide-inter-sintio',   // 11
+  'slide-19',             // 12
+  'slide-loading-1',      // 13 · 68% barra · 35% círculo
+  'slide-loading-2',      // 14 · 74% · 52%
+  'slide-loading-3',      // 15 · 81% · 68%
+  'slide-loading-4',      // 16 · 86% · 81%
+  'slide-loading-5',      // 17 · 89% · 89%
+  'slide-reading-confirm',// 18 · 94%
+  'slide-offer'           // 19 · 100%
 ];
-const PASO_NUM = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,18,19];
+const BAR_PCT = {
+  1:5,2:11,3:16,4:21,5:26,6:32,7:37,8:42,9:47,10:53,
+  11:58,12:63,13:68,14:74,15:81,16:86,17:89,18:94,19:100
+};
+const CIRCLE_PCT = { 13:35, 14:52, 15:68, 16:81, 17:89 };
 const SECTION = {
   0:'Inicio',1:'Leyendo tu energía',2:'Tu firma energética',3:'Tu firma energética',
   4:'Tu corazón hoy',5:'Tu dolor',6:'Tu bloqueo',7:'Tu energía',8:'Compatibilidad',
@@ -1195,7 +1284,7 @@ const SECTION = {
 let currentSlide = 0;
 let selectedKey = null;
 let data = {};
-let _loadingPaso = 13;
+let _loadingTimer = null;
 
 // ============ PERSONALIZACIÓN ============
 const ZODIAC_RANGES = [
@@ -1216,7 +1305,9 @@ function zodiacFromDate(raw) {
   return ZODIAC_RANGES[mo % 12][0];
 }
 function getNombre() {
-  return (localStorage.getItem('nombre') || localStorage.getItem('name') || data.name || '').trim() || 'Betty';
+  let n = (localStorage.getItem('nombre') || localStorage.getItem('name') || data.name || '').trim() || 'Betty';
+  n = n.toLowerCase();
+  return n.charAt(0).toUpperCase() + n.slice(1);
 }
 function getSigno() {
   return localStorage.getItem('signo') || data.zodiac || 'Capricornio';
@@ -1261,7 +1352,7 @@ function trackProgress(extra) {
   clearTimeout(_trackTimer);
   _trackTimer = setTimeout(() => {
     try {
-      const paso = typeof extra.current_step === 'number' ? extra.current_step : (PASO_NUM[currentSlide] || 0);
+      const paso = typeof extra.current_step === 'number' ? extra.current_step : (currentSlide || 0);
       fetch('/api/progress', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1285,20 +1376,31 @@ function trackProgress(extra) {
 // ============ NAV ============
 function goToSlide(n) {
   if (n < 0) n = 0;
-  if (n > 15) n = 15;
+  if (n > 19) n = 19;
+  if (_loadingTimer) { clearTimeout(_loadingTimer); _loadingTimer = null; }
+
   document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
   const id = SLIDE_IDS[n];
   const el = document.getElementById(id);
   if (el) el.classList.add('active');
   currentSlide = n;
 
-  // reading states
-  if (n === 14) setReadingState('confirm');
-  if (n === 15) setReadingState('letter');
-
   updateProgress();
   applyTemplates();
   fillConfirmGate();
+  paintLoadingCircle(n);
+
+  // Loading 13-17: avança sozinho após 1200ms (sem onclick)
+  if (n >= 13 && n <= 17) {
+    trackProgress({ event: 'loading_' + n, current_step: n, immediate: true });
+    _loadingTimer = setTimeout(() => {
+      _loadingTimer = null;
+      goToSlide(n + 1);
+    }, 1200);
+  }
+
+  if (n === 19) startOfferTimer();
+
   try {
     localStorage.setItem('almagemela_slide', String(n));
     localStorage.setItem('almagemela_data', JSON.stringify(data));
@@ -1307,20 +1409,34 @@ function goToSlide(n) {
   window.scrollTo(0, 0);
 }
 function nextSlide() { goToSlide(currentSlide + 1); }
-function prevSlide() { if (currentSlide > 1) goToSlide(currentSlide - 1); }
+function prevSlide() {
+  if (currentSlide > 1 && currentSlide < 13) goToSlide(currentSlide - 1);
+}
 function updateProgress() {
   const w = document.getElementById('progressWrap');
-  let paso = PASO_NUM[currentSlide] || 0;
-  if (currentSlide === 13) paso = _loadingPaso;
+  const paso = currentSlide;
   if (paso >= 1) {
     w.classList.add('visible');
-    const pct = Math.min(100, Math.round((paso / 19) * 100));
+    const pct = BAR_PCT[paso] != null ? BAR_PCT[paso] : Math.min(100, Math.round((paso / 19) * 100));
     const label = SECTION[paso] || 'Tu lectura';
     document.getElementById('sectionLabel').textContent = `Paso ${paso}/19 · ${pct}% - ${label}`;
     document.getElementById('progressFill').style.width = pct + '%';
   } else {
     w.classList.remove('visible');
   }
+}
+function paintLoadingCircle(n) {
+  if (n < 13 || n > 17) return;
+  const slide = document.getElementById(SLIDE_IDS[n]);
+  if (!slide) return;
+  const circ = CIRCLE_PCT[n] || 0;
+  const CIRC = 415;
+  const ring = slide.querySelector('.ringFill');
+  const pctEl = slide.querySelector('.loadingPct');
+  const bar = slide.querySelector('.loadingBarFill');
+  if (pctEl) pctEl.textContent = circ + '%';
+  if (ring) ring.style.strokeDashoffset = String(CIRC - (CIRC * circ / 100));
+  if (bar) bar.style.width = circ + '%';
 }
 
 // ============ PICKER ============
@@ -1463,118 +1579,15 @@ function bindInputs() {
   }
 }
 
-// ============ LOADING 13-17 (5 fases visíveis, ~3s cada) ============
+// ============ LOADING 13-17 ============
 function startLoading() {
-  if (window._loadingRun) return;
-  window._loadingRun = true;
   metaTrack('Lead', { content_name: 'Quiz completado' });
   trackProgress({ event: 'quiz_complete', current_step: 12, status: 'in_progress', immediate: true });
-
-  const phases = [
-    { paso: 13, title: 'Leyendo tu energía amorosa, ' + getNombre() + '...', status: 'Conectando con tu Hilo Rojo...', check: 0 },
-    { paso: 14, title: 'Analizando tu fecha y tu signo ' + getSigno() + '...', status: 'Leyendo tu mapa energético...', check: 0 },
-    { paso: 15, title: 'Identificando tu bloqueo del corazón desde ' + getAno() + '...', status: 'Detectando el muro emocional...', check: 1 },
-    { paso: 16, title: 'Localizando tu alma gemela y sus iniciales...', status: 'Buscando la señal del encuentro...', check: 2 },
-    { paso: 17, title: 'Verificando la agenda de Martha... 2 lugares hoy, ' + getNombre() + '...', status: 'Confirmando cupo de lectura...', check: 3 }
-  ];
-  const PHASE_MS = 3000;
-  const CIRC = 415;
-
-  _loadingPaso = 13;
+  // Entra no passo 13; goToSlide agenda sozinho 14→15→16→17→18
   goToSlide(13);
-
-  const pctEl = document.getElementById('loadingPct');
-  const ring = document.getElementById('ringFill');
-  const bar = document.getElementById('loadingBarFill');
-  const statusEl = document.getElementById('loadingStatus');
-  const titleEl = document.getElementById('loadingTitle');
-  const hintEl = document.getElementById('loadingPasoHint');
-  const items = Array.from(document.querySelectorAll('#slide-loading .check'));
-  const chk0 = document.getElementById('chk0');
-  const chk1 = document.getElementById('chk1');
-  const chk2 = document.getElementById('chk2');
-  const chk3 = document.getElementById('chk3');
-  if (chk0) chk0.textContent = 'Leyendo la energía de ' + getNombre() + '...';
-  if (chk1) chk1.textContent = 'Identificando tu bloqueo del corazón desde ' + getAno() + '...';
-  if (chk2) chk2.textContent = 'Localizando tu alma gemela y sus iniciales...';
-  if (chk3) chk3.textContent = 'Verificando la agenda de Martha · 2 lugares hoy...';
-
-  items.forEach(el => {
-    el.classList.remove('on', 'done');
-    const ci = el.querySelector('.ci');
-    if (ci) ci.textContent = '○';
-  });
-
-  function mark(el, cls) {
-    if (!el) return;
-    el.classList.add('on');
-    if (cls === 'done') {
-      el.classList.add('done');
-      const ci = el.querySelector('.ci');
-      if (ci) ci.textContent = '✓';
-    }
-  }
-
-  function setPhase(i) {
-    const p = phases[i];
-    _loadingPaso = p.paso;
-    if (titleEl) titleEl.textContent = p.title;
-    if (statusEl) statusEl.textContent = p.status;
-    if (hintEl) hintEl.textContent = 'Paso ' + p.paso + '/19';
-    updateProgress();
-    trackProgress({ event: 'loading_' + p.paso, current_step: p.paso, step_label: SECTION[p.paso], immediate: true });
-
-    // checklist: marca anteriores como done, atual como on
-    items.forEach((el, idx) => {
-      el.classList.remove('on', 'done');
-      const ci = el.querySelector('.ci');
-      if (ci) ci.textContent = '○';
-      if (idx < p.check) mark(el, 'done');
-      else if (idx === p.check) mark(el, 'on');
-    });
-  }
-
-  let phaseIdx = 0;
-  let phaseStart = performance.now();
-  setPhase(0);
-
-  function frame(now) {
-    const elapsedInPhase = now - phaseStart;
-    const overall = (phaseIdx * PHASE_MS + Math.min(PHASE_MS, elapsedInPhase)) / (phases.length * PHASE_MS);
-    const pct = Math.min(99, Math.floor(overall * 100));
-    if (pctEl) pctEl.textContent = pct + '%';
-    if (ring) ring.style.strokeDashoffset = CIRC - (CIRC * pct / 100);
-    if (bar) bar.style.width = pct + '%';
-
-    if (elapsedInPhase >= PHASE_MS) {
-      // completa o check da fase atual se for o último check index
-      const cur = phases[phaseIdx];
-      if (items[cur.check]) mark(items[cur.check], 'done');
-      phaseIdx += 1;
-      if (phaseIdx >= phases.length) {
-        if (pctEl) pctEl.textContent = '100%';
-        if (ring) ring.style.strokeDashoffset = 0;
-        if (bar) bar.style.width = '100%';
-        items.forEach(el => mark(el, 'done'));
-        window._loadingRun = false;
-        setTimeout(() => goToSlide(14), 600);
-        return;
-      }
-      phaseStart = now;
-      setPhase(phaseIdx);
-    }
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
 }
 
 // ============ READING / OFERTA ============
-function setReadingState(state) {
-  const slide = document.getElementById('slide-reading');
-  if (!slide) return;
-  slide.classList.remove('v6-confirm','v6-channel','v6-letter');
-  slide.classList.add(state === 'channel' ? 'v6-channel' : state === 'letter' ? 'v6-letter' : 'v6-confirm');
-}
 function fillConfirmGate() {
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
   set('confirmName', getNombre());
@@ -1582,25 +1595,9 @@ function fillConfirmGate() {
   set('confirmHilo', 'Enredado desde ' + getAno());
 }
 function revealOferta() {
-  setReadingState('channel');
-  const lineEl = document.getElementById('channelLine');
-  const lines = [
-    'Canalizando la energía de ' + getNombre() + '...',
-    'Conectando con tu Hilo Rojo...',
-    'Martha está escribiendo...'
-  ];
-  let i = 0;
-  if (lineEl) lineEl.textContent = lines[0];
-  const timer = setInterval(() => {
-    i += 1;
-    if (i < lines.length && lineEl) lineEl.textContent = lines[i];
-  }, 900);
-  setTimeout(() => {
-    clearInterval(timer);
-    goToSlide(15);
-    startOfferTimer();
-    trackProgress({ event: 'offer_open', current_step: 19, status: 'reading', immediate: true });
-  }, 2800);
+  // canalização curta visual? usuário pediu ir pra oferta; breve delay opcional
+  goToSlide(19);
+  trackProgress({ event: 'offer_open', current_step: 19, status: 'reading', immediate: true });
 }
 const OFFER_WINDOW_MS = 15 * 60 * 1000;
 function startOfferTimer() {
@@ -1666,8 +1663,7 @@ requestAnimationFrame(() => {
           localStorage.setItem('ano','2023');
         } catch(e){}
         data.name = 'Betty'; data.zodiac = 'Capricornio'; data.ano = '2023';
-        goToSlide(15);
-        startOfferTimer();
+        goToSlide(19);
       }
     } catch(e){}
   });
