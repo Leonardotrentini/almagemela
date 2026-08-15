@@ -946,7 +946,7 @@ body {
     <div class="inter">
       <div class="orb">🔮</div>
       <h2 data-tpl="{{NOME}}, sentí tu energía fuerte.">Sentí tu energía fuerte.</h2>
-      <p class="barnum" data-tpl="No es casualidad que estés aquí hoy. Tu energía de {{SIGNO}} lleva meses llamando a alguien y lo sientes en el pecho antes de dormir. Llamas sin saber a quién.">No es casualidad que estés aquí hoy.</p>
+      <p class="barnum" data-tpl="No es casualidad que estés aquí hoy. Tu energía de {{SIGNO}} lleva meses llamando a alguien y lo sientes en el pecho antes de dormir. Llamas sin saber a quién.">No es casualidad que estés aquí hoy. Tu energía lleva meses llamando a alguien y lo sientes en el pecho antes de dormir. Llamas sin saber a quién.</p>
       <p id="inter1Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar lectura</button>
     </div>
@@ -1005,7 +1005,7 @@ body {
     <div class="inter">
       <div class="orb">💞</div>
       <h2 id="inter2Title">Compatibilidad rara.</h2>
-      <p class="barnum" data-tpl="Veo algo que no es común, {{NOME}}. Solo 7 de cada 100 mujeres tienen este tipo de Hilo Rojo. Por eso atraes miradas que no se olvidan, pero hombres que no se quedan. Das mucho, recibes poco.">Veo algo que no es común.</p>
+      <p class="barnum" data-tpl="Veo algo que no es común, {{NOME}}. Solo 7 de cada 100 mujeres tienen este tipo de Hilo Rojo. Por eso atraes miradas que no se olvidan, pero hombres que no se quedan. Das mucho, recibes poco.">Veo algo que no es común. Solo 7 de cada 100 mujeres tienen este tipo de Hilo Rojo. Por eso atraes miradas que no se olvidan, pero hombres que no se quedan. Das mucho, recibes poco.</p>
       <p id="inter2Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
@@ -1044,7 +1044,7 @@ body {
     <div class="inter">
       <div class="orb">🧿</div>
       <h2 id="inter3Title">Tu corazón aprendió a protegerse.</h2>
-      <p class="barnum" data-tpl="Desde {{ANO}} te cansaste de repetir el mismo patrón con caras diferentes. Ahora bloqueas sin querer al que sí es. Por eso te da ansiedad cuando alguien bueno se acerca.">Tu corazón aprendió a protegerse.</p>
+      <p class="barnum" data-tpl="Desde {{ANO}} te cansaste de repetir el mismo patrón con caras diferentes. Ahora bloqueas sin querer al que sí es. Por eso te da ansiedad cuando alguien bueno se acerca.">Desde 2023 te cansaste de repetir el mismo patrón con caras diferentes. Ahora bloqueas sin querer al que sí es. Por eso te da ansiedad cuando alguien bueno se acerca.</p>
       <p id="inter3Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
@@ -1082,7 +1082,7 @@ body {
     <div class="inter">
       <div class="orb">🃏</div>
       <h2>Las cartas confirman. Vi sus iniciales.</h2>
-      <p class="barnum" data-tpl="Vi una inicial fuerte cerca de tu Hilo Rojo. Y vi tu ventana de encuentro. Martha lo anotó todo para tu lectura. No es quien piensas.">Vi una inicial fuerte cerca de tu Hilo Rojo.</p>
+      <p class="barnum" data-tpl="Vi una inicial fuerte cerca de tu Hilo Rojo. Y vi tu ventana de encuentro. Martha lo anotó todo para tu lectura. No es quien piensas.">Vi una inicial fuerte cerca de tu Hilo Rojo. Y vi tu ventana de encuentro. Martha lo anotó todo para tu lectura. No es quien piensas.</p>
       <p id="inter4Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Ya casi llego</button>
     </div>
@@ -1444,9 +1444,18 @@ function zodiacFromDate(raw) {
   if (d <= lastDay) return name;
   return ZODIAC_RANGES[mo % 12][0];
 }
+function getSigno(fecha) {
+  const raw = fecha
+    || data.birthDate || data.fecha
+    || localStorage.getItem('fecha_nacimiento') || localStorage.getItem('fecha');
+  return zodiacFromDate(raw);
+}
+function getNombre() {
+  return (data.name || localStorage.getItem('nombre') || localStorage.getItem('name') || '').trim();
+}
 function currentSigno() {
   if (data.zodiac) return data.zodiac;
-  const s = zodiacFromDate(data.birthDate || data.fecha || localStorage.getItem('fecha_nacimiento') || localStorage.getItem('fecha'));
+  const s = getSigno();
   if (s) data.zodiac = s;
   return s || 'tu signo';
 }
@@ -1455,7 +1464,7 @@ function blockYearLabel() {
   return map[data.blockSince] || '2023';
 }
 function tplVars() {
-  const nombre = (data.name || localStorage.getItem('nombre') || '').trim();
+  const nombre = getNombre();
   return {
     NOME: nombre || 'alma',
     NOMBRE: nombre || 'alma',
@@ -1464,14 +1473,24 @@ function tplVars() {
   };
 }
 function fillTpl(str) {
-  const vars = tplVars();
-  return String(str || '').replace(/\{\{(\w+)\}\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m));
+  try {
+    const vars = tplVars();
+    return String(str || '').replace(/\{\{(\w+)\}\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m));
+  } catch (e) {
+    // Nunca dejar la plantilla cruda en pantalla
+    return String(str || '').replace(/\{\{\w+\}\}/g, '').replace(/\s{2,}/g, ' ').replace(/^[,\s]+/, '').trim();
+  }
 }
 function applyTemplates(root) {
   const scope = root || document;
   scope.querySelectorAll('[data-tpl]').forEach((el) => {
-    el.textContent = fillTpl(el.getAttribute('data-tpl'));
+    try { el.textContent = fillTpl(el.getAttribute('data-tpl')); } catch (e) {}
   });
+}
+function logPersona(tag) {
+  try {
+    console.log('[almagemela] ' + tag, { nombre: getNombre(), signo: currentSigno(), fecha: data.fecha || null, bloqueo: blockYearLabel() });
+  } catch (e) {}
 }
 
 let currentSlide = 0;
@@ -1532,7 +1551,7 @@ function quizPasoInfo(slide) {
   let paso = 0;
   let label = 'Inicio';
   if (slide >= 1 && slide <= LAST_Q) {
-    paso = Math.min(19, Math.max(1, slide - 1));
+    paso = Math.min(19, slide);
     label = SECTIONS[slide] || 'Quiz';
   } else if (slide === SLIDE_LOADING) {
     paso = 19; label = 'Loading energía';
@@ -1680,7 +1699,7 @@ function updateProgress() {
   let paso = 0;
   let label = 'Leyendo tu energía';
   if (currentSlide >= 1 && currentSlide <= LAST_Q) {
-    paso = Math.min(19, Math.max(1, currentSlide - 1));
+    paso = Math.min(19, currentSlide);
     label = SECTIONS[currentSlide] || 'Leyendo tu energía';
   } else if (currentSlide === SLIDE_LOADING) {
     paso = 19; label = 'Leyendo tu energía';
@@ -1715,6 +1734,7 @@ function submitQuizName() {
   const chk = document.getElementById('chkName');
   if (chk) chk.textContent = name;
   applyTemplates();
+  logPersona('nombre guardado');
   trackProgress({ event: 'name', status: 'in_progress', immediate: true });
   nextSlide();
 }
@@ -1752,6 +1772,7 @@ function submitQuizBirth() {
   } catch(e){}
   persistQuiz();
   applyTemplates();
+  logPersona('signo calculado');
   trackProgress({ event: 'birth', status: 'in_progress', immediate: true });
   nextSlide();
 }
@@ -1766,6 +1787,13 @@ function bindPersonaInputs() {
   if (name && !name._bound) {
     name._bound = true;
     name.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitQuizName(); });
+    // Persistir mientras escribe: si abandona y vuelve, el nombre sigue ahí
+    name.addEventListener('input', () => {
+      const v = name.value.trim();
+      if (v.length < 2) return;
+      data.name = v;
+      try { localStorage.setItem('nombre', v); localStorage.setItem('name', v); } catch (e) {}
+    });
   }
 }
 
@@ -2077,15 +2105,19 @@ function showReadingConfirm() {
   setReadingState('confirm');
   const text = document.getElementById('readingText');
   if (text) text.innerHTML = '';
-  const p = resolveReadingPersona();
-  const title = document.getElementById('confirmTitle');
-  if (title) title.textContent = 'Tu lectura está casi lista, ' + p.nombre;
-  const cn = document.getElementById('confirmName');
-  if (cn) cn.textContent = p.nombre;
-  const cs = document.getElementById('confirmSigno');
-  if (cs) cs.textContent = currentSigno();
-  const ch = document.getElementById('confirmHilo');
-  if (ch) ch.textContent = 'Enredado desde ' + blockYearLabel();
+  // Rellenar primero con los datos crudos: el gate nunca debe quedar en "—"
+  const nombre = getNombre() || 'Hermosa';
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('confirmName', nombre);
+  set('confirmSigno', currentSigno());
+  set('confirmHilo', 'Enredado desde ' + blockYearLabel());
+  set('confirmTitle', 'Tu lectura está casi lista, ' + nombre);
+  logPersona('gate confirmación');
+  try {
+    const p = resolveReadingPersona();
+    set('confirmName', p.nombre);
+    set('confirmTitle', 'Tu lectura está casi lista, ' + p.nombre);
+  } catch (e) {}
 }
 function revealMiniLectura() {
   setReadingState('channel');
