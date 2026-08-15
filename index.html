@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<meta name="almagemela-build" content="v6.2-tracking-audit">
+<meta name="almagemela-build" content="v7.0-hilo-rojo-9usd">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -317,6 +317,45 @@ body {
   margin-bottom: 4px;
 }
 .offer-anchor .strike { text-decoration: line-through; }
+.offer-scarcity {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.offer-scarcity .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #ef4444; flex-shrink: 0;
+  animation: scarcityBlink 1.2s ease-in-out infinite;
+}
+@keyframes scarcityBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+.offer-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  background: #1e1b2e;
+  color: #fde68a;
+  font-size: 12px;
+  font-weight: 600;
+}
+.offer-timer svg { flex-shrink: 0; }
+.offer-timer b {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
 .offer-price-row {
   font-size: 15px;
   color: var(--text-soft);
@@ -450,31 +489,6 @@ body {
 .order-bump label { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #581c87; line-height: 1.45; cursor: pointer; }
 .order-bump input { margin-top: 3px; accent-color: #a855f7; width: 18px; height: 18px; flex-shrink: 0; }
 .total-line { font-size: 14px; font-weight: 700; color: #581c87; margin: 8px 0 12px; text-align: center; }
-.decline-link {
-  display: block; margin-top: 12px; font-size: 12px; color: var(--text-soft);
-  text-decoration: underline; cursor: pointer; background: none; border: none;
-  font-family: var(--font-sans); width: 100%; line-height: 1.4;
-}
-.downsell-overlay {
-  display: none; position: fixed; inset: 0; z-index: 100;
-  background: rgba(26,16,42,0.72); align-items: center; justify-content: center; padding: 20px;
-}
-.downsell-overlay.visible { display: flex; }
-.downsell-modal {
-  background: #fff; border-radius: 20px; padding: 28px 22px; max-width: 360px; width: 100%;
-  text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-}
-.downsell-modal h3 { font-family: var(--font-serif); font-size: 22px; color: var(--ink); margin-bottom: 12px; line-height: 1.3; }
-.downsell-modal p { font-size: 14px; color: var(--text); line-height: 1.55; margin-bottom: 18px; }
-.btn-downsell {
-  width: 100%; min-height: 56px; border: none; border-radius: 14px;
-  background: #16a34a; color: #fff; font-size: 15px; font-weight: 800;
-  font-family: var(--font-sans); cursor: pointer; margin-bottom: 10px;
-}
-.btn-downsell-skip {
-  background: none; border: none; color: var(--text-soft); font-size: 13px;
-  text-decoration: underline; cursor: pointer; font-family: var(--font-sans);
-}
 .r-list { list-style: none; margin: 16px 0 8px; padding: 0; }
 .r-list li { font-size: 14.5px; color: var(--ink); line-height: 1.5; margin-bottom: 10px; }
 .guar-soft {
@@ -846,9 +860,9 @@ body {
   <!-- SLIDE 1: REVEAL / SOBRE TI -->
   <div class="slide" id="slide-1">
     <div class="reveal">
-      <h1 class="reveal-hook">¿Por qué sientes que tu alma gemela está cerca, pero algo invisible lo bloquea?</h1>
-      <p class="reveal-sub">Martha va a leer tu energía en 60 segundos. Más de 12.431 lecturas. 100% confidencial.</p>
-      <p class="reveal-seals">🔒 100% confidencial 💜 +12 mil lecturas · ⭐ 4.8/5</p>
+      <h1 class="reveal-hook">Martha sintió tu energía antes de que entraras.</h1>
+      <p class="reveal-sub">Hay un hombre que ya pensó en ti 3 veces esta semana y tu bloqueo no lo dejó acercarse. Más de 12.431 lecturas.</p>
+      <p class="reveal-seals">🔒 100% confidencial 💜 12.431 lecturas · ⭐ 4.8/5</p>
       <button type="button" class="btn-know" onclick="skipReveal()">SÍ, QUIERO SABER →</button>
       <p class="reveal-foot">Toca para continuar · 1/19</p>
     </div>
@@ -857,55 +871,59 @@ body {
   <!-- SLIDE 2: NOMBRE -->
   <div class="slide" id="slide-2">
     <div class="q-wrap persona-capture">
-      <h2 class="q-title">Para conectar con tu energía, ¿cómo te gusta que te llame Martha?</h2>
-      <div class="fg"><input type="text" id="quizName" placeholder="Tu primer nombre" autocomplete="given-name" maxlength="40"></div>
+      <h2 class="q-title">¿Cómo firma tu alma? ¿Cómo te llamo?</h2>
+      <p class="q-sub">Tu nombre es tu firma energética. Sin eso no puedo ver tu Hilo Rojo. — Martha</p>
+      <div class="fg"><input type="text" id="quizName" placeholder="Escribe tu nombre" autocomplete="given-name" maxlength="40"></div>
       <button type="button" class="btn-know" onclick="submitQuizName()">Continuar</button>
-      <p class="reveal-foot">Tu nombre hace la lectura más precisa · 2/19</p>
+      <p class="reveal-foot">Tu firma energética · 2/19</p>
     </div>
   </div>
 
-  <!-- SLIDE 2 -->
+  <!-- SLIDE 3: FECHA (calcula el signo) -->
   <div class="slide" id="slide-3">
+    <div class="q-wrap persona-capture">
+      <h2 class="q-title" data-tpl="¿Cuándo llegaste a esta vida, {{NOME}}?">¿Cuándo llegaste a esta vida?</h2>
+      <p class="q-sub">Tu fecha revela por qué atraes el mismo patrón desde 2023 y cuándo se abre tu ventana de encuentro.</p>
+      <div class="fg"><input type="text" id="quizBirth" placeholder="Fecha nacimiento (dd/mm/aaaa)" inputmode="numeric" maxlength="10" autocomplete="bday"></div>
+      <button type="button" class="btn-know" onclick="submitQuizBirth()">Continuar</button>
+      <p class="reveal-foot">100% confidencial · 3/19</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: estado civil -->
+  <div class="slide" id="slide-4">
     <div class="q-wrap">
-      <h2 class="q-title">¿Cuál es tu género?</h2>
+      <h2 class="q-title" data-tpl="{{NOME}}, ¿dónde está tu corazón hoy?">¿Dónde está tu corazón hoy?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('gender','F')"><span class="emo">👩</span>Mujer</button>
-        <button class="opt" onclick="answer('gender','M')"><span class="emo">👨</span>Hombre</button>
-        <button class="opt" onclick="answer('gender','NB')"><span class="emo">✨</span>No binario / Otro</button>
+        <button class="opt" onclick="answer('status','single_history')"><span class="emo">💫</span>Soltera pero con historia</button>
+        <button class="opt" onclick="answer('status','confusing')"><span class="emo">💭</span>En relación que me confunde</button>
+        <button class="opt" onclick="answer('status','separated_fear')"><span class="emo">🕊️</span>Separada y con miedo a repetir</button>
+        <button class="opt" onclick="answer('status','single_long')"><span class="emo">⏳</span>Soltera hace mucho tiempo</button>
       </div>
     </div>
   </div>
 
-  <!-- SLIDE 3: signo do usuário -->
-  <div class="slide" id="slide-4">
-    <div class="q-wrap">
-      <h2 class="q-title">¿Cuál es tu signo?</h2>
-      <div class="options grid" id="zodiacGrid"></div>
-    </div>
-  </div>
-
-
-  <!-- SLIDE 5: FECHA -->
+  <!-- SLIDE 5: dolor principal -->
   <div class="slide" id="slide-5">
-    <div class="q-wrap persona-capture">
-      <h2 class="q-title">¿Cuál es tu fecha de nacimiento?</h2>
-      <p class="q-sub">Martha la usa para ver tu Hilo Rojo</p>
-      <div class="fg"><input type="text" id="quizBirth" placeholder="dd/mm/aaaa" inputmode="numeric" maxlength="10" autocomplete="bday"></div>
-      <button type="button" class="btn-know" onclick="submitQuizBirth()">Continuar</button>
-      <p class="reveal-foot">100% confidencial · 5/19</p>
+    <div class="q-wrap">
+      <h2 class="q-title">¿Qué es lo que más te duele ahora?</h2>
+      <div class="options">
+        <button class="opt" onclick="answer('pain','crumbs')"><span class="emo">🥀</span>Doy mucho y recibo migajas</button>
+        <button class="opt" onclick="answer('pain','ghosting')"><span class="emo">👻</span>Atraigo hombres que aparecen y desaparecen</button>
+        <button class="opt" onclick="answer('pain','cant_forget')"><span class="emo">⛓️</span>No logro olvidar a alguien</button>
+        <button class="opt" onclick="answer('pain','time_block')"><span class="emo">⏰</span>Siento que se me pasa el tiempo y bloqueo al que sí es</button>
+      </div>
     </div>
   </div>
 
-  <!-- SLIDE 4: situação amorosa -->
+  <!-- SLIDE 6: tiempo del bloqueo -->
   <div class="slide" id="slide-6">
     <div class="q-wrap">
-      <h2 class="q-title">¿Cómo está tu corazón hoy?</h2>
+      <h2 class="q-title">¿Desde cuándo sientes este nudo en el pecho?</h2>
       <div class="options">
-        <button class="opt" onclick="answer('status','single')"><span class="emo">💫</span>Soltero/a y abierto/a al amor</button>
-        <button class="opt" onclick="answer('status','complicated')"><span class="emo">💭</span>Es complicado en este momento</button>
-        <button class="opt" onclick="answer('status','someone')"><span class="emo">💕</span>Hay alguien en mi mente</button>
-        <button class="opt" onclick="answer('status','relationship')"><span class="emo">❤️</span>En una relación</button>
-        <button class="opt" onclick="answer('status','healing')"><span class="emo">🕊️</span>Sanando de una ruptura</button>
+        <button class="opt" onclick="answer('blockSince','2023')"><span class="emo">🧿</span>Desde 2023</button>
+        <button class="opt" onclick="answer('blockSince','1year')"><span class="emo">🌙</span>Desde hace 1 año</button>
+        <button class="opt" onclick="answer('blockSince','always')"><span class="emo">🔁</span>Toda mi vida repito el mismo patrón</button>
       </div>
     </div>
   </div>
@@ -913,7 +931,7 @@ body {
   <!-- SLIDE 5: já conheceu -->
   <div class="slide" id="slide-7">
     <div class="q-wrap">
-      <h2 class="q-title">¿Sientes que tu alma gemela ya cruzó tu camino?</h2>
+      <h2 class="q-title" data-tpl="{{NOME}}, ¿sientes que él ya cruzó tu camino?">¿Sientes que él ya cruzó tu camino?</h2>
       <div class="options">
         <button class="opt" onclick="answer('met','yes')"><span class="emo">✨</span>Sí, creo que ya la conocí</button>
         <button class="opt" onclick="answer('met','maybe')"><span class="emo">🤔</span>Tal vez… todavía tengo dudas</button>
@@ -927,8 +945,8 @@ body {
   <div class="slide" id="slide-8">
     <div class="inter">
       <div class="orb">🔮</div>
-      <h2>Siento una energía fuerte</h2>
-      <p class="barnum">No es casualidad que estés aquí hoy. Tu energía está llamando a alguien desde hace meses y no sabes por qué.</p>
+      <h2 data-tpl="{{NOME}}, sentí tu energía fuerte.">Sentí tu energía fuerte.</h2>
+      <p class="barnum" data-tpl="No es casualidad que estés aquí hoy. Tu energía de {{SIGNO}} lleva meses llamando a alguien y lo sientes en el pecho antes de dormir. Llamas sin saber a quién.">No es casualidad que estés aquí hoy.</p>
       <p id="inter1Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar lectura</button>
     </div>
@@ -937,7 +955,7 @@ body {
   <!-- SLIDE 7: faixa etária -->
   <div class="slide" id="slide-9">
     <div class="q-wrap">
-      <h2 class="q-title">¿En qué etapa de la vida estás?</h2>
+      <h2 class="q-title" data-tpl="{{NOME}}, ¿en qué etapa te encuentra esta lectura?">¿En qué etapa te encuentra esta lectura?</h2>
       <div class="options">
         <button class="opt" onclick="answer('age','18-25')"><span class="emo">🌱</span>18 a 25 años</button>
         <button class="opt" onclick="answer('age','26-35')"><span class="emo">🌿</span>26 a 35 años</button>
@@ -950,7 +968,7 @@ body {
   <!-- SLIDE 8: o que mais deseja -->
   <div class="slide" id="slide-10">
     <div class="q-wrap">
-      <h2 class="q-title">¿Qué es lo que más pide tu corazón en este momento?</h2>
+      <h2 class="q-title">¿Qué te pide el corazón cuando nadie te ve?</h2>
       <div class="options">
         <button class="opt" onclick="answer('desire','find')"><span class="emo">💘</span>Encontrar a mi alma gemela</button>
         <button class="opt" onclick="answer('desire','clarity')"><span class="emo">🔍</span>Claridad sobre alguien especial</button>
@@ -963,7 +981,7 @@ body {
   <!-- SLIDE 9: como imagina a energia dela -->
   <div class="slide" id="slide-11">
     <div class="q-wrap">
-      <h2 class="q-title">¿Qué tipo de energía sientes que combina con la tuya?</h2>
+      <h2 class="q-title" data-tpl="{{NOME}}, ¿qué energía sientes cuando piensas en él?">¿Qué energía sientes cuando piensas en él?</h2>
       <div class="options">
         <button class="opt" onclick="answer('energy','calm')"><span class="emo">🌊</span>Calmada y cálida</button>
         <button class="opt" onclick="answer('energy','intense')"><span class="emo">🔥</span>Intensa y magnética</button>
@@ -986,8 +1004,8 @@ body {
   <div class="slide" id="slide-13">
     <div class="inter">
       <div class="orb">💞</div>
-      <h2 id="inter2Title">Compatibilidad rara</h2>
-      <p class="barnum">Veo una compatibilidad que no es común. Solo 7 de cada 100 mujeres tienen este tipo de Hilo Rojo. Por eso atraes miradas que no se olvidan.</p>
+      <h2 id="inter2Title">Compatibilidad rara.</h2>
+      <p class="barnum" data-tpl="Veo algo que no es común, {{NOME}}. Solo 7 de cada 100 mujeres tienen este tipo de Hilo Rojo. Por eso atraes miradas que no se olvidan, pero hombres que no se quedan. Das mucho, recibes poco.">Veo algo que no es común.</p>
       <p id="inter2Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
@@ -996,7 +1014,7 @@ body {
   <!-- SLIDE 12: bloqueio -->
   <div class="slide" id="slide-14">
     <div class="q-wrap">
-      <h2 class="q-title">¿Qué sientes que te impide vivir un amor verdadero?</h2>
+      <h2 class="q-title" data-tpl="{{NOME}}, ¿qué está enredando tu Hilo Rojo?">¿Qué está enredando tu Hilo Rojo?</h2>
       <div class="options">
         <button class="opt" onclick="answer('block','trust')"><span class="emo">🛡️</span>Miedo a confiar de nuevo</button>
         <button class="opt" onclick="answer('block','past')"><span class="emo">⛓️</span>Heridas que aún no cicatrizaron</button>
@@ -1025,8 +1043,8 @@ body {
   <div class="slide" id="slide-16">
     <div class="inter">
       <div class="orb">🧿</div>
-      <h2 id="inter3Title">Tu corazón se protege</h2>
-      <p class="barnum">Desde 2023 tu corazón aprendió a protegerse. Das mucho, recibes poco. Y te cansas de repetir el mismo patrón con caras diferentes.</p>
+      <h2 id="inter3Title">Tu corazón aprendió a protegerse.</h2>
+      <p class="barnum" data-tpl="Desde {{ANO}} te cansaste de repetir el mismo patrón con caras diferentes. Ahora bloqueas sin querer al que sí es. Por eso te da ansiedad cuando alguien bueno se acerca.">Tu corazón aprendió a protegerse.</p>
       <p id="inter3Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Continuar</button>
     </div>
@@ -1049,7 +1067,7 @@ body {
   <!-- SLIDE 16: o que quer descobrir -->
   <div class="slide" id="slide-18">
     <div class="q-wrap">
-      <h2 class="q-title">¿Qué es lo que más quieres descubrir sobre tu alma gemela?</h2>
+      <h2 class="q-title" data-tpl="{{NOME}}, ¿qué necesitas saber primero de él?">¿Qué necesitas saber primero de él?</h2>
       <div class="options">
         <button class="opt" onclick="answer('want','who')"><span class="emo">👤</span>Quién es esa persona</button>
         <button class="opt" onclick="answer('want','when')"><span class="emo">📅</span>Cuándo voy a encontrarla</button>
@@ -1063,8 +1081,8 @@ body {
   <div class="slide" id="slide-19">
     <div class="inter">
       <div class="orb">🃏</div>
-      <h2>Las cartas confirman</h2>
-      <p class="barnum">Las cartas no mienten. Él ya sintió tu energía, pero tu bloqueo lo confunde. Por eso aparece y desaparece.</p>
+      <h2>Las cartas confirman. Vi sus iniciales.</h2>
+      <p class="barnum" data-tpl="Vi una inicial fuerte cerca de tu Hilo Rojo. Y vi tu ventana de encuentro. Martha lo anotó todo para tu lectura. No es quien piensas.">Vi una inicial fuerte cerca de tu Hilo Rojo.</p>
       <p id="inter4Text"></p>
       <button class="btn-primary" onclick="nextSlide()">Ya casi llego</button>
     </div>
@@ -1100,7 +1118,7 @@ body {
   <!-- SLIDE 20: pronta? -->
   <div class="slide" id="slide-22">
     <div class="q-wrap">
-      <h2 class="q-title">¿Estás listo/a para ver lo que revelan las cartas?</h2>
+      <h2 class="q-title" data-tpl="{{NOME}}, ¿lista para ver tu Hilo Rojo?">¿Lista para ver tu Hilo Rojo?</h2>
       <div class="options">
         <button class="opt" onclick="answer('ready','yes')"><span class="emo">💜</span>Sí, estoy listo/a</button>
         <button class="opt" onclick="answer('ready','nervous')"><span class="emo">🦋</span>Sí, pero con el corazón acelerado</button>
@@ -1112,8 +1130,8 @@ body {
   <!-- LOADING -->
   <div class="slide" id="slide-loading">
     <div class="loading">
-      <h2>Leyendo tu energía amorosa…</h2>
-      <p class="loading-status" id="loadingStatus">Analizando tu fecha de nacimiento y tu signo...</p>
+      <h2 data-tpl="Leyendo tu energía amorosa, {{NOME}}…">Leyendo tu energía amorosa…</h2>
+      <p class="loading-status" id="loadingStatus">Analizando tu fecha y tu signo...</p>
       <div class="ring">
         <svg width="150" height="150" viewBox="0 0 150 150">
           <circle cx="75" cy="75" r="66" fill="none" stroke="#F3EEFB" stroke-width="10"/>
@@ -1123,10 +1141,10 @@ body {
       </div>
       <div class="loading-bar-wrap"><div class="loading-bar-fill" id="loadingBarFill"></div></div>
       <div class="checklist">
-        <div class="check" data-i="0"><span class="ci">○</span> Analizando la energía de <span id="chkName" style="font-weight:600;margin-left:3px;">tu alma</span>...</div>
-        <div class="check" data-i="1"><span class="ci">○</span> Identificando bloqueos del corazón...</div>
-        <div class="check" data-i="2"><span class="ci">○</span> Localizando tu alma gemela...</div>
-        <div class="check" data-i="3"><span class="ci">○</span> Verificando la agenda de Martha...</div>
+        <div class="check" data-i="0"><span class="ci">○</span> Leyendo la energía de <span id="chkName" style="font-weight:600;margin-left:3px;">tu alma</span>...</div>
+        <div class="check" data-i="1"><span class="ci">○</span> <span data-tpl="Identificando tu bloqueo del corazón desde {{ANO}}...">Identificando tu bloqueo del corazón...</span></div>
+        <div class="check" data-i="2"><span class="ci">○</span> Localizando tu alma gemela y sus iniciales...</div>
+        <div class="check" data-i="3"><span class="ci">○</span> Verificando la agenda de Martha · 2 lugares hoy...</div>
       </div>
     </div>
   </div>
@@ -1139,12 +1157,15 @@ body {
     <div class="reading">
       <div class="confirm-gate" id="confirmGate">
         <h2 class="confirm-title" id="confirmTitle">Tu lectura está casi lista</h2>
-        <p class="confirm-sub">Martha está verificando su agenda. Confirma que estos son tus datos para canalizar:</p>
+        <p class="confirm-sub">Confirma para canalizar:</p>
         <div class="confirm-card">
           <div class="cc-row"><span class="cc-label">Nombre</span><span class="cc-val" id="confirmName">—</span></div>
-          <div class="cc-row"><span class="cc-label">Fecha de nacimiento</span><span class="cc-val" id="confirmBirth">—</span></div>
+          <div class="cc-row"><span class="cc-label">Signo</span><span class="cc-val" id="confirmSigno">—</span></div>
+          <div class="cc-row"><span class="cc-label">Hilo Rojo</span><span class="cc-val" id="confirmHilo">—</span></div>
+          <div class="cc-row"><span class="cc-label">Iniciales</span><span class="cc-val">Vistas ✓</span></div>
+          <div class="cc-row"><span class="cc-label">Ventana de encuentro</span><span class="cc-val">Detectada ✓</span></div>
         </div>
-        <button type="button" class="btn-know" id="btnRevealLectura" onclick="revealMiniLectura()">SÍ, REVELAR MI MINI LECTURA AHORA →</button>
+        <button type="button" class="btn-know" id="btnRevealLectura" onclick="revealMiniLectura()">SÍ, REVELAR MI HILO ROJO AHORA →</button>
         <p class="reveal-foot">Paso 19/19 · 100% confidencial</p>
       </div>
 
@@ -1162,16 +1183,20 @@ body {
         <div class="offer-wrap">
           <div class="offer-glow" aria-hidden="true"></div>
           <div class="offer-box">
-            <div class="offer-badge">🔥 OFERTA DE HOY · 81% OFF</div>
-            <div class="offer-anchor">Valor real: <span class="strike">$147 USD</span></div>
-            <div class="offer-price-row">
-              De <span class="old">$49 USD</span> por <span class="new">$9 USD</span> hoy
+            <div class="offer-badge">🔥 OFERTA DE HOY · 94% OFF</div>
+            <div class="offer-scarcity">
+              <span class="dot"></span>
+              <span>Verificando agenda de Martha · <b>2 lugares hoy</b></span>
             </div>
-            <h3 class="offer-title">Lectura Completa del Alma Gemela por Martha</h3>
+            <div class="offer-price-row">
+              De <span class="old">$147 USD</span> por <span class="new">$9 USD</span> hoy
+            </div>
+            <div class="offer-anchor">Entrega en 2 minutos en tu email</div>
+            <h3 class="offer-title" data-tpl="{{NOME}}, tu Hilo Rojo está listo.">Tu Hilo Rojo está listo.</h3>
             <ul class="offer-stack">
               <li>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span class="item-main">PDF Canalizado de tu Alma Gemela</span>
+                <span class="item-main">Lectura Completa del Alma Gemela por Martha (PDF)</span>
                 <span class="val">$47</span>
               </li>
               <li>
@@ -1181,22 +1206,26 @@ body {
               </li>
               <li>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span class="item-main"><span class="bono">BONO #1:</span> Iniciales de tu Alma Gemela</span>
+                <span class="item-main"><span class="bono">BONUS 1:</span> Iniciales de tu alma gemela</span>
                 <span class="val">$27</span>
               </li>
               <li>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span class="item-main"><span class="bono">BONO #2:</span> Dónde y cuándo lo conocerás</span>
+                <span class="item-main"><span class="bono">BONUS 2:</span> Ventana de encuentro: cuándo y dónde</span>
                 <span class="val">$19</span>
               </li>
               <li>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span class="item-main"><span class="bono">BONO #3:</span> Ritual de desbloqueo del Hilo Rojo</span>
+                <span class="item-main"><span class="bono">BONUS 3:</span> Qué lo está bloqueando y cómo desbloquearlo</span>
                 <span class="val">$17</span>
               </li>
             </ul>
             <div class="offer-divider"></div>
             <div class="offer-total">Valor total $147 <span class="arrow">→</span> Hoy solo <span class="today">$9</span></div>
+            <div class="offer-timer" id="offerTimer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+              <span>Esta lectura expira en <b id="offerTimerClock">15:00</b></span>
+            </div>
             <div class="offer-trust">
               <div class="t">
                 <svg class="lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -1204,7 +1233,7 @@ body {
               </div>
               <div class="t">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                +12.347 lecturas
+                12.431 lecturas · 4.8/5
               </div>
             </div>
             <div class="offer-pay">
@@ -1219,27 +1248,16 @@ body {
           </div>
         </div>
 
-        <a class="btn-cta pulse" href="https://pay.hotmart.com/J107108736M?checkoutMode=10" id="ctaLink" style="min-height:60px;" onclick="goCheckout(event)" target="_blank" rel="noopener noreferrer">SÍ, QUIERO MI LECTURA COMPLETA POR $9 USD →</a>
+        <a class="btn-cta pulse" href="https://pay.hotmart.com/J107108736M?checkoutMode=10" id="ctaLink" style="min-height:60px;" onclick="goCheckout(event)" target="_blank" rel="noopener noreferrer">SÍ, QUIERO VER MI HILO ROJO AHORA POR $9 →</a>
         <div class="guar-soft">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span>Garantía de 7 días · Si no resuena contigo, te devolvemos el 100% sin preguntas</span>
         </div>
-        <button type="button" class="decline-link" onclick="openDownsell()">No, gracias, prefiero quedarme con la duda</button>
       </div>
       </div>
     </div>
   </div>
 
-</div>
-
-<!-- DOWNSELL -->
-<div class="downsell-overlay" id="downsellModal">
-  <div class="downsell-modal">
-    <h3 id="downsellTitle">Espera... ¿$9 es mucho para ti hoy?</h3>
-    <p>No quiero que te vayas con las manos vacías. Llévate la Mini Lectura Extendida en texto (con tu bloqueo y tu ventana de encuentro) por solo <strong>$6,90 USD</strong></p>
-    <button type="button" class="btn-downsell" onclick="takeDownsell()">SÍ, QUIERO POR $6,90</button>
-    <button type="button" class="btn-downsell-skip" onclick="closeDownsell(true)">No, prefiero perder esta oportunidad</button>
-  </div>
 </div>
 
 <!-- MODAL -->
@@ -1389,10 +1407,8 @@ const CARDS = {
 };
 const CARD_KEYS = Object.keys(CARDS);
 
-// Hotmart checkouts
+// Hotmart checkout ($9)
 const HOTMART_MAIN_URL = 'https://pay.hotmart.com/J107108736M?checkoutMode=10';
-// Mini Lectura Extendida / downsell
-const HOTMART_DOWNSELL_URL = 'https://pay.hotmart.com/R107109985R';
 
 const ZODIAC = [
   ["Aries","♈"],["Tauro","♉"],["Géminis","♊"],["Cáncer","♋"],
@@ -1401,13 +1417,62 @@ const ZODIAC = [
 ];
 
 const SECTIONS = {
-  1:'Leyendo tu energía', 2:'Sobre ti', 3:'Sobre ti', 4:'Sobre ti', 5:'Sobre ti',
-  6:'Sobre ti', 7:'Sobre ti', 8:'Sobre ti',
-  9:'Tu corazón', 10:'Tu corazón', 11:'Tu corazón', 12:'Tu corazón', 13:'Tu corazón',
-  14:'Inmersión profunda', 15:'Inmersión profunda', 16:'Inmersión profunda', 17:'Inmersión profunda', 18:'Inmersión profunda', 19:'Inmersión profunda',
+  1:'Leyendo tu energía', 2:'Tu firma energética', 3:'Tu firma energética',
+  4:'Tu corazón hoy', 5:'Tu dolor', 6:'Tu bloqueo',
+  7:'Tu corazón', 8:'Tu energía',
+  9:'Tu corazón', 10:'Tu corazón', 11:'Tu corazón', 12:'Tu corazón', 13:'Tu Hilo Rojo',
+  14:'Inmersión profunda', 15:'Inmersión profunda', 16:'Tu bloqueo', 17:'Inmersión profunda', 18:'Inmersión profunda', 19:'La revelación',
   20:'La revelación', 21:'La revelación', 22:'La revelación',
   23:'Leyendo tu energía', 25:'Tu lectura'
 };
+
+// ============ PERSONALIZACIÓN {{NOME}} / {{SIGNO}} ============
+const ZODIAC_RANGES = [
+  ['Capricornio', 1, 19], ['Acuario', 2, 18], ['Piscis', 3, 20], ['Aries', 4, 19],
+  ['Tauro', 5, 20], ['Géminis', 6, 20], ['Cáncer', 7, 22], ['Leo', 8, 22],
+  ['Virgo', 9, 22], ['Libra', 10, 22], ['Escorpio', 11, 21], ['Sagitario', 12, 21]
+];
+function zodiacFromDate(raw) {
+  if (!raw) return '';
+  let d, mo;
+  const iso = String(raw).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const br = String(raw).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (iso) { mo = parseInt(iso[2], 10); d = parseInt(iso[3], 10); }
+  else if (br) { d = parseInt(br[1], 10); mo = parseInt(br[2], 10); }
+  else return '';
+  const [name, , lastDay] = ZODIAC_RANGES[mo - 1];
+  if (d <= lastDay) return name;
+  return ZODIAC_RANGES[mo % 12][0];
+}
+function currentSigno() {
+  if (data.zodiac) return data.zodiac;
+  const s = zodiacFromDate(data.birthDate || data.fecha || localStorage.getItem('fecha_nacimiento') || localStorage.getItem('fecha'));
+  if (s) data.zodiac = s;
+  return s || 'tu signo';
+}
+function blockYearLabel() {
+  const map = { '2023': '2023', '1year': 'hace un año', 'always': 'siempre' };
+  return map[data.blockSince] || '2023';
+}
+function tplVars() {
+  const nombre = (data.name || localStorage.getItem('nombre') || '').trim();
+  return {
+    NOME: nombre || 'alma',
+    NOMBRE: nombre || 'alma',
+    SIGNO: currentSigno(),
+    ANO: blockYearLabel()
+  };
+}
+function fillTpl(str) {
+  const vars = tplVars();
+  return String(str || '').replace(/\{\{(\w+)\}\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m));
+}
+function applyTemplates(root) {
+  const scope = root || document;
+  scope.querySelectorAll('[data-tpl]').forEach((el) => {
+    el.textContent = fillTpl(el.getAttribute('data-tpl'));
+  });
+}
 
 let currentSlide = 0;
 let selectedKey = null;
@@ -1522,17 +1587,9 @@ function buildFan() {
   }
 }
 function buildZodiac() {
-  // Grid 1 - user's sign
-  const g = document.getElementById('zodiacGrid');
-  ZODIAC.forEach(([s,e]) => {
-    const b = document.createElement('button');
-    b.className = 'opt';
-    b.innerHTML = `<span class="emo">${e}</span>${s}`;
-    b.onclick = () => answer('zodiac', s);
-    g.appendChild(b);
-  });
-  // Grid 2 - most attractive sign (partner)
+  // Grid - most attractive sign (partner). El signo propio se calcula por la fecha.
   const g2 = document.getElementById('zodiacGrid2');
+  if (!g2) return;
   ZODIAC.forEach(([s,e]) => {
     const b = document.createElement('button');
     b.className = 'opt';
@@ -1604,6 +1661,7 @@ function goToSlide(n) {
   if (el) el.classList.add('active');
   currentSlide = n;
   updateProgress();
+  applyTemplates();
   try { localStorage.setItem('almagemela_slide', String(n)); localStorage.setItem('almagemela_data', JSON.stringify(data)); } catch(e){}
   trackProgress({ event: 'slide_' + n, status: funnelStatusForSlide(n) });
   document.getElementById('app').scrollIntoView({block:'start'});
@@ -1656,6 +1714,7 @@ function submitQuizName() {
   persistQuiz();
   const chk = document.getElementById('chkName');
   if (chk) chk.textContent = name;
+  applyTemplates();
   trackProgress({ event: 'name', status: 'in_progress', immediate: true });
   nextSlide();
 }
@@ -1685,11 +1744,14 @@ function submitQuizBirth() {
   }
   data.birthDate = parsed.iso;
   data.fecha = parsed.display;
+  data.zodiac = zodiacFromDate(parsed.iso) || data.zodiac || '';
   try {
     localStorage.setItem('fecha', parsed.display);
     localStorage.setItem('fecha_nacimiento', parsed.iso);
+    if (data.zodiac) localStorage.setItem('signo', data.zodiac);
   } catch(e){}
   persistQuiz();
+  applyTemplates();
   trackProgress({ event: 'birth', status: 'in_progress', immediate: true });
   nextSlide();
 }
@@ -1717,12 +1779,6 @@ function answer(key, val) {
     if (wrap) wrap.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
     btn.classList.add('selected');
   }
-  if (key==='zodiac') {
-    const n = (data.name || '').trim();
-    const el = document.getElementById('chkName');
-    if (el && !n) el.textContent = val;
-  }
-  if (key==='gender') updateGenderCopy(val);
   if (key==='met') fillInter1(val);
   if (key==='partner_sign') fillInter2(val);
   if (key==='block') fillInter3(val);
@@ -1753,56 +1809,50 @@ function persistQuiz() {
   } catch(e){}
 }
 
-// gender-aware wording
-let G = 'a'; // default feminine
-function updateGenderCopy(g){ G = g==='M' ? 'o' : 'a'; }
-
 // ============ INTERSTITIALS ============
-// Inter 1 (slide 6) - based on "met soulmate"
+// Inter 1 (slide 8) - basado en "met"
 function fillInter1(met) {
   const map = {
-    yes: "Las cartas confirman: esa persona que crees haber encontrado dejó una marca energética profunda en ti. Necesito mirar más a fondo para entender este vínculo.",
-    maybe: "Siento una presencia a tu alrededor — alguien que ya cruzó tu camino, aunque todavía no estés seguro/a. Las cartas quieren revelar quién es.",
-    no: "Hay una energía amorosa acercándose a ti. Todavía no tiene rostro, pero ya está en movimiento. Déjame ver con más claridad quién es.",
-    lost: "Una conexión que se perdió no siempre se cierra de verdad. Las cartas muestran un hilo que aún los une. Vamos a descubrir qué significa."
+    yes: "Esa persona que crees haber encontrado dejó una marca energética profunda en ti. Necesito mirar más a fondo este vínculo.",
+    maybe: "Siento una presencia a tu alrededor — alguien que ya cruzó tu camino, aunque todavía dudes. Las cartas quieren revelar quién es.",
+    no: "Hay una energía amorosa acercándose a ti. Todavía no tiene rostro, pero ya está en movimiento hacia ti.",
+    lost: "Una conexión que se perdió no siempre se cierra de verdad. Las cartas muestran un hilo que aún los une."
   };
-  document.getElementById('inter1Text').innerHTML = (map[met]||map.no) + " <span class='hl'>Eso explica muchas cosas.</span>";
+  const el = document.getElementById('inter1Text');
+  if (el) el.innerHTML = (map[met]||map.no) + " <span class='hl'>Eso explica muchas cosas.</span>";
 }
-// Inter 2 (slide 11) - compatibility based on partner_sign vs user zodiac
+// Inter 2 (slide 13) - patrón del Hilo Rojo enredado
 function fillInter2(partnerSign) {
-  const userSign = data.zodiac || 'tu signo';
-  let txt;
-  if (partnerSign === 'unknown') {
-    document.getElementById('inter2Title').textContent = 'Un alma en movimiento';
-    txt = "Aunque no sepas su signo, las cartas sienten una energía acercándose a la tuya. La compatibilidad ya está escrita — solo falta revelarla.";
-  } else {
-    document.getElementById('inter2Title').textContent = 'Compatibilidad rara';
-    txt = `${userSign} y ${partnerSign} forman una de las combinaciones más magnéticas del zodiaco. Eso explica por qué esta atracción es tan fuerte. Pero la compatibilidad sola no basta — el timing tiene que ser el correcto.`;
+  const userSign = currentSigno();
+  const title = document.getElementById('inter2Title');
+  if (title) title.textContent = 'Compatibilidad rara.';
+  let txt = `Repites el patrón porque tu Hilo Rojo está enredado. Atraes al que necesita ser salvado, no al que viene a quedarse. Tu energía de <span class='hl'>${escHtml(userSign)}</span> es muy dadora y eso confunde a quien sí te busca.`;
+  if (partnerSign && partnerSign !== 'unknown') {
+    txt += ` Y con energía de ${escHtml(partnerSign)} la atracción es tan fuerte que te nubla el juicio.`;
   }
-  document.getElementById('inter2Text').innerHTML = txt;
+  const el = document.getElementById('inter2Text');
+  if (el) el.innerHTML = txt;
 }
-// Inter 3 (slide 14) - based on "block"
+// Inter 3 (slide 16) - él ya sintió tu energía
 function fillInter3(block) {
-  const map = {
-    trust: ["Tu corazón aprendió a protegerse", "Después de todo lo que viviste, tu corazón creó una armadura. Te protegió — pero las cartas muestran que llegó la hora de bajar la guardia ante el amor correcto."],
-    past: ["Todavía cargas el pasado", "Las heridas antiguas dejaron marcas, y las cartas sienten ese peso. La buena noticia: también muestran que la sanación está más cerca de lo que imaginas."],
-    worth: ["Vales mucho más de lo que sientes", "Las cartas revelan algo que olvidaste: mereces un amor grande. El bloqueo no está en ti — está en la historia que te contaron sobre ti."],
-    timing: ["El momento correcto se acerca", "Sientes que no es el momento — pero las cartas no están de acuerdo. Muestran un movimiento que comienza ahora, aunque aún no lo notes."],
-    none: ["Tu corazón está abierto", "¡Qué energía tan hermosa! Un corazón abierto es un imán para el alma gemela. Las cartas muestran que estás en el momento perfecto para recibir este amor."]
-  };
-  const [t,txt] = map[block]||map.trust;
-  document.getElementById('inter3Title').textContent = t;
-  document.getElementById('inter3Text').innerHTML = txt;
+  const nombre = (data.name || '').trim() || 'alma';
+  const title = document.getElementById('inter3Title');
+  if (title) title.textContent = 'Tu corazón aprendió a protegerse.';
+  const el = document.getElementById('inter3Text');
+  if (el) {
+    el.innerHTML = `<b>Él ya sintió tu energía, ${escHtml(nombre)}.</b> Pero tu bloqueo lo confunde. Por eso aparece y desaparece. No es que no le gustes. Es que siente tu muro.`;
+  }
 }
-// Inter 4 (slide 17) - based on "want"
+// Inter 4 (slide 19) - basado en "want"
 function fillInter4(want) {
   const map = {
-    who: "Quieres saber quién es. Las cartas ya están dibujando el rostro, la forma de ser y la energía de esa persona para ti.",
-    when: "Quieres saber cuándo. Las cartas señalan un período específico — y está más cerca de lo que parece.",
-    where: "Quieres saber dónde. Las cartas indican el lugar y el contexto del encuentro. Están surgiendo detalles sorprendentes.",
-    already: "Quieres saber si ya la conoces. Y las cartas tienen una respuesta clara sobre eso — que puede cambiar cómo ves a alguien a tu alrededor."
+    who: "Quieres saber quién es. Martha ya anotó su inicial y cómo lo vas a reconocer.",
+    when: "Quieres saber cuándo. Martha ya marcó el período exacto de tu ventana de encuentro.",
+    where: "Quieres saber dónde. Martha ya vio el lugar cotidiano donde se van a cruzar.",
+    already: "Quieres saber si ya lo conoces. Y la respuesta de las cartas puede cambiar cómo ves a alguien cerca de ti."
   };
-  document.getElementById('inter4Text').innerHTML = (map[want]||map.who) + " <span class='hl'>La carta que elegiste lo confirma todo.</span>";
+  const el = document.getElementById('inter4Text');
+  if (el) el.innerHTML = (map[want]||map.who) + " <span class='hl'>No es quien piensas.</span>";
 }
 
 // ============ LOADING ============
@@ -1817,18 +1867,19 @@ function startLoading() {
   const chkName = document.getElementById('chkName');
   if (chkName) {
     const n = (data.name || '').trim();
-    chkName.textContent = n || data.zodiac || 'tu alma';
+    chkName.textContent = n || currentSigno() || 'tu alma';
   }
+  applyTemplates();
   const CIRC = 415;
   const duration = 7000;
   const start = performance.now();
   let step = 0, modal = false, statusIdx = 0;
   const statuses = [
-    'Analizando tu fecha de nacimiento y tu signo...',
-    'Identificando tu Herida de la Diosa...',
-    'Veo compatibilidad rara... signo de fuego/aire...',
-    'Las cartas confirman... él ya sintió tu energía...',
-    'Martha está canalizando tu lectura final...'
+    fillTpl('Leyendo tu energía amorosa, {{NOME}}...'),
+    fillTpl('Analizando tu fecha y tu signo {{SIGNO}}...'),
+    fillTpl('Identificando tu bloqueo del corazón desde {{ANO}}...'),
+    'Localizando tu alma gemela y sus iniciales...',
+    fillTpl('Verificando la agenda de Martha... 2 lugares hoy, {{NOME}}...')
   ];
   statusEl.textContent = statuses[0];
   const statusTimer = setInterval(() => {
@@ -1907,47 +1958,30 @@ function goCheckout(e) {
   });
   window.open(hotmartUrl(HOTMART_MAIN_URL), '_blank', 'noopener,noreferrer');
 }
-function openDownsell() {
-  const name = (data.name || localStorage.getItem('nombre') || '').trim();
-  const title = document.getElementById('downsellTitle');
-  if (title) title.textContent = name
-    ? 'Espera, ' + name + '... ¿$9 es mucho para ti hoy?'
-    : 'Espera... ¿$9 es mucho para ti hoy?';
-  document.getElementById('downsellModal').classList.add('visible');
-  trackProgress({ event: 'downsell_open', status: 'reading', current_step: 19, step_label: 'Modal downsell visto', immediate: true });
-}
-function closeDownsell(force) {
-  document.getElementById('downsellModal').classList.remove('visible');
-  if (force) downsellShown = true;
-}
-function takeDownsell() {
-  persistLead();
-  trackProgress({ event: 'downsell_690', status: 'downsell', current_step: 19, step_label: 'Downsell $6,90', immediate: true });
-  metaTrack('InitiateCheckout', {
-    value: 6.9,
-    currency: 'USD',
-    content_name: 'Mini Lectura Extendida $6,90',
-    content_ids: ['R107109985R'],
-    content_type: 'product',
-    num_items: 1,
-    eventID: metaEventId('ic690'),
-  });
-  closeDownsell(true);
-  window.open(hotmartUrl(HOTMART_DOWNSELL_URL), '_blank', 'noopener,noreferrer');
-}
-let downsellShown = false;
-function bindExitIntent() {
-  if (window._exitBound) return;
-  window._exitBound = true;
-  document.addEventListener('mouseout', (ev) => {
-    if (downsellShown || currentSlide < SLIDE_READING) return;
-    if (ev.clientY < 12) openDownsell();
-  });
+// ============ ESCASSEZ: timer 15 min de la oferta ============
+const OFFER_WINDOW_MS = 15 * 60 * 1000;
+function startOfferTimer() {
+  const clock = document.getElementById('offerTimerClock');
+  if (!clock) return;
+  let startedAt = parseInt(sessionStorage.getItem('almagemela_offer_start') || '0', 10);
+  if (!startedAt || Date.now() - startedAt > OFFER_WINDOW_MS) {
+    startedAt = Date.now();
+    try { sessionStorage.setItem('almagemela_offer_start', String(startedAt)); } catch (e) {}
+  }
+  if (window._offerTimer) clearInterval(window._offerTimer);
+  const tick = () => {
+    const left = Math.max(0, OFFER_WINDOW_MS - (Date.now() - startedAt));
+    const mm = String(Math.floor(left / 60000)).padStart(2, '0');
+    const ss = String(Math.floor((left % 60000) / 1000)).padStart(2, '0');
+    clock.textContent = mm + ':' + ss;
+    if (left <= 0) clearInterval(window._offerTimer);
+  };
+  tick();
+  window._offerTimer = setInterval(tick, 1000);
 }
 
 function protectSinceLabel() {
-  const map = { trust: 'hace más de un año', past: '2023', worth: 'hace demasiado tiempo', timing: 'hace meses', none: 'poco tiempo' };
-  return map[data.block] || '2023';
+  return blockYearLabel();
 }
 function escHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -1986,7 +2020,7 @@ function resolveReadingPersona() {
   const partner = data.partner_sign;
   const signo = (partner && partner !== 'unknown')
     ? partner
-    : (data.zodiac || 'fuego/aire');
+    : (currentSigno() || 'fuego/aire');
   return {
     nombre,
     nombreHtml: escHtml(nombre),
@@ -2021,38 +2055,15 @@ function renderReadingLetter() {
   if (nameEl) nameEl.textContent = titleName;
 
   document.getElementById('readingText').innerHTML = `
-    <div class="letter-block"><h1>${n}, tu energía no es común. Tengo que decirte algo que no le digo a todas...</h1></div>
-    <div class="letter-block"><p>Hoy sentí tu energía fuerte, <span class="hl-name">${n}</span>. Muy fuerte.</p></div>
-    <div class="letter-block"><p>Hay un hombre en tu vida que hace que sea difícil pensar con claridad. Cuando está contigo, todo es magnético. Sientes que te mira como si intentara memorizar tu rostro. La forma en que dice tu nombre... en esos momentos piensas: <i>esta es. Esto es lo que he estado esperando.</i></p></div>
-    <div class="letter-block"><p><b>Pero luego...</b></p></div>
-    <div class="letter-block"><p>Los mensajes tardan. Está "ocupado". "Con mucho trabajo". "Con muchas cosas en la cabeza".</p></div>
-    <div class="letter-block"><p>Y de repente te encuentras despierta a las 2am, revisando conversaciones antiguas, tratando de encontrar el momento exacto en que todo cambió. Releyendo ese último mensaje donde todo parecía perfecto.</p></div>
-    <div class="letter-block"><p>Es agotador. Y sé que llevas <span class="hl-name">${escHtml(p.tiempoProteccion)}</span> así.</p></div>
-    <div class="letter-block"><p>Cuando las cosas están bien entre ustedes, son TAN buenas que se siente innegable. Pero cuando se pone frío... te encuentras poniendo excusas por comportamientos que nunca aceptarías de nadie más. Y luego te frustras contigo misma por seguir queriéndolo de todos modos.</p></div>
-    <div class="letter-block"><h2>La Reina de Bastos. Esta eres TÚ. ${n}.</h2></div>
-    <div class="letter-block"><p>Y eres... wow.</p></div>
-    <div class="letter-block"><p>Eres magnética. Cálida. La mujer que entra a un lugar y todos sienten su energía sin saber por qué. La mujer que la gente recuerda.</p></div>
-    <div class="letter-block"><p>El problema es que desde <span class="hl-name">${escHtml(p.tiempoProteccion)}</span> tu corazón aprendió a protegerse. Empezaste a verter toda esa energía hermosa en personas que te dejan en incertidumbre.</p></div>
-    <div class="letter-block"><p>No eres demasiado, <span class="hl-name">${n}</span>. Eres justo lo que tu alma gemela está buscando. El hombre para ti no te hará encogerte para caber en su vida.</p></div>
-    <div class="letter-block"><h2>Lo que realmente está pasando - El Hilo Enredado</h2></div>
-    <div class="letter-block"><p>Lo que veo en tu fecha de nacimiento <span class="hl-name">${escHtml(p.fecha)}</span> y en la carta que elegiste <span class="hl-name">${escHtml(p.carta)}</span> es lo que llamo "El Hilo Enredado".</p></div>
-    <div class="letter-block"><p>Es una herida de la Diosa. Una memoria de alma que hace que atraigas siempre al mismo tipo de patrón, aunque sean hombres diferentes por fuera. Por eso das mucho y recibes poco. Por eso sientes que tu alma gemela está cerca, pero algo invisible lo bloquea y lo confunde.</p></div>
-    <div class="letter-block"><p>Tu compatibilidad rara es con energía de signo de <span class="hl-name">${escHtml(p.signo)}</span>. Por eso te atrae sin explicación. 7 de cada 100 mujeres tienen este tipo de Hilo Rojo. Por eso atraes miradas que no se olvidan, pero no retienes al correcto.</p></div>
-    <div class="letter-block"><p><b>Necesito parar aquí un momento, ${n}.</b></p></div>
-    <div class="letter-block"><p>Hay algo que las cartas me están mostrando desde el inicio y no quiero apurarlo aquí en esta mini lectura...</p></div>
-    <div class="letter-block"><p>Veo una ventana de encuentro muy clara en los próximos 4 meses. No es en donde imaginas. Es en un lugar cotidiano. Veo una inicial. Veo cómo lo vas a reconocer al instante por su mirada, como si ya lo conocieras.</p></div>
-    <div class="letter-block"><p>Veo que tu historia de "¿será él?" tiene fecha de vencimiento. Y no sé si estás lista para lo que viene.</p></div>
-    <div class="letter-block"><p><b>Mereces claridad, ${n}. No el "quizás" en el que has estado viviendo.</b></p></div>
-    <div class="letter-block"><p>Martha canalizó tu Lectura Completa del Alma Gemela con todo lo que no puedo decirte aquí, porque necesita tiempo:</p>
+    <div class="letter-block"><h1>${n}, tu Hilo Rojo está listo.</h1></div>
+    <div class="letter-block"><p>Tu energía de <span class="hl-name">${escHtml(currentSigno())}</span> lleva desde <span class="hl-name">${escHtml(p.tiempoProteccion)}</span> llamando a alguien. Y él ya te sintió.</p></div>
+    <div class="letter-block"><p>Pero tu bloqueo lo confunde. Por eso aparece y desaparece. No es que no le gustes: <b>es que siente tu muro.</b></p></div>
+    <div class="letter-block"><p>En tu fecha <span class="hl-name">${escHtml(p.fecha)}</span> y en la carta <span class="hl-name">${escHtml(p.carta)}</span> vi dos cosas que Martha anotó para ti:</p>
     <ul class="r-list">
-      <li>🔮 ¿Quién es realmente tu alma gemela? ¿Es él o alguien nuevo que ya te vio?</li>
-      <li>🔮 Inicial, descripción física y emocional completa - cómo lo reconocerás</li>
-      <li>🔮 Cuándo y dónde lo reconocerás - fecha y lugar exacto de la ventana</li>
-      <li>🔮 Qué está enredando tu Hilo Rojo y el ritual de 7 días para limpiarlo</li>
-      <li>🔮 Qué siente él por ti en este momento y qué lo frena</li>
+      <li>🔮 Una <b>inicial fuerte</b> cerca de tu Hilo Rojo — y no es quien piensas</li>
+      <li>🔮 Tu <b>ventana de encuentro</b>: cuándo y en qué lugar cotidiano va a pasar</li>
     </ul></div>
-    <div class="letter-block"><p>Has estado haciéndote la misma pregunta por demasiado tiempo: "¿Él va a elegirme? ¿Es él el indicado?"</p></div>
-    <div class="letter-block"><p>Siento que la respuesta está más cerca de la superficie hoy que nunca.</p></div>
+    <div class="letter-block"><p><b>Mereces claridad, ${n}.</b> No el "quizás" en el que has estado viviendo.</p></div>
   `;
   bindLetterReveal();
 }
@@ -2070,9 +2081,11 @@ function showReadingConfirm() {
   const title = document.getElementById('confirmTitle');
   if (title) title.textContent = 'Tu lectura está casi lista, ' + p.nombre;
   const cn = document.getElementById('confirmName');
-  const cb = document.getElementById('confirmBirth');
   if (cn) cn.textContent = p.nombre;
-  if (cb) cb.textContent = p.fechaDisplay || p.fecha || '—';
+  const cs = document.getElementById('confirmSigno');
+  if (cs) cs.textContent = currentSigno();
+  const ch = document.getElementById('confirmHilo');
+  if (ch) ch.textContent = 'Enredado desde ' + blockYearLabel();
 }
 function revealMiniLectura() {
   setReadingState('channel');
@@ -2094,8 +2107,9 @@ function revealMiniLectura() {
     clearInterval(timer);
     setReadingState('letter');
     renderReadingLetter();
-    bindExitIntent();
-    trackProgress({ event: 'letter_open', status: 'reading', current_step: 19, step_label: 'Mini Lectura abierta', immediate: true });
+    applyTemplates();
+    startOfferTimer();
+    trackProgress({ event: 'letter_open', status: 'reading', current_step: 19, step_label: 'Oferta $9 vista', immediate: true });
     window.scrollTo(0, 0);
   }, 3000);
 }
@@ -2157,14 +2171,14 @@ requestAnimationFrame(() => {
         if (!data.name) data.name = 'María';
         if (!data.fecha) data.fecha = '15/03/1992';
         if (!data.birthDate) data.birthDate = '1992-03-15';
-        if (!data.zodiac) data.zodiac = 'Piscis';
         if (!data.partner_sign) data.partner_sign = 'Escorpio';
-        if (!data.block) data.block = 'past';
+        if (!data.blockSince) data.blockSince = '2023';
         if (!selectedKey) selectedKey = 'lovers';
         goToSlide(SLIDE_READING);
         setReadingState('letter');
         renderReadingLetter();
-        bindExitIntent();
+        applyTemplates();
+        startOfferTimer();
         window.scrollTo(0, 0);
       }
     } catch (e) {}
