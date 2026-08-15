@@ -31,6 +31,20 @@
         { "key": "CDN-Cache-Control", "value": "no-store" },
         { "key": "Vercel-CDN-Cache-Control", "value": "no-store" }
       ]
+    },
+    {
+      "source": "/auditoria",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/auditoria/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
     }
   ]
 }
