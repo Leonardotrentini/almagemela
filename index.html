@@ -994,7 +994,7 @@ body {
   <!-- PASSOS 13-17 LOADING -->
   <div class="slide" id="slide-loading">
     <div class="loading">
-      <h2 data-tpl="Leyendo tu energía amorosa, {{NOME}}…">Leyendo tu energía amorosa…</h2>
+      <h2 id="loadingTitle">Leyendo tu energía amorosa…</h2>
       <p class="loading-status" id="loadingStatus">Analizando tu fecha y tu signo...</p>
       <div class="ring">
         <svg width="150" height="150" viewBox="0 0 150 150">
@@ -1005,11 +1005,12 @@ body {
       </div>
       <div class="loading-bar-wrap"><div class="loading-bar-fill" id="loadingBarFill"></div></div>
       <div class="checklist">
-        <div class="check" data-i="0"><span class="ci">○</span> <span data-tpl="Leyendo la energía de {{NOME}}...">Leyendo la energía...</span></div>
-        <div class="check" data-i="1"><span class="ci">○</span> <span data-tpl="Identificando tu bloqueo del corazón desde {{ANO}}...">Identificando tu bloqueo del corazón...</span></div>
-        <div class="check" data-i="2"><span class="ci">○</span> Localizando tu alma gemela y sus iniciales...</div>
-        <div class="check" data-i="3"><span class="ci">○</span> Verificando la agenda de Martha · 2 lugares hoy...</div>
+        <div class="check" data-i="0"><span class="ci">○</span> <span id="chk0">Leyendo la energía...</span></div>
+        <div class="check" data-i="1"><span class="ci">○</span> <span id="chk1">Identificando tu bloqueo del corazón...</span></div>
+        <div class="check" data-i="2"><span class="ci">○</span> <span id="chk2">Localizando tu alma gemela y sus iniciales...</span></div>
+        <div class="check" data-i="3"><span class="ci">○</span> <span id="chk3">Verificando la agenda de Martha · 2 lugares hoy...</span></div>
       </div>
+      <p class="reveal-foot" id="loadingPasoHint">Paso 13/19</p>
     </div>
   </div>
 
@@ -1462,58 +1463,108 @@ function bindInputs() {
   }
 }
 
-// ============ LOADING 13-17 ============
+// ============ LOADING 13-17 (5 fases visíveis, ~3s cada) ============
 function startLoading() {
+  if (window._loadingRun) return;
+  window._loadingRun = true;
   metaTrack('Lead', { content_name: 'Quiz completado' });
   trackProgress({ event: 'quiz_complete', current_step: 12, status: 'in_progress', immediate: true });
+
+  const phases = [
+    { paso: 13, title: 'Leyendo tu energía amorosa, ' + getNombre() + '...', status: 'Conectando con tu Hilo Rojo...', check: 0 },
+    { paso: 14, title: 'Analizando tu fecha y tu signo ' + getSigno() + '...', status: 'Leyendo tu mapa energético...', check: 0 },
+    { paso: 15, title: 'Identificando tu bloqueo del corazón desde ' + getAno() + '...', status: 'Detectando el muro emocional...', check: 1 },
+    { paso: 16, title: 'Localizando tu alma gemela y sus iniciales...', status: 'Buscando la señal del encuentro...', check: 2 },
+    { paso: 17, title: 'Verificando la agenda de Martha... 2 lugares hoy, ' + getNombre() + '...', status: 'Confirmando cupo de lectura...', check: 3 }
+  ];
+  const PHASE_MS = 3000;
+  const CIRC = 415;
+
   _loadingPaso = 13;
   goToSlide(13);
+
   const pctEl = document.getElementById('loadingPct');
   const ring = document.getElementById('ringFill');
   const bar = document.getElementById('loadingBarFill');
   const statusEl = document.getElementById('loadingStatus');
-  const items = Array.from(document.querySelectorAll('.check'));
-  items.forEach(el => { el.classList.remove('on','done'); const ci=el.querySelector('.ci'); if(ci) ci.textContent='○'; });
-  applyTemplates();
-  const statuses = [
-    'Leyendo tu energía amorosa, ' + getNombre() + '...',
-    'Analizando tu fecha y tu signo ' + getSigno() + '...',
-    'Identificando tu bloqueo del corazón desde ' + getAno() + '...',
-    'Localizando tu alma gemela y sus iniciales...',
-    'Verificando la agenda de Martha... 2 lugares hoy, ' + getNombre() + '...'
-  ];
-  let statusIdx = 0, step = 0;
-  statusEl.textContent = statuses[0];
-  const statusTimer = setInterval(() => {
-    statusIdx = Math.min(statuses.length - 1, statusIdx + 1);
-    statusEl.textContent = statuses[statusIdx];
-    _loadingPaso = 13 + statusIdx;
-    updateProgress();
-  }, 1400);
-  const CIRC = 415, duration = 7000, start = performance.now();
+  const titleEl = document.getElementById('loadingTitle');
+  const hintEl = document.getElementById('loadingPasoHint');
+  const items = Array.from(document.querySelectorAll('#slide-loading .check'));
+  const chk0 = document.getElementById('chk0');
+  const chk1 = document.getElementById('chk1');
+  const chk2 = document.getElementById('chk2');
+  const chk3 = document.getElementById('chk3');
+  if (chk0) chk0.textContent = 'Leyendo la energía de ' + getNombre() + '...';
+  if (chk1) chk1.textContent = 'Identificando tu bloqueo del corazón desde ' + getAno() + '...';
+  if (chk2) chk2.textContent = 'Localizando tu alma gemela y sus iniciales...';
+  if (chk3) chk3.textContent = 'Verificando la agenda de Martha · 2 lugares hoy...';
+
+  items.forEach(el => {
+    el.classList.remove('on', 'done');
+    const ci = el.querySelector('.ci');
+    if (ci) ci.textContent = '○';
+  });
+
   function mark(el, cls) {
     if (!el) return;
     el.classList.add('on');
-    if (cls === 'done') { el.classList.add('done'); el.querySelector('.ci').textContent = '✓'; }
+    if (cls === 'done') {
+      el.classList.add('done');
+      const ci = el.querySelector('.ci');
+      if (ci) ci.textContent = '✓';
+    }
   }
+
+  function setPhase(i) {
+    const p = phases[i];
+    _loadingPaso = p.paso;
+    if (titleEl) titleEl.textContent = p.title;
+    if (statusEl) statusEl.textContent = p.status;
+    if (hintEl) hintEl.textContent = 'Paso ' + p.paso + '/19';
+    updateProgress();
+    trackProgress({ event: 'loading_' + p.paso, current_step: p.paso, step_label: SECTION[p.paso], immediate: true });
+
+    // checklist: marca anteriores como done, atual como on
+    items.forEach((el, idx) => {
+      el.classList.remove('on', 'done');
+      const ci = el.querySelector('.ci');
+      if (ci) ci.textContent = '○';
+      if (idx < p.check) mark(el, 'done');
+      else if (idx === p.check) mark(el, 'on');
+    });
+  }
+
+  let phaseIdx = 0;
+  let phaseStart = performance.now();
+  setPhase(0);
+
   function frame(now) {
-    const t = Math.min(1, (now - start) / duration);
-    const pct = Math.floor(t * 100);
-    pctEl.textContent = pct + '%';
-    ring.style.strokeDashoffset = CIRC - (CIRC * pct / 100);
+    const elapsedInPhase = now - phaseStart;
+    const overall = (phaseIdx * PHASE_MS + Math.min(PHASE_MS, elapsedInPhase)) / (phases.length * PHASE_MS);
+    const pct = Math.min(99, Math.floor(overall * 100));
+    if (pctEl) pctEl.textContent = pct + '%';
+    if (ring) ring.style.strokeDashoffset = CIRC - (CIRC * pct / 100);
     if (bar) bar.style.width = pct + '%';
-    if (pct >= 25 && step === 0) { mark(items[0],'done'); mark(items[1],'on'); step = 1; }
-    if (pct >= 50 && step === 1) { mark(items[1],'done'); mark(items[2],'on'); step = 2; }
-    if (pct >= 75 && step === 2) { mark(items[2],'done'); mark(items[3],'on'); step = 3; }
-    if (pct >= 100) {
-      mark(items[3],'done');
-      clearInterval(statusTimer);
-      setTimeout(() => goToSlide(14), 450);
-      return;
+
+    if (elapsedInPhase >= PHASE_MS) {
+      // completa o check da fase atual se for o último check index
+      const cur = phases[phaseIdx];
+      if (items[cur.check]) mark(items[cur.check], 'done');
+      phaseIdx += 1;
+      if (phaseIdx >= phases.length) {
+        if (pctEl) pctEl.textContent = '100%';
+        if (ring) ring.style.strokeDashoffset = 0;
+        if (bar) bar.style.width = '100%';
+        items.forEach(el => mark(el, 'done'));
+        window._loadingRun = false;
+        setTimeout(() => goToSlide(14), 600);
+        return;
+      }
+      phaseStart = now;
+      setPhase(phaseIdx);
     }
     requestAnimationFrame(frame);
   }
-  mark(items[0],'on');
   requestAnimationFrame(frame);
 }
 
