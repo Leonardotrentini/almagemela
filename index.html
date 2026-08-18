@@ -660,8 +660,8 @@ body {
 #btn-vsl-cta {
   display: block;
   width: 100%;
-  max-width: 400px;
-  margin: 20px auto 0;
+  max-width: none;
+  margin: 12px 0 14px;
   padding: 16px 18px;
   font-family: var(--font-sans);
   font-size: 16px;
@@ -1190,7 +1190,6 @@ body {
         <div class="vsl-wrap">
           <wistia-player media-id="7inld7rbw4" seo="false" aspect="0.5625"></wistia-player>
         </div>
-        <button type="button" id="btn-vsl-cta" class="hidden" onclick="goCheckout(event)">VER MI CONSULTA COMPLETA - $9</button>
         <div class="offer-wrap hidden" id="offer-card">
           <div class="offer-glow" aria-hidden="true"></div>
           <div class="offer-box">
@@ -1237,6 +1236,7 @@ body {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
               <span>Esta lectura expira en <b id="offerTimerClock">15:00</b></span>
             </div>
+            <button type="button" id="btn-vsl-cta" onclick="goCheckout(event)">¡Recibir consulta completa!</button>
             <div class="offer-trust">
               <div class="t">
                 <svg class="lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -1720,16 +1720,13 @@ function onVslSecond(s) {
   if (s >= 45) {
     const wrap = document.getElementById('offer-card');
     const guar = document.querySelector('#slide-offer .guar-soft');
+    const btn = document.getElementById('btn-vsl-cta');
     if (wrap && wrap.classList.contains('hidden')) {
       revealVslEl(wrap);
       revealVslEl(guar);
+      if (btn) btn.classList.add('btn-hilo');
       startOfferTimer();
     }
-  }
-  if (s >= 70) {
-    revealVslEl(document.getElementById('btn-vsl-cta'), function(btn) {
-      btn.classList.add('btn-hilo');
-    });
     if (window._vslPlayWatch) {
       clearInterval(window._vslPlayWatch);
       window._vslPlayWatch = null;
