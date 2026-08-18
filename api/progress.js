@@ -25,6 +25,26 @@ function sessionEmail(visitorId) {
   return `v_${safe}@progress.almagemela.local`;
 }
 
+function mergeVsl(prev, next) {
+  prev = prev && typeof prev === 'object' ? prev : {};
+  next = next && typeof next === 'object' ? next : {};
+  return {
+    page: !!(prev.page || next.page),
+    started: !!(prev.started || next.started),
+    offer_shown: !!(prev.offer_shown || next.offer_shown),
+    seconds: Math.max(parseInt(prev.seconds, 10) || 0, parseInt(next.seconds, 10) || 0),
+  };
+}
+
+function pickStatus(wanted, prev, rank) {
+  if (prev === 'purchased') return 'purchased';
+  if ((rank[wanted] || 0) < (rank[prev] || 0) &&
+      wanted !== 'downsell' && wanted !== 'checkout' && wanted !== 'purchased') {
+    return prev;
+  }
+  return wanted;
+}
+
 async function sbFetch(supabaseUrl, supabaseKey, path, options = {}) {
   return fetch(`${supabaseUrl}/rest/v1/${path}`, {
     ...options,
@@ -75,29 +95,58 @@ module.exports = async function handler(req, res) {
   const rank = { started: 1, in_progress: 2, reading: 3, checkout: 4, downsell: 4, purchased: 5 };
 
   try {
-    // 1) tenta quiz_sessions (se a tabela existir)
+    let existingQs = null;
+    const existingRes = await sbFetch(
+      supabaseUrl,
+      supabaseKey,
+      `quiz_sessions?visitor_id=eq.${encodeURIComponent(visitorId)}&select=*&limit=1`
+    );
+    if (existingRes.ok) {
+      const rows = await existingRes.json();
+      existingQs = Array.isArray(rows) && rows[0] ? rows[0] : null;
+    }
+
+    const prevAnswers = (existingQs && existingQs.answers && typeof existingQs.answers === 'object')
+      ? existingQs.answers : {};
+    const mergedAnswers = {
+      ...prevAnswers,
+      ...answersIn,
+      vsl: mergeVsl(prevAnswers.vsl, answersIn.vsl),
+    };
+    const maxStep = Math.max(
+      parseInt(existingQs && existingQs.max_step, 10) || 0,
+      parseInt(existingQs && existingQs.current_step, 10) || 0,
+      currentStep
+    );
+    const nextStatus = pickStatus(statusWanted, existingQs && existingQs.status, rank);
+    const nextLabel = (currentStep >= (parseInt(existingQs && existingQs.current_step, 10) || 0))
+      ? (stepLabel || (existingQs && existingQs.step_label) || null)
+      : ((existingQs && existingQs.step_label) || stepLabel);
+
     const qsPayload = {
       visitor_id: visitorId,
-      ip,
-      name,
-      birth_date: birthDate,
+      ip: ip || (existingQs && existingQs.ip) || null,
+      name: name || (existingQs && existingQs.name) || null,
+      birth_date: birthDate || (existingQs && existingQs.birth_date) || null,
       current_step: currentStep,
-      max_step: currentStep,
-      step_label: stepLabel,
-      card,
-      answers: answersIn,
-      status: statusWanted,
-      last_event: lastEvent,
-      user_agent: userAgent,
+      max_step: maxStep,
+      step_label: nextLabel,
+      card: card || (existingQs && existingQs.card) || null,
+      answers: mergedAnswers,
+      status: nextStatus,
+      last_event: lastEvent || (existingQs && existingQs.last_event) || null,
+      user_agent: userAgent || (existingQs && existingQs.user_agent) || null,
       updated_at: new Date().toISOString(),
     };
 
     const qsRes = await sbFetch(
       supabaseUrl,
       supabaseKey,
-      'quiz_sessions?on_conflict=visitor_id',
+      existingQs
+        ? `quiz_sessions?visitor_id=eq.${encodeURIComponent(visitorId)}`
+        : 'quiz_sessions?on_conflict=visitor_id',
       {
-        method: 'POST',
+        method: existingQs ? 'PATCH' : 'POST',
         headers: { Prefer: 'resolution=merge-duplicates,return=representation' },
         body: JSON.stringify(qsPayload),
       }
@@ -112,7 +161,9 @@ module.exports = async function handler(req, res) {
         id: row?.id,
         visitor_id: visitorId,
         current_step: currentStep,
-        status: statusWanted,
+        max_step: maxStep,
+        status: nextStatus,
+        vsl: mergedAnswers.vsl,
       });
     }
 
@@ -137,17 +188,14 @@ module.exports = async function handler(req, res) {
 
     const prevMeta = (existing?.answers && existing.answers._meta) || {};
     const prevStatus = prevMeta.status || 'started';
-    let nextStatus = statusWanted;
-    if ((rank[nextStatus] || 0) < (rank[prevStatus] || 0) &&
-        !(statusWanted === 'downsell' || statusWanted === 'checkout' || statusWanted === 'purchased')) {
-      nextStatus = prevStatus;
-    }
-    if (prevStatus === 'purchased') nextStatus = 'purchased';
+    const nextStatus = pickStatus(statusWanted, prevStatus, rank);
 
     const maxStep = Math.max(prevMeta.max_step || 0, currentStep, prevMeta.current_step || 0);
+    const prevVsl = (existing?.answers && existing.answers.vsl) || prevMeta.vsl || {};
     const mergedAnswers = {
       ...(existing?.answers || {}),
       ...answersIn,
+      vsl: mergeVsl(prevVsl, answersIn.vsl),
       _meta: {
         visitor_id: visitorId,
         ip: ip || prevMeta.ip || null,
@@ -158,6 +206,7 @@ module.exports = async function handler(req, res) {
         status: nextStatus,
         last_event: lastEvent || prevMeta.last_event || null,
         user_agent: userAgent || prevMeta.user_agent || null,
+        vsl: mergeVsl(prevVsl, answersIn.vsl),
         updated_at: new Date().toISOString(),
       },
     };

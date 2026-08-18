@@ -1361,6 +1361,28 @@ const SECTION = {
   13:'Leyendo tu energía',14:'Leyendo tu energía',15:'Leyendo tu energía',
   16:'Leyendo tu energía',17:'Leyendo tu energía',18:'Tu lectura',19:'Tu lectura'
 };
+const STEP_LABEL = {
+  0:'0/19 · Eligió carta',
+  1:'1/19 · Intro Martha',
+  2:'2/19 · Nombre',
+  3:'3/19 · Fecha',
+  4:'4/19 · Corazón',
+  5:'5/19 · Dolor',
+  6:'6/19 · Nudo',
+  7:'7/19 · Interstitial energía',
+  8:'8/19 · Compatibilidad',
+  9:'9/19 · Corazón protegido',
+  10:'10/19 · Patrón',
+  11:'11/19 · Él sintió',
+  12:'12/19 · Iniciales',
+  13:'13/19 · Loading 1',
+  14:'14/19 · Loading 2',
+  15:'15/19 · Loading 3',
+  16:'16/19 · Loading 4',
+  17:'17/19 · Loading 5',
+  18:'18/19 · Confirmar lectura',
+  19:'19/19 · Oferta + VSL'
+};
 
 let currentSlide = 0;
 let selectedKey = null;
@@ -1442,9 +1464,9 @@ function trackProgress(extra) {
           name: getNombre() === 'Betty' ? (data.name || null) : getNombre(),
           birth_date: data.birthDate || localStorage.getItem('fecha_nacimiento') || null,
           current_step: paso,
-          step_label: extra.step_label || SECTION[paso] || 'Quiz',
+          step_label: extra.step_label || STEP_LABEL[paso] || SECTION[paso] || 'Quiz',
           card: selectedKey || null,
-          answers: data || {},
+          answers: Object.assign({}, data || {}, { vsl: (data && data.vsl) || {} }),
           status: extra.status || (paso > 0 ? 'in_progress' : 'started'),
           event: extra.event || 'step'
         }),
@@ -1482,6 +1504,8 @@ function goToSlide(n) {
 
   if (n === 19) {
     bindVslCta();
+    markVsl({ page: true });
+    trackProgress({ event: 'vsl_page', current_step: 19, status: 'reading', step_label: STEP_LABEL[19], immediate: true });
   }
 
   try {
@@ -1715,17 +1739,49 @@ function revealVslEl(el, after) {
   }, 100);
   return true;
 }
+function markVsl(patch) {
+  const prev = (data && data.vsl) || {};
+  data.vsl = {
+    page: !!(prev.page || patch.page),
+    started: !!(prev.started || patch.started),
+    offer_shown: !!(prev.offer_shown || patch.offer_shown),
+    seconds: Math.max(parseInt(prev.seconds, 10) || 0, parseInt(patch.seconds, 10) || 0)
+  };
+  try { localStorage.setItem('almagemela_data', JSON.stringify(data)); } catch (e) {}
+  return data.vsl;
+}
 function onVslSecond(s) {
   s = Math.floor(Number(s) || 0);
+  markVsl({ started: true, page: true, seconds: s });
+  const last = window._vslLastTrack || 0;
+  if (s >= 10 && s - last >= 10) {
+    window._vslLastTrack = s;
+    trackProgress({
+      event: 'vsl_' + s + 's',
+      current_step: 19,
+      status: 'reading',
+      step_label: STEP_LABEL[19],
+      immediate: true
+    });
+  }
   if (s >= 45) {
     const wrap = document.getElementById('offer-card');
     const guar = document.querySelector('#slide-offer .guar-soft');
     const btn = document.getElementById('btn-vsl-cta');
-    if (wrap && wrap.classList.contains('hidden')) {
+    const firstOffer = wrap && wrap.classList.contains('hidden');
+    if (firstOffer) {
       revealVslEl(wrap);
       revealVslEl(guar);
       if (btn) btn.classList.add('btn-hilo');
       startOfferTimer();
+      markVsl({ offer_shown: true, seconds: s });
+      trackProgress({
+        event: 'vsl_offer',
+        current_step: 19,
+        status: 'reading',
+        step_label: '19/19 · Vio oferta 45s',
+        immediate: true
+      });
     }
     if (window._vslPlayWatch) {
       clearInterval(window._vslPlayWatch);
@@ -1746,6 +1802,14 @@ function bindVslCta() {
     onVslSecond(player.currentTime);
   });
   player.addEventListener('play', function() {
+    markVsl({ started: true, page: true });
+    trackProgress({
+      event: 'vsl_play',
+      current_step: 19,
+      status: 'reading',
+      step_label: '19/19 · Play VSL',
+      immediate: true
+    });
     if (window._vslPlayWatch) return;
     window._vslPlayWatch = setInterval(function() {
       onVslSecond(player.currentTime);

@@ -52,7 +52,10 @@
   .reading { background:#1e3a5f; color:#bfdbfe; }
   .checkout { background:#14532d; color:#bbf7d0; }
   .purchased { background:#064e3b; color:#6ee7b7; }
-  .downsell { background:#422006; color:#fde68a; }
+  .vsl_play { background:#14532d; color:#bbf7d0; }
+  .vsl_offer { background:#064e3b; color:#6ee7b7; }
+  .vsl_no { background:#3f1d1d; color:#fca5a5; }
+  .vsl_page { background:#1e3a5f; color:#bfdbfe; }
   .bar { height:6px; background:#2e1a4a; border-radius:6px; overflow:hidden; min-width:90px; margin-bottom:4px; }
   .bar > i { display:block; height:100%; background:linear-gradient(90deg,#a855f7,#facc15); }
   .muted { color:#7c6a9a; }
@@ -66,7 +69,7 @@
   .kv div { font-size:14px; line-height:1.45; word-break:break-word; }
   #app { display:none; }
   @media (max-width:800px){ .stats{grid-template-columns:1fr 1fr;} }
-  @media (min-width:801px){ .stats{grid-template-columns:repeat(5,1fr);} }
+  @media (min-width:801px){ .stats{grid-template-columns:repeat(6,1fr);} }
 </style>
 </head>
 <body>
@@ -89,25 +92,28 @@
 
   <div class="note" id="hint">
     Cada visitante genera un <b>visitor_id</b>. El servidor guarda también el <b>IP</b>.
-    Status: <b>paró en el quiz</b> · <b>mini lectura</b> · <b>checkout</b> · <b>downsell</b> · <b>comprou</b>.
+    Mira en qué <b>paso paró</b> (1–19) y si <b>vió la VSL</b> (play / oferta 45s).
   </div>
 
   <section class="stats">
     <div class="stat"><span>Sesiones (lista)</span><b id="sTotal">0</b></div>
     <div class="stat"><span>Hoy</span><b id="sToday">0</b></div>
+    <div class="stat"><span>Vio VSL (play)</span><b id="sVsl">0</b></div>
+    <div class="stat"><span>Vio oferta 45s</span><b id="sVslOffer">0</b></div>
     <div class="stat"><span>Checkout (clic)</span><b id="sCheckout">0</b></div>
     <div class="stat"><span>Comprou</span><b id="sPurchased">0</b></div>
-    <div class="stat"><span>Downsell</span><b id="sDownsell">0</b></div>
   </section>
 
   <div class="toolbar">
     <input type="search" id="q" placeholder="Buscar por nombre…">
     <select id="status">
-      <option value="">Todos los status</option>
+      <option value="">Todos</option>
       <option value="quiz">Paró en el quiz</option>
-      <option value="reading">Mini lectura</option>
+      <option value="reading">Llegó a la oferta</option>
+      <option value="vsl_no">No vio la VSL</option>
+      <option value="vsl_play">Vio la VSL (play)</option>
+      <option value="vsl_offer">Vio la oferta 45s</option>
       <option value="checkout">Checkout (clic)</option>
-      <option value="downsell">Downsell</option>
       <option value="purchased">Comprou</option>
     </select>
     <button class="btn" onclick="loadSessions()">Actualizar</button>
@@ -121,12 +127,13 @@
           <th>IP</th>
           <th>Nombre</th>
           <th>Progreso</th>
-          <th>Paso</th>
+          <th>Paso (dónde paró)</th>
+          <th>VSL</th>
           <th>Status</th>
           <th>Última actividad</th>
         </tr>
       </thead>
-      <tbody id="rows"><tr><td colspan="7" class="muted">Cargando…</td></tr></tbody>
+      <tbody id="rows"><tr><td colspan="8" class="muted">Cargando…</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -140,6 +147,7 @@
     <div class="kv"><label>Session UUID</label><div class="mono" id="dId"></div></div>
     <div class="kv"><label>IP</label><div id="dIp"></div></div>
     <div class="kv"><label>Progreso</label><div id="dProgress"></div></div>
+    <div class="kv"><label>VSL</label><div id="dVsl"></div></div>
     <div class="kv"><label>Fecha nacimiento</label><div id="dBirth"></div></div>
     <div class="kv"><label>Carta</label><div id="dCard"></div></div>
     <div class="kv"><label>Último evento</label><div id="dEvent"></div></div>
@@ -151,7 +159,7 @@
 const STATUS_LABEL = {
   started: 'paró en el quiz',
   in_progress: 'paró en el quiz',
-  reading: 'mini lectura',
+  reading: 'llegó a la oferta',
   checkout: 'checkout',
   downsell: 'downsell',
   purchased: 'comprou',
@@ -162,7 +170,16 @@ function funnelKey(status) {
   if (status === 'checkout') return 'checkout';
   if (status === 'downsell') return 'downsell';
   if (status === 'reading') return 'reading';
-  return 'quiz'; // started | in_progress
+  return 'quiz';
+}
+
+function vslLabel(r) {
+  if (r.vsl_offer_shown) return { text: 'vió oferta · ' + (r.vsl_seconds || 45) + 's', cls: 'vsl_offer' };
+  if (r.vsl_started) return { text: 'play · ' + (r.vsl_seconds || 0) + 's', cls: 'vsl_play' };
+  if (r.vsl_page || (r.max_step || 0) >= 19 || (r.current_step || 0) >= 19) {
+    return { text: 'en página, sin play', cls: 'vsl_page' };
+  }
+  return { text: 'no llegó', cls: 'vsl_no' };
 }
 
 function statusPillClass(status) {
@@ -221,7 +238,7 @@ async function loadSessions() {
     }
     if (!res.ok) {
       document.getElementById('rows').innerHTML =
-        `<tr><td colspan="7" class="muted">${data.error || 'Error'} ${data.detail ? '· ' + data.detail : ''}<br><br>¿Ya corriste el SQL de quiz_sessions en Supabase? ¿ADMIN_PASSWORD en Vercel?</td></tr>`;
+        `<tr><td colspan="8" class="muted">${data.error || 'Error'} ${data.detail ? '· ' + data.detail : ''}<br><br>¿Ya corriste el SQL de quiz_sessions en Supabase? ¿ADMIN_PASSWORD en Vercel?</td></tr>`;
       document.getElementById('login').style.display = 'none';
       document.getElementById('app').style.display = 'block';
       return true;
@@ -230,9 +247,10 @@ async function loadSessions() {
     const s = data.stats || {};
     document.getElementById('sTotal').textContent = s.total || 0;
     document.getElementById('sToday').textContent = s.today || 0;
+    document.getElementById('sVsl').textContent = s.vsl_play || 0;
+    document.getElementById('sVslOffer').textContent = s.vsl_offer || 0;
     document.getElementById('sCheckout').textContent = s.checkout || 0;
     document.getElementById('sPurchased').textContent = s.purchased || 0;
-    document.getElementById('sDownsell').textContent = s.downsell || 0;
     document.getElementById('clock').textContent = 'Actualizado ' + new Date().toLocaleTimeString();
     render();
     document.getElementById('login').style.display = 'none';
@@ -248,7 +266,10 @@ function render() {
   const q = (document.getElementById('q').value || '').trim().toLowerCase();
   const st = document.getElementById('status').value;
   const filtered = SESSIONS.filter(r => {
-    if (st && funnelKey(r.status) !== st) return false;
+    if (st === 'vsl_play' && !r.vsl_started) return false;
+    else if (st === 'vsl_offer' && !r.vsl_offer_shown) return false;
+    else if (st === 'vsl_no' && (r.vsl_started || r.vsl_offer_shown)) return false;
+    else if (st && st !== 'vsl_play' && st !== 'vsl_offer' && st !== 'vsl_no' && funnelKey(r.status) !== st) return false;
     if (q && !(String(r.name || '').toLowerCase().includes(q) || String(r.visitor_id || '').includes(q) || String(r.ip || '').includes(q))) return false;
     return true;
   });
@@ -259,16 +280,19 @@ function render() {
     const name = r.name ? `<b>${escapeHtml(r.name)}</b>` : '<span class="muted">— (sin nombre)</span>';
     const tag = STATUS_LABEL[r.status] || 'paró en el quiz';
     const pill = statusPillClass(r.status);
+    const vsl = vslLabel(r);
+    const paso = escapeHtml(r.step_label || (max + '/19'));
     return `<tr onclick="openDetail('${r.id}')">
       <td class="mono" title="${escapeHtml(r.visitor_id || '')}">${shortId(r.visitor_id)}</td>
       <td class="mono">${escapeHtml(r.ip || '—')}</td>
       <td>${name}</td>
       <td><div class="bar"><i style="width:${pct}%"></i></div>${max}/19</td>
-      <td>${escapeHtml(r.step_label || '—')}</td>
+      <td>${paso}</td>
+      <td><span class="pill ${vsl.cls}">${escapeHtml(vsl.text)}</span></td>
       <td><span class="pill ${pill}">${tag}</span></td>
       <td>${ago(r.updated_at)}</td>
     </tr>`;
-  }).join('') || `<tr><td colspan="7" class="muted">Sin sesiones aún. Abre el quiz y avanza algunos pasos.</td></tr>`;
+  }).join('') || `<tr><td colspan="8" class="muted">Sin sesiones aún. Abre el quiz y avanza algunos pasos.</td></tr>`;
 }
 
 function escapeHtml(s) {
@@ -284,6 +308,8 @@ function openDetail(id) {
   document.getElementById('dId').textContent = r.id || '—';
   document.getElementById('dIp').textContent = r.ip || '—';
   document.getElementById('dProgress').textContent = `${r.current_step || 0}/19 (máx ${r.max_step || 0}) · ${r.step_label || ''}`;
+  const vsl = vslLabel(r);
+  document.getElementById('dVsl').innerHTML = `<span class="pill ${vsl.cls}">${escapeHtml(vsl.text)}</span>`;
   document.getElementById('dBirth').textContent = r.birth_date || '—';
   document.getElementById('dCard').textContent = r.card || '—';
   document.getElementById('dEvent').textContent = r.last_event || '—';

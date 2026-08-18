@@ -22,10 +22,22 @@ function checkAuth(req) {
   return { ok: given && given === expected, reason: 'Senha inválida' };
 }
 
+function vslFromRow(row, answers) {
+  const a = answers || row.answers || {};
+  const v = a.vsl || (a._meta && a._meta.vsl) || {};
+  return {
+    vsl_page: !!v.page,
+    vsl_started: !!v.started,
+    vsl_offer_shown: !!v.offer_shown,
+    vsl_seconds: parseInt(v.seconds, 10) || 0,
+  };
+}
+
 function normalizeFromLead(row) {
   const meta = (row.answers && row.answers._meta) || {};
   const isProgress = row.source === 'almagemela_progress' ||
     String(row.email || '').endsWith('@progress.almagemela.local');
+  const vsl = vslFromRow(row, row.answers);
   return {
     id: row.id,
     visitor_id: meta.visitor_id || (isProgress ? String(row.email || '').split('@')[0].replace(/^v_/, '') : row.id),
@@ -43,11 +55,12 @@ function normalizeFromLead(row) {
     created_at: row.created_at,
     updated_at: meta.updated_at || row.created_at,
     storage: 'leads',
+    ...vsl,
   };
 }
 
 function normalizeFromSession(row) {
-  return { ...row, storage: 'quiz_sessions' };
+  return { ...row, storage: 'quiz_sessions', ...vslFromRow(row, row.answers) };
 }
 
 module.exports = async function handler(req, res) {
@@ -138,6 +151,8 @@ module.exports = async function handler(req, res) {
     purchased: sessions.filter((r) => r.status === 'purchased').length,
     downsell: sessions.filter((r) => r.status === 'downsell').length,
     in_progress: sessions.filter((r) => r.status === 'in_progress' || r.status === 'started').length,
+    vsl_play: sessions.filter((r) => r.vsl_started).length,
+    vsl_offer: sessions.filter((r) => r.vsl_offer_shown).length,
   };
 
   return res.status(200).json({ ok: true, stats, sessions });
