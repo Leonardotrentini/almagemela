@@ -679,6 +679,12 @@ body {
   opacity: 0;
   pointer-events: none;
 }
+#slide-offer .offer-wrap.hidden,
+#slide-offer .guar-soft.hidden {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+}
 @keyframes btnHiloPulse {
   0%, 100% { transform: scale(1); box-shadow: 0 8px 24px rgba(139,0,0,.45); }
   50% { transform: scale(1.03); box-shadow: 0 12px 28px rgba(139,0,0,.7); }
@@ -1185,7 +1191,7 @@ body {
           <wistia-player media-id="7inld7rbw4" seo="false" aspect="0.5625"></wistia-player>
         </div>
         <button type="button" id="btn-vsl-cta" class="hidden" onclick="goCheckout(event)">VER MI CONSULTA COMPLETA - $9</button>
-        <div class="offer-wrap">
+        <div class="offer-wrap hidden" id="offer-card">
           <div class="offer-glow" aria-hidden="true"></div>
           <div class="offer-box">
             <div class="offer-badge">🔥 OFERTA DE HOY · 94% OFF</div>
@@ -1252,7 +1258,7 @@ body {
             </div>
           </div>
         </div>
-        <div class="guar-soft">
+        <div class="guar-soft hidden">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span>Garantía de 7 días · Si no resuena contigo, te devolvemos el 100% sin preguntas</span>
         </div>
@@ -1475,7 +1481,6 @@ function goToSlide(n) {
   }
 
   if (n === 19) {
-    startOfferTimer();
     bindVslCta();
   }
 
@@ -1697,28 +1702,58 @@ function startOfferTimer() {
   tick();
   window._offerTimer = setInterval(tick, 1000);
 }
-function bindVslCta() {
-  if (window._vslBound) return;
-  window._vslBound = true;
-  window._wq = window._wq || [];
-  _wq.push({ id: "7inld7rbw4", onReady: function(video) {
-    video.bind("secondchange", function(s) {
-      if (s >= 70) {
-        const btn = document.getElementById('btn-vsl-cta');
-        if (btn && btn.classList.contains('hidden')) {
-          btn.classList.remove('hidden');
-          btn.style.opacity = '0';
-          btn.style.pointerEvents = 'none';
-          setTimeout(() => {
-            btn.style.transition = 'opacity 0.6s';
-            btn.style.opacity = '1';
-            btn.style.pointerEvents = 'auto';
-            btn.classList.add('btn-hilo');
-          }, 100);
-        }
-      }
+function revealVslEl(el, after) {
+  if (!el || !el.classList.contains('hidden')) return false;
+  el.classList.remove('hidden');
+  el.style.opacity = '0';
+  el.style.pointerEvents = 'none';
+  setTimeout(() => {
+    el.style.transition = 'opacity 0.6s';
+    el.style.opacity = '1';
+    el.style.pointerEvents = 'auto';
+    if (after) after(el);
+  }, 100);
+  return true;
+}
+function onVslSecond(s) {
+  s = Math.floor(Number(s) || 0);
+  if (s >= 45) {
+    const wrap = document.getElementById('offer-card');
+    const guar = document.querySelector('#slide-offer .guar-soft');
+    if (wrap && wrap.classList.contains('hidden')) {
+      revealVslEl(wrap);
+      revealVslEl(guar);
+      startOfferTimer();
+    }
+  }
+  if (s >= 70) {
+    revealVslEl(document.getElementById('btn-vsl-cta'), function(btn) {
+      btn.classList.add('btn-hilo');
     });
-  }});
+    if (window._vslPlayWatch) {
+      clearInterval(window._vslPlayWatch);
+      window._vslPlayWatch = null;
+    }
+  }
+}
+function bindVslCta() {
+  const player = document.querySelector('#slide-offer wistia-player');
+  if (!player || player._vslBound) return;
+  player._vslBound = true;
+
+  player.addEventListener('second-change', function(e) {
+    const s = (e && e.detail && e.detail.second != null) ? e.detail.second : 0;
+    onVslSecond(s);
+  });
+  player.addEventListener('time-update', function() {
+    onVslSecond(player.currentTime);
+  });
+  player.addEventListener('play', function() {
+    if (window._vslPlayWatch) return;
+    window._vslPlayWatch = setInterval(function() {
+      onVslSecond(player.currentTime);
+    }, 400);
+  });
 }
 function goCheckout(e) {
   if (e) e.preventDefault();
