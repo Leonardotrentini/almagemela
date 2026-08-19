@@ -176,9 +176,7 @@ function funnelKey(status) {
 function vslLabel(r) {
   if (r.vsl_offer_shown) return { text: 'vió oferta · ' + (r.vsl_seconds || 45) + 's', cls: 'vsl_offer' };
   if (r.vsl_started) return { text: 'play · ' + (r.vsl_seconds || 0) + 's', cls: 'vsl_play' };
-  if (r.vsl_page || (r.max_step || 0) >= 19 || (r.current_step || 0) >= 19) {
-    return { text: 'en página, sin play', cls: 'vsl_page' };
-  }
+  if (r.vsl_page) return { text: 'en página, sin play', cls: 'vsl_page' };
   return { text: 'no llegó', cls: 'vsl_no' };
 }
 

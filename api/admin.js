@@ -22,6 +22,22 @@ function checkAuth(req) {
   return { ok: given && given === expected, reason: 'Senha inválida' };
 }
 
+const ADMIN_TZ = 'America/Sao_Paulo';
+
+function dateInTz(iso, tz) {
+  if (!iso) return '';
+  try {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(iso));
+  } catch (e) {
+    return '';
+  }
+}
+
+function isTodayInTz(iso, tz) {
+  if (!iso) return false;
+  return dateInTz(iso, tz) === dateInTz(new Date().toISOString(), tz);
+}
+
 function vslFromRow(row, answers) {
   const a = answers || row.answers || {};
   const v = a.vsl || (a._meta && a._meta.vsl) || {};
@@ -142,10 +158,9 @@ module.exports = async function handler(req, res) {
   sessions.sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
   sessions = sessions.slice(0, limit);
 
-  const today = new Date().toISOString().slice(0, 10);
   const stats = {
     total: sessions.length,
-    today: sessions.filter((r) => String(r.created_at || r.updated_at || '').startsWith(today)).length,
+    today: sessions.filter((r) => isTodayInTz(r.updated_at || r.created_at, ADMIN_TZ)).length,
     reading: sessions.filter((r) => r.status === 'reading' || (r.max_step || 0) >= 19).length,
     checkout: sessions.filter((r) => r.status === 'checkout').length,
     purchased: sessions.filter((r) => r.status === 'purchased').length,
