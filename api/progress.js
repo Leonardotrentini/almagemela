@@ -113,13 +113,15 @@ module.exports = async function handler(req, res) {
       ...answersIn,
       vsl: mergeVsl(prevAnswers.vsl, answersIn.vsl),
     };
+    const prevStep = parseInt(existingQs && existingQs.current_step, 10) || 0;
+    const storedStep = currentStep >= prevStep ? currentStep : prevStep;
     const maxStep = Math.max(
       parseInt(existingQs && existingQs.max_step, 10) || 0,
-      parseInt(existingQs && existingQs.current_step, 10) || 0,
+      prevStep,
       currentStep
     );
     const nextStatus = pickStatus(statusWanted, existingQs && existingQs.status, rank);
-    const nextLabel = (currentStep >= (parseInt(existingQs && existingQs.current_step, 10) || 0))
+    const nextLabel = (currentStep >= prevStep)
       ? (stepLabel || (existingQs && existingQs.step_label) || null)
       : ((existingQs && existingQs.step_label) || stepLabel);
 
@@ -128,7 +130,7 @@ module.exports = async function handler(req, res) {
       ip: ip || (existingQs && existingQs.ip) || null,
       name: name || (existingQs && existingQs.name) || null,
       birth_date: birthDate || (existingQs && existingQs.birth_date) || null,
-      current_step: currentStep,
+      current_step: storedStep,
       max_step: maxStep,
       step_label: nextLabel,
       card: card || (existingQs && existingQs.card) || null,
@@ -160,7 +162,7 @@ module.exports = async function handler(req, res) {
         storage: 'quiz_sessions',
         id: row?.id,
         visitor_id: visitorId,
-        current_step: currentStep,
+        current_step: storedStep,
         max_step: maxStep,
         status: nextStatus,
         vsl: mergedAnswers.vsl,
@@ -188,11 +190,12 @@ module.exports = async function handler(req, res) {
 
     const prevMeta = (existing?.answers && existing.answers._meta) || {};
     const prevStatus = prevMeta.status || 'started';
-    const nextStatus = pickStatus(statusWanted, prevStatus, rank);
-
-    const maxStep = Math.max(prevMeta.max_step || 0, currentStep, prevMeta.current_step || 0);
+    const leadStatus = pickStatus(statusWanted, prevStatus, rank);
+    const leadPrevStep = parseInt(prevMeta.current_step, 10) || 0;
+    const leadStoredStep = currentStep >= leadPrevStep ? currentStep : leadPrevStep;
+    const leadMaxStep = Math.max(prevMeta.max_step || 0, currentStep, leadPrevStep);
     const prevVsl = (existing?.answers && existing.answers.vsl) || prevMeta.vsl || {};
-    const mergedAnswers = {
+    const leadAnswers = {
       ...(existing?.answers || {}),
       ...answersIn,
       vsl: mergeVsl(prevVsl, answersIn.vsl),
@@ -200,20 +203,21 @@ module.exports = async function handler(req, res) {
         visitor_id: visitorId,
         ip: ip || prevMeta.ip || null,
         birth_date: birthDate || prevMeta.birth_date || null,
-        current_step: currentStep || prevMeta.current_step || 0,
-        max_step: maxStep,
-        step_label: stepLabel || prevMeta.step_label || null,
-        status: nextStatus,
+        current_step: leadStoredStep,
+        max_step: leadMaxStep,
+        step_label: currentStep >= leadPrevStep
+          ? (stepLabel || prevMeta.step_label || null)
+          : (prevMeta.step_label || stepLabel),
+        status: leadStatus,
         last_event: lastEvent || prevMeta.last_event || null,
         user_agent: userAgent || prevMeta.user_agent || null,
         vsl: mergeVsl(prevVsl, answersIn.vsl),
         updated_at: new Date().toISOString(),
       },
     };
-    // não vazar meta antiga sobrescrita
-    delete mergedAnswers.name;
-    delete mergedAnswers.email;
-    delete mergedAnswers.phone;
+    delete leadAnswers.name;
+    delete leadAnswers.email;
+    delete leadAnswers.phone;
 
     const leadPayload = {
       name: name || existing?.name || 'Anónimo',
@@ -221,7 +225,7 @@ module.exports = async function handler(req, res) {
       phone: ip || existing?.phone || null,
       optin: false,
       card: card || existing?.card || null,
-      answers: mergedAnswers,
+      answers: leadAnswers,
       source: 'almagemela_progress',
       user_agent: userAgent || existing?.user_agent || null,
     };
@@ -259,8 +263,9 @@ module.exports = async function handler(req, res) {
       storage: 'leads',
       id: row?.id,
       visitor_id: visitorId,
-      current_step: maxStep,
-      status: nextStatus,
+      current_step: leadStoredStep,
+      max_step: leadMaxStep,
+      status: leadStatus,
     });
   } catch (err) {
     console.error('Progress API error:', err);
