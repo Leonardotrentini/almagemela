@@ -1811,13 +1811,6 @@ function goCheckout(e) {
   if (e) e.preventDefault();
   const url = hotmartUrl(HOTMART_MAIN_URL);
   trackProgress({ event: 'checkout_9', status: 'checkout', current_step: 19, step_label: 'Checkout $9', immediate: true });
-  metaTrack('InitiateCheckout', {
-    value: 9, currency: 'USD',
-    content_name: 'Lectura Completa $9',
-    content_ids: ['J107108736M'],
-    content_type: 'product', num_items: 1,
-    eventID: metaEventId('ic9')
-  });
   setTimeout(function() { window.location.href = url; }, 120);
 }
 
