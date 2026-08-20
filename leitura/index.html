@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<!-- saved from url=(0081)file:///C:/Users/Leonardo%20trentini/Downloads/consulta-hilo-rojo-v3-final_1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Almagemela · Tu Mapa Completo del Hilo Rojo - V3 Final</title>
+<script src="./leitura_files/saved_resource"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./leitura_files/css2" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{colors:{
+noche:'#0A0A0F',arena:'#F5E6D3',hilo:'#8B0000',hiloGlow:'#C41E3A',
+purpura:'#5B2D8E',purpuraClaro:'#8B5FC7',purpuraSuave:'#2A1548',
+oro:'#C9A15A',oroClaro:'#E8CFA0'
+},fontFamily:{display:['"Playfair Display"','serif'],body:['Inter','sans-serif']}}}}
+</script>
+<style>
+*{-webkit-tap-highlight-color:transparent;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#0A0A0F;color:#F5E6D3;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overscroll-behavior-y:none;margin:0}
+
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{position:absolute;border-radius:9999px;background:#F5E6D3;opacity:.12;animation:twinkle 5s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.05}50%{opacity:.28}}
+
+.screen{display:none;position:relative;z-index:1;min-height:100dvh}
+.screen.active{display:flex;flex-direction:column}
+
+/* Cards */
+.card-slot{perspective:1200px}
+.tarot-card{position:relative;width:100%;aspect-ratio:2.8/5;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.22,.7,.18,1);cursor:pointer}
+.tarot-card.flipped{transform:rotateY(180deg)}
+.tarot-card.locked{pointer-events:none;opacity:.5}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;overflow:hidden}
+.card-front{transform:rotateY(180deg)}
+.card-back{background:radial-gradient(ellipse at 50% 30%,rgba(139,95,199,.3),transparent 65%),linear-gradient(160deg,#3A1D63,#241040 55%,#170A2C);border:1.5px solid rgba(201,161,90,.5);box-shadow:inset 0 0 30px rgba(0,0,0,.5),0 6px 20px rgba(0,0,0,.5)}
+.card-glow{animation:cardGlow 2.8s ease-in-out infinite}
+@keyframes cardGlow{0%,100%{box-shadow:0 0 10px rgba(196,30,58,.12),inset 0 0 28px rgba(0,0,0,.5)}50%{box-shadow:0 0 22px rgba(196,30,58,.4),inset 0 0 28px rgba(0,0,0,.5)}}
+.card-front-face{background:linear-gradient(170deg,#14090A,#0F0810);border:1.5px solid rgba(201,161,90,.55);box-shadow:0 8px 28px rgba(0,0,0,.55)}
+.card-label{font-family:'Playfair Display',serif;letter-spacing:.16em;font-size:9px;color:#E8CFA0}
+
+/* Hilo */
+.hilo-svg{fill:none;stroke:#8B0000;stroke-width:2;filter:drop-shadow(0 0 6px rgba(196,30,58,.6))}
+.hilo-anim{stroke-dasharray:1600;stroke-dashoffset:1600;animation:drawHilo 3s ease-out forwards}
+@keyframes drawHilo{to{stroke-dashoffset:0}}
+.hilo-pulse{animation:hiloPulse 3s ease-in-out infinite}
+@keyframes hiloPulse{0%,100%{filter:drop-shadow(0 0 4px rgba(196,30,58,.35))}50%{filter:drop-shadow(0 0 14px rgba(196,30,58,.85))}}
+
+/* Buttons */
+.btn-oro{background:linear-gradient(180deg,#E0BE7E,#C9A15A 55%,#A9813F);color:#241040;font-weight:700;letter-spacing:.04em;border-radius:9999px;box-shadow:0 6px 22px rgba(201,161,90,.3),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .15s}
+.btn-oro:active{transform:scale(.97)}
+.btn-hilo{background:linear-gradient(180deg,#A31226,#8B0000 60%,#5E0000);color:#F5E6D3;font-weight:700;border:1px solid rgba(232,207,160,.4);border-radius:9999px;box-shadow:0 8px 24px rgba(139,0,0,.45);animation:btnPulse 2.4s ease-in-out infinite}
+@keyframes btnPulse{0%,100%{box-shadow:0 8px 18px rgba(139,0,0,.35)}50%{box-shadow:0 8px 32px rgba(196,30,58,.7)}}
+
+/* Roadmap */
+.roadmap-line{position:absolute;left:20px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#8B0000,#5B2D8E 60%,rgba(91,45,142,.1))}
+.roadmap-dot{position:absolute;left:12px;width:18px;height:18px;border-radius:9999px;border:2px solid #C9A15A;background:#0A0A0F;z-index:2;display:flex;align-items:center;justify-content:center}
+.roadmap-dot-inner{width:6px;height:6px;border-radius:9999px;background:#C41E3A}
+.rm-section{padding-left:52px;position:relative;opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.rm-section.visible{opacity:1;transform:none}
+
+.quote-box{border-left:2px solid rgba(201,161,90,.45);background:rgba(91,45,142,.1)}
+.eyebrow{color:#C9A15A;letter-spacing:.22em;font-size:11px;font-weight:600;text-transform:uppercase}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(201,161,90,.5),transparent)}
+.progress-track{background:rgba(245,230,211,.1);border-radius:9999px;overflow:hidden}
+.progress-fill{background:linear-gradient(90deg,#8B0000,#C41E3A);height:100%;width:0%;transition:width .5s ease;box-shadow:0 0 10px rgba(196,30,58,.7)}
+
+/* Profile card */
+.profile-card{background:linear-gradient(170deg,#1A0D2E,#0F0818);border:1.5px solid rgba(201,161,90,.4);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+.profile-stat{background:rgba(91,45,142,.15);border:1px solid rgba(201,161,90,.2);border-radius:10px}
+
+/* Bonus badge */
+.bonus-badge{background:linear-gradient(135deg,#C9A15A,#A9813F);color:#241040;font-size:10px;font-weight:700;letter-spacing:.15em;padding:3px 12px;border-radius:9999px;display:inline-block}
+
+/* Anims */
+.vela{transform-origin:50% 100%;animation:chama 1.5s ease-in-out infinite}
+@keyframes chama{0%,100%{transform:scaleY(1) rotate(-1deg)}50%{transform:scaleY(1.14) rotate(1.5deg)}}
+.nudo{animation:nudo 4s ease-in-out infinite}
+@keyframes nudo{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.float{animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.shimmer{animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{0%,100%{opacity:.6}50%{opacity:1}}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.bottom-0{bottom:0px}.left-0{left:0px}.left-2{left:0.5rem}.right-0{right:0px}.right-2{right:0.5rem}.top-0{top:0px}.top-1\/2{top:50%}.z-10{z-index:10}.mx-auto{margin-left:auto;margin-right:auto}.my-4{margin-top:1rem;margin-bottom:1rem}.my-5{margin-top:1.25rem;margin-bottom:1.25rem}.mb-0\.5{margin-bottom:0.125rem}.mb-1{margin-bottom:0.25rem}.mb-12{margin-bottom:3rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mt-0\.5{margin-top:0.125rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-auto{margin-top:auto}.flex{display:flex}.grid{display:grid}.hidden{display:none}.aspect-square{aspect-ratio:1 / 1}.h-1{height:0.25rem}.h-1\.5{height:0.375rem}.h-10{height:2.5rem}.h-11{height:2.75rem}.h-12{height:3rem}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-20{height:5rem}.h-7{height:1.75rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-full{height:100%}.min-h-\[3\.5rem\]{min-height:3.5rem}.min-h-\[80dvh\]{min-height:80dvh}.w-11{width:2.75rem}.w-12{width:3rem}.w-2\.5{width:0.625rem}.w-3\/4{width:75%}.w-7{width:1.75rem}.w-9{width:2.25rem}.w-full{width:100%}.min-w-0{min-width:0px}.max-w-\[220px\]{max-width:220px}.max-w-md{max-width:28rem}.max-w-xs{max-width:20rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.grid-cols-7{grid-template-columns:repeat(7, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-0\.5{gap:0.125rem}.gap-1{gap:0.25rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-3\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.875rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.875rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-\[rgba\(201\2c 161\2c 90\2c \.1\)\] > :not([hidden]) ~ :not([hidden]){border-color:rgba(201,161,90,.1)}.overflow-hidden{overflow:hidden}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.rounded-r-xl{border-top-right-radius:0.75rem;border-bottom-right-radius:0.75rem}.border{border-width:1px}.border-oro\/50{border-color:rgb(201 161 90 / 0.5)}.border-oro\/55{border-color:rgb(201 161 90 / 0.55)}.bg-arena\/10{background-color:rgb(245 230 211 / 0.1)}.bg-noche\/95{background-color:rgb(10 10 15 / 0.95)}.object-cover{object-fit:cover}.p-1\.5{padding:0.375rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.pb-1{padding-bottom:0.25rem}.pb-1\.5{padding-bottom:0.375rem}.pb-12{padding-bottom:3rem}.pb-14{padding-bottom:3.5rem}.pb-3{padding-bottom:0.75rem}.pb-4{padding-bottom:1rem}.pt-10{padding-top:2.5rem}.pt-5{padding-top:1.25rem}.pt-8{padding-top:2rem}.text-left{text-align:left}.text-center{text-align:center}.font-display{font-family:"Playfair Display", serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-\[10\.5px\]{font-size:10.5px}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[12\.5px\]{font-size:12.5px}.text-\[12px\]{font-size:12px}.text-\[13\.5px\]{font-size:13.5px}.text-\[13px\]{font-size:13px}.text-\[14\.5px\]{font-size:14.5px}.text-\[14px\]{font-size:14px}.text-\[15px\]{font-size:15px}.text-\[16px\]{font-size:16px}.text-\[17px\]{font-size:17px}.text-\[22px\]{font-size:22px}.text-\[24px\]{font-size:24px}.text-\[28px\]{font-size:28px}.text-\[8px\]{font-size:8px}.text-lg{font-size:1.125rem;line-height:1.75rem}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.italic{font-style:italic}.not-italic{font-style:normal}.leading-\[1\.25\]{line-height:1.25}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.tracking-\[\.28em\]{letter-spacing:.28em}.tracking-\[\.2em\]{letter-spacing:.2em}.tracking-\[\.32em\]{letter-spacing:.32em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-arena{--tw-text-opacity:1;color:rgb(245 230 211 / var(--tw-text-opacity, 1))}.text-arena\/30{color:rgb(245 230 211 / 0.3)}.text-arena\/35{color:rgb(245 230 211 / 0.35)}.text-arena\/40{color:rgb(245 230 211 / 0.4)}.text-arena\/50{color:rgb(245 230 211 / 0.5)}.text-arena\/55{color:rgb(245 230 211 / 0.55)}.text-arena\/65{color:rgb(245 230 211 / 0.65)}.text-arena\/80{color:rgb(245 230 211 / 0.8)}.text-arena\/85{color:rgb(245 230 211 / 0.85)}.text-arena\/90{color:rgb(245 230 211 / 0.9)}.text-hiloGlow{--tw-text-opacity:1;color:rgb(196 30 58 / var(--tw-text-opacity, 1))}.text-oro{--tw-text-opacity:1;color:rgb(201 161 90 / var(--tw-text-opacity, 1))}.text-oroClaro{--tw-text-opacity:1;color:rgb(232 207 160 / var(--tw-text-opacity, 1))}.text-oroClaro\/50{color:rgb(232 207 160 / 0.5)}.opacity-0{opacity:0}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-500{transition-duration:500ms}.ease-out{transition-timing-function:cubic-bezier(0, 0, 0.2, 1)}</style></head>
+<body>
+<div class="stars" id="stars"><div class="star" style="width: 1.40121px; height: 1.40121px; left: 24.3029%; top: 83.0781%; animation-delay: 3.10739s;"></div><div class="star" style="width: 2.41701px; height: 2.41701px; left: 11.7784%; top: 70.5548%; animation-delay: 5.35533s;"></div><div class="star" style="width: 1.55763px; height: 1.55763px; left: 15.9131%; top: 23.8053%; animation-delay: 4.14785s;"></div><div class="star" style="width: 2.64939px; height: 2.64939px; left: 38.7775%; top: 47.4055%; animation-delay: 1.45079s;"></div><div class="star" style="width: 1.23284px; height: 1.23284px; left: 45.9543%; top: 22.8239%; animation-delay: 5.36435s;"></div><div class="star" style="width: 1.12332px; height: 1.12332px; left: 86.465%; top: 90.5306%; animation-delay: 3.58121s;"></div><div class="star" style="width: 1.07158px; height: 1.07158px; left: 89.8824%; top: 18.5293%; animation-delay: 4.57568s;"></div><div class="star" style="width: 1.88711px; height: 1.88711px; left: 93.3001%; top: 37.172%; animation-delay: 3.53886s;"></div><div class="star" style="width: 2.5398px; height: 2.5398px; left: 12.8862%; top: 91.7944%; animation-delay: 4.55996s;"></div><div class="star" style="width: 1.31805px; height: 1.31805px; left: 49.9407%; top: 58.7699%; animation-delay: 2.17866s;"></div><div class="star" style="width: 1.94795px; height: 1.94795px; left: 57.3459%; top: 11.1576%; animation-delay: 5.04231s;"></div><div class="star" style="width: 1.94001px; height: 1.94001px; left: 72.9201%; top: 70.2532%; animation-delay: 5.74448s;"></div><div class="star" style="width: 1.84685px; height: 1.84685px; left: 31.5167%; top: 53.5059%; animation-delay: 5.7366s;"></div><div class="star" style="width: 1.23384px; height: 1.23384px; left: 79.0187%; top: 39.2646%; animation-delay: 2.04883s;"></div><div class="star" style="width: 1.87549px; height: 1.87549px; left: 33.496%; top: 92.6789%; animation-delay: 0.678279s;"></div><div class="star" style="width: 2.50706px; height: 2.50706px; left: 70.8017%; top: 80.1461%; animation-delay: 3.45502s;"></div><div class="star" style="width: 1.83283px; height: 1.83283px; left: 63.4019%; top: 48.4769%; animation-delay: 2.25126s;"></div><div class="star" style="width: 1.62484px; height: 1.62484px; left: 91.1327%; top: 53.9767%; animation-delay: 3.17429s;"></div><div class="star" style="width: 1.96802px; height: 1.96802px; left: 0.425361%; top: 33.6431%; animation-delay: 4.60146s;"></div><div class="star" style="width: 2.52278px; height: 2.52278px; left: 19.551%; top: 70.3789%; animation-delay: 1.26272s;"></div><div class="star" style="width: 1.17765px; height: 1.17765px; left: 47.7268%; top: 7.22129%; animation-delay: 1.93845s;"></div><div class="star" style="width: 1.90227px; height: 1.90227px; left: 12.634%; top: 29.0822%; animation-delay: 5.52415s;"></div><div class="star" style="width: 1.38147px; height: 1.38147px; left: 69.3674%; top: 49.756%; animation-delay: 4.01361s;"></div><div class="star" style="width: 0.98339px; height: 0.98339px; left: 92.9481%; top: 32.6721%; animation-delay: 3.72571s;"></div><div class="star" style="width: 1.27818px; height: 1.27818px; left: 20.6953%; top: 26.9595%; animation-delay: 3.64663s;"></div><div class="star" style="width: 1.16722px; height: 1.16722px; left: 12.4134%; top: 76.1708%; animation-delay: 5.68886s;"></div><div class="star" style="width: 2.37949px; height: 2.37949px; left: 38.9381%; top: 38.6952%; animation-delay: 2.68998s;"></div><div class="star" style="width: 1.3231px; height: 1.3231px; left: 41.8074%; top: 64.9908%; animation-delay: 4.93584s;"></div><div class="star" style="width: 2.4088px; height: 2.4088px; left: 26.0386%; top: 18.6378%; animation-delay: 0.496999s;"></div><div class="star" style="width: 2.60628px; height: 2.60628px; left: 34.0967%; top: 47.0932%; animation-delay: 4.53195s;"></div><div class="star" style="width: 2.53056px; height: 2.53056px; left: 38.271%; top: 51.9622%; animation-delay: 4.62119s;"></div><div class="star" style="width: 2.30971px; height: 2.30971px; left: 25.2944%; top: 59.0491%; animation-delay: 1.56577s;"></div><div class="star" style="width: 2.24557px; height: 2.24557px; left: 49.5899%; top: 35.8264%; animation-delay: 4.51669s;"></div><div class="star" style="width: 1.2099px; height: 1.2099px; left: 84.9023%; top: 56.4241%; animation-delay: 3.84457s;"></div><div class="star" style="width: 2.52772px; height: 2.52772px; left: 22.9983%; top: 69.9195%; animation-delay: 4.06288s;"></div><div class="star" style="width: 2.1568px; height: 2.1568px; left: 16.4523%; top: 74.6047%; animation-delay: 3.75605s;"></div><div class="star" style="width: 1.81658px; height: 1.81658px; left: 83.559%; top: 32.574%; animation-delay: 4.7562s;"></div><div class="star" style="width: 1.11228px; height: 1.11228px; left: 93.0997%; top: 35.3179%; animation-delay: 2.56003s;"></div><div class="star" style="width: 2.60778px; height: 2.60778px; left: 44.8725%; top: 87.4819%; animation-delay: 3.94014s;"></div><div class="star" style="width: 1.08578px; height: 1.08578px; left: 57.0502%; top: 26.3218%; animation-delay: 5.29223s;"></div><div class="star" style="width: 2.18796px; height: 2.18796px; left: 90.1673%; top: 49.0435%; animation-delay: 3.2969s;"></div><div class="star" style="width: 1.84589px; height: 1.84589px; left: 34.7306%; top: 14.6485%; animation-delay: 1.3472s;"></div><div class="star" style="width: 1.49061px; height: 1.49061px; left: 92.5964%; top: 91.1273%; animation-delay: 2.3613s;"></div><div class="star" style="width: 2.10184px; height: 2.10184px; left: 4.72761%; top: 41.673%; animation-delay: 4.38825s;"></div><div class="star" style="width: 0.918367px; height: 0.918367px; left: 39.7645%; top: 81.6172%; animation-delay: 3.47795s;"></div><div class="star" style="width: 0.874985px; height: 0.874985px; left: 8.6514%; top: 15.4762%; animation-delay: 4.11606s;"></div><div class="star" style="width: 2.18511px; height: 2.18511px; left: 64.5417%; top: 38.4584%; animation-delay: 1.55128s;"></div><div class="star" style="width: 1.02778px; height: 1.02778px; left: 31.2058%; top: 15.3079%; animation-delay: 3.08463s;"></div><div class="star" style="width: 0.908711px; height: 0.908711px; left: 53.3849%; top: 12.7573%; animation-delay: 5.69941s;"></div><div class="star" style="width: 1.48144px; height: 1.48144px; left: 7.17892%; top: 90.4673%; animation-delay: 5.37069s;"></div></div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 1 · CONSULTA — 3 CARTAS
+═══════════════════════════════════════ -->
+<section id="screen-consulta" class="screen active items-center px-5 pb-12">
+  <header class="pt-8 pb-1 flex flex-col items-center gap-1">
+    <svg width="64" height="48" viewBox="0 0 120 90" aria-hidden="true"><defs><lineargradient id="gP" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B5FC7"></stop><stop offset="1" stop-color="#4A2478"></stop></lineargradient></defs><path d="M46 22A28 28 0 1 0 46 70A22 22 0 1 1 46 22Z" fill="url(#gP)" stroke="#C9A15A" stroke-width="1.8"></path><path d="M74 22A28 28 0 1 1 74 70A22 22 0 1 0 74 22Z" fill="url(#gP)" stroke="#C9A15A" stroke-width="1.8"></path><path d="M60 62C50 52 48 44 54 40C58 37 60 41 60 43C60 41 62 37 66 40C72 44 70 52 60 62Z" fill="url(#gP)" stroke="#C9A15A" stroke-width="1.8"></path><path d="M60 4L62.5 12 70 14 62.5 16 60 24 57.5 16 50 14 57.5 12Z" fill="#8B5FC7" stroke="#C9A15A" stroke-width=".8"></path></svg>
+    <p class="font-display text-oro text-[11px] tracking-[.32em] uppercase">Almagemela</p>
+  </header>
+
+  <svg class="w-full max-w-md h-8 mt-1" viewBox="0 0 400 32" preserveAspectRatio="none" aria-hidden="true"><path class="hilo-svg hilo-anim hilo-pulse" d="M0,16C80,2 160,30 240,16S360,2 400,18"></path></svg>
+
+  <div class="w-full max-w-md text-center mt-4">
+    <h1 class="font-display text-[28px] leading-[1.25] font-semibold"><span data-nombre="" class="text-oroClaro">Prepárate para tu verdad</span>, tu mesa está abierta.</h1>
+    <p class="font-display italic text-[17px] text-arena/80 mt-2">Martha dejó tus 3 cartas aquí.</p>
+    <p class="mt-3 text-[13px] text-arena/50 leading-relaxed max-w-xs mx-auto">Toca cada carta para revelar lo que canalizó sobre tu Hilo Rojo. Tu lectura simbólica comienza ahora.</p>
+  </div>
+
+  <!-- 3 Cards -->
+  <div class="w-full max-w-md grid grid-cols-3 gap-3 mt-7 px-2">
+    <!-- Card 1 -->
+    <div class="card-slot"><div class="tarot-card" id="c1" role="button" tabindex="0">
+      <div class="card-face card-back card-glow flex flex-col items-center justify-center gap-1"><svg width="50%" viewBox="0 0 80 120"><path d="M30 34A18 18 0 1 0 30 72A14 14 0 1 1 30 34Z" fill="none" stroke="#C9A15A" stroke-width="1.5" opacity=".7"></path><path d="M50 34A18 18 0 1 1 50 72A14 14 0 1 0 50 34Z" fill="none" stroke="#C9A15A" stroke-width="1.5" opacity=".7"></path><path d="M40 16L41.5 21 47 23 41.5 25 40 30 38.5 25 33 23 38.5 21Z" fill="#C9A15A" opacity=".8"></path></svg><span class="text-[8px] text-oroClaro/50 tracking-[.2em]">I</span></div>
+      <div class="card-face card-front card-front-face flex flex-col"><div class="flex-1 flex items-center justify-center p-1.5"><svg viewBox="0 0 100 140" class="w-full h-full"><defs><radialgradient id="l1" cx="50%" cy="35%" r="70%"><stop offset="0" stop-color="rgba(232,207,160,.18)"></stop><stop offset="1" stop-color="transparent"></stop></radialgradient></defs><rect width="100" height="140" fill="url(#l1)"></rect><g stroke="#C9A15A" stroke-width="2.2" stroke-linecap="round" opacity=".9"><line x1="28" y1="24" x2="42" y2="110"></line><line x1="34" y1="22" x2="46" y2="110"></line><line x1="40" y1="20" x2="50" y2="110"></line><line x1="46" y1="19" x2="54" y2="110"></line><line x1="52" y1="19" x2="58" y2="110"></line><line x1="58" y1="20" x2="62" y2="110"></line><line x1="64" y1="22" x2="66" y2="110"></line><line x1="70" y1="24" x2="70" y2="110"></line><line x1="76" y1="27" x2="74" y2="110"></line><line x1="82" y1="31" x2="78" y2="110"></line></g><path d="M24 116Q30 90 44 82Q50 78 52 84Q54 90 48 96Q38 106 34 116Z" fill="#5B2D8E" opacity=".85"></path><circle cx="50" cy="78" r="5.5" fill="#5B2D8E"></circle></svg></div><div class="card-label text-center pb-1.5">DIEZ DE BASTOS</div></div>
+    </div></div>
+    <!-- Card 2 -->
+    <div class="card-slot"><div class="tarot-card" id="c2" role="button" tabindex="0">
+      <div class="card-face card-back card-glow flex flex-col items-center justify-center gap-1" style="animation-delay:.5s"><svg width="50%" viewBox="0 0 80 120"><path d="M30 34A18 18 0 1 0 30 72A14 14 0 1 1 30 34Z" fill="none" stroke="#C9A15A" stroke-width="1.5" opacity=".7"></path><path d="M50 34A18 18 0 1 1 50 72A14 14 0 1 0 50 34Z" fill="none" stroke="#C9A15A" stroke-width="1.5" opacity=".7"></path><path d="M40 16L41.5 21 47 23 41.5 25 40 30 38.5 25 33 23 38.5 21Z" fill="#C9A15A" opacity=".8"></path></svg><span class="text-[8px] text-oroClaro/50 tracking-[.2em]">II</span></div>
+      <div class="card-face card-front card-front-face flex flex-col"><div class="flex-1 flex items-center justify-center p-1.5"><svg viewBox="0 0 100 140" class="w-full h-full"><defs><radialgradient id="l2" cx="50%" cy="65%" r="70%"><stop offset="0" stop-color="rgba(139,95,199,.18)"></stop><stop offset="1" stop-color="transparent"></stop></radialgradient></defs><rect width="100" height="140" fill="url(#l2)"></rect><g transform="rotate(180 50 70)"><path d="M26 110Q30 90 44 86Q58 82 64 90Q72 82 76 86Q80 90 74 94Q78 102 70 110Z" fill="#5B2D8E" opacity=".85"></path><circle cx="56" cy="68" r="5.5" fill="#5B2D8E"></circle><path d="M40 56Q40 64 47 64Q54 64 54 56Z" fill="none" stroke="#C9A15A" stroke-width="2"></path><circle cx="44" cy="48" r="1.5" fill="#C41E3A"></circle><circle cx="49" cy="42" r="1.5" fill="#C41E3A"></circle><circle cx="46" cy="35" r="1.5" fill="#C41E3A"></circle></g></svg></div><div class="card-label text-center pb-1.5">CABALLERO · INV.</div></div>
+    </div></div>
+    <!-- Card 3 -->
+    <div class="card-slot"><div class="tarot-card locked" id="c3" role="button" tabindex="0">
+      <div class="card-face card-back card-glow flex flex-col items-center justify-center gap-1" style="animation-delay:1s"><svg width="50%" viewBox="0 0 80 120"><path d="M20 60C40 30 60 90 80 60M20 64C40 94 60 34 80 64" fill="none" stroke="#8B0000" stroke-width="2" filter="drop-shadow(0 0 4px rgba(196,30,58,.7))"></path><rect x="30" y="78" width="20" height="14" rx="3" fill="none" stroke="#C9A15A" stroke-width="1.5"></rect><path d="M34 78v-4a6 6 0 0 1 12 0v4" fill="none" stroke="#C9A15A" stroke-width="1.5"></path></svg><span class="text-[8px] text-oroClaro/50 tracking-[.2em]">III</span></div>
+      <div class="card-face card-front card-front-face flex flex-col"><div class="flex-1 flex items-center justify-center p-1.5"><svg viewBox="0 0 100 140" class="w-full h-full"><defs><radialgradient id="l3" cx="50%" cy="30%" r="65%"><stop offset="0" stop-color="rgba(232,207,160,.2)"></stop><stop offset="1" stop-color="transparent"></stop></radialgradient></defs><rect width="100" height="140" fill="url(#l3)"></rect><circle cx="50" cy="24" r="6" fill="#8B5FC7" opacity=".8"></circle><path d="M38 30Q50 18 62 30" fill="none" stroke="#C9A15A" stroke-width="1.2" opacity=".6"></path><g stroke="#E8CFA0" stroke-width=".8" opacity=".4"><line x1="50" y1="14" x2="50" y2="8"></line><line x1="42" y1="16" x2="38" y2="10"></line><line x1="58" y1="16" x2="62" y2="10"></line></g><circle cx="32" cy="72" r="5" fill="#5B2D8E"></circle><path d="M26 78L26 100M22 84L30 84" stroke="#5B2D8E" stroke-width="2.5" stroke-linecap="round"></path><circle cx="68" cy="72" r="5" fill="#5B2D8E"></circle><path d="M74 78L74 100M70 84L78 84" stroke="#5B2D8E" stroke-width="2.5" stroke-linecap="round"></path><path d="M34 88C42 78 58 98 66 88" fill="none" stroke="#C41E3A" stroke-width="2" filter="drop-shadow(0 0 4px rgba(196,30,58,.8))"></path><path d="M50 44C44 38 42 48 50 56C58 48 56 38 50 44Z" fill="#C41E3A" opacity=".7"></path></svg></div><div class="card-label text-center pb-1.5">LOS ENAMORADOS</div></div>
+    </div></div>
+  </div>
+
+  <!-- Card texts -->
+  <div id="c1-txt" class="w-full max-w-md mt-5 hidden"><div class="quote-box rounded-r-xl px-4 py-3"><p class="eyebrow mb-1">Primera carta</p><p class="text-[14.5px] leading-relaxed text-arena/90"><strong class="text-oroClaro" data-nombre="">Prepárate para tu verdad</strong>, esta carta no aparece para cualquiera. El Diez de Bastos es la mujer que carga todo sola desde 2023 — facturas, emociones, decisiones. <em class="text-hiloGlow">Tu Hilo se enredó aquí.</em></p></div></div>
+  <div id="c2-txt" class="w-full max-w-md mt-3 hidden"><div class="quote-box rounded-r-xl px-4 py-3"><p class="eyebrow mb-1">Segunda carta</p><p class="text-[14.5px] leading-relaxed text-arena/90">El Caballero de Copas invertido: alguien que siente algo real pero huye. Aparece y desaparece. Ofrece amor a medias. <em class="text-hiloGlow">Invertido = derrama lo que siente porque no sabe qué hacer con eso.</em></p></div></div>
+  <div id="c3-txt" class="w-full max-w-md mt-3 hidden"><div class="quote-box rounded-r-xl px-4 py-3" style="border-left-color:rgba(196,30,58,.6)"><p class="eyebrow mb-1" style="color:#C41E3A">Tercera carta revelada</p><p class="text-[14.5px] leading-relaxed text-arena/90"><strong>Los Enamorados.</strong> La carta que Martha no giró en tu video. Hay una conexión esperando — pero tu muro no la deja entrar. <strong class="text-oroClaro">Tu lectura completa explica todo.</strong></p></div></div>
+
+  <div id="cta-lectura" class="w-full max-w-md mt-7 hidden text-center">
+    <button id="btn-lectura" class="btn-oro w-full py-4 text-[15px]">ABRIR MI LECTURA COMPLETA →</button>
+    <p class="mt-2 text-[11px] text-arena/40">Lectura simbólica · 9 capítulos · ~12 min de lectura</p>
+  </div>
+
+  <footer class="mt-auto pt-8 w-full max-w-md"><p class="text-center text-[10.5px] text-arena/30 leading-relaxed">Lectura simbólica de autoconocimiento y entretenimiento basada en arquetipos del tarot. No sustituye asesoramiento profesional.</p></footer>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 2 · LOADING
+═══════════════════════════════════════ -->
+<section id="screen-loading" class="screen items-center justify-center px-6">
+  <svg class="w-full max-w-xs h-20" viewBox="0 0 300 70" preserveAspectRatio="none"><path class="hilo-svg hilo-anim" stroke-width="2.5" d="M0,35C50,8 100,62 150,35S250,8 300,38"></path></svg>
+  <p id="load-txt" class="font-display text-lg text-center mt-5 min-h-[3.5rem] transition-opacity duration-500">Preparando tu lectura...</p>
+  <div class="w-full max-w-xs mt-6"><div class="progress-track h-1.5"><div id="load-bar" class="progress-fill"></div></div></div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 3 · ROADMAP COMPLETO
+═══════════════════════════════════════ -->
+<section id="screen-roadmap" class="screen px-5 pb-14">
+
+  <header class="sticky top-0 z-10 bg-noche/95 backdrop-blur-sm pt-5 pb-3 max-w-md w-full mx-auto">
+    <div class="flex items-center justify-between"><p class="font-display text-oro text-[10px] tracking-[.28em] uppercase">Tu Lectura del Hilo Rojo</p><p id="rm-step" class="text-[10px] text-arena/40">1 / 9</p></div>
+    <div class="progress-track h-1 mt-2"><div id="rm-bar" class="progress-fill" style="width:11%"></div></div>
+  </header>
+
+  <div class="max-w-md w-full mx-auto mt-6 relative" id="roadmap-container">
+    <div class="roadmap-line"></div>
+
+    <!-- ═══ CAP 1 · PERFIL ENERGÉTICO ═══ -->
+    <div class="rm-section mb-12" data-rm="1">
+      <div class="roadmap-dot" style="top:4px"><div class="roadmap-dot-inner"></div></div>
+      <p class="eyebrow">Tu perfil energético</p>
+      <h2 class="font-display text-[22px] font-semibold mt-1 leading-snug">Quién eres según tus cartas</h2>
+      <div class="divider my-4"></div>
+
+      <!-- PROFILE CARD — screenshot moment -->
+      <div class="profile-card p-5 mb-5">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,#5B2D8E,#8B0000)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L14 9H21L15.5 13.5L17.5 20.5L12 16L6.5 20.5L8.5 13.5L3 9H10Z" fill="#E8CFA0"></path></svg>
+          </div>
+          <div>
+            <p class="font-display text-lg font-semibold text-oroClaro" data-nombre="">Prepárate para tu verdad</p>
+            <p class="text-[11px] text-arena/55">Lectura canalizada por Martha</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 mb-4">
+          <div class="profile-stat px-3 py-2.5 text-center">
+            <p class="text-[10px] text-arena/50 mb-0.5">Arquetipo</p>
+            <p class="text-[13px] font-semibold text-oroClaro">La Sostenedora</p>
+          </div>
+          <div class="profile-stat px-3 py-2.5 text-center">
+            <p class="text-[10px] text-arena/50 mb-0.5">Carta dominante</p>
+            <p class="text-[13px] font-semibold text-hiloGlow">Diez de Bastos</p>
+          </div>
+          <div class="profile-stat px-3 py-2.5 text-center">
+            <p class="text-[10px] text-arena/50 mb-0.5">Patrón desde</p>
+            <p class="text-[13px] font-semibold text-arena">2023</p>
+          </div>
+          <div class="profile-stat px-3 py-2.5 text-center">
+            <p class="text-[10px] text-arena/50 mb-0.5">Hilo Rojo</p>
+            <p class="text-[13px] font-semibold text-hiloGlow">Enredado</p>
+          </div>
+        </div>
+
+        <div class="profile-stat px-3 py-2.5 text-center">
+          <p class="text-[10px] text-arena/50 mb-0.5">Compatibilidad rara</p>
+          <div class="flex items-center justify-center gap-2">
+            <div class="h-2 flex-1 rounded-full bg-arena/10 overflow-hidden"><div class="h-full rounded-full" style="width:93%;background:linear-gradient(90deg,#8B0000,#C41E3A)"></div></div>
+            <p class="text-[13px] font-semibold text-oroClaro">93%</p>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-arena/40 text-center mt-3">Basado en tus respuestas del quiz y tus 3 cartas</p>
+      </div>
+
+      <div class="space-y-3 text-[15px] leading-relaxed text-arena/90">
+        <p><span data-nombre="" class="text-oroClaro font-medium">Prepárate para tu verdad</span>, de cada 100 mujeres que responden el quiz, solo 7 sacan estas tres cartas juntas. Diez de Bastos, Caballero de Copas invertido y Los Enamorados no aparecen combinadas por casualidad.</p>
+        <p>Esta combinación revela un arquetipo muy específico: <strong class="text-hiloGlow">La Sostenedora</strong>. La mujer que aprendió a dar tanto que su energía atrae a quien busca ser cargado, no a quien viene a quedarse como igual.</p>
+        <p>Pero aquí está lo que tu perfil también muestra: tu compatibilidad energética es altísima. Tu Hilo no está débil — <strong>está enredado en un nudo que se puede desatar</strong>. Y eso es exactamente lo que vamos a hacer en esta lectura.</p>
+      </div>
+    </div>
+
+    <!-- ═══ CAP 2 · DIEZ DE BASTOS ═══ -->
+    <div class="rm-section mb-12" data-rm="2">
+      <div class="roadmap-dot" style="top:4px"><div class="roadmap-dot-inner"></div></div>
+      <p class="eyebrow">Capítulo 1 · Diez de Bastos</p>
+      <h2 class="font-display text-[22px] font-semibold mt-1 leading-snug">La mujer que carga todo sola</h2>
+      <div class="divider my-4"></div>
+
+      <div class="rounded-xl p-4 mb-5" style="background:radial-gradient(ellipse at 50% 50%,rgba(91,45,142,.12),transparent 70%)">
+        <svg viewBox="0 0 300 110" class="w-full"><g stroke="#C9A15A" stroke-width="2" stroke-linecap="round" opacity=".7"><line x1="90" y1="10" x2="110" y2="95"></line><line x1="100" y1="8" x2="116" y2="95"></line><line x1="110" y1="6" x2="122" y2="95"></line><line x1="120" y1="5" x2="128" y2="95"></line><line x1="130" y1="5" x2="134" y2="95"></line><line x1="140" y1="6" x2="140" y2="95"></line><line x1="150" y1="8" x2="146" y2="95"></line><line x1="160" y1="10" x2="152" y2="95"></line><line x1="170" y1="13" x2="158" y2="95"></line><line x1="180" y1="17" x2="164" y2="95"></line></g><path d="M70 100Q82 70 100 64Q110 60 114 68Q118 76 108 84Q92 96 84 100Z" fill="#5B2D8E" opacity=".8"></path><circle cx="108" cy="60" r="7" fill="#5B2D8E" opacity=".9"></circle><path class="hilo-svg hilo-pulse" d="M10,105C100,92 200,108 290,95" stroke-width="1.8"></path></svg>
+      </div>
+
+      <div class="space-y-3.5 text-[15px] leading-relaxed text-arena/90">
+        <p><span data-nombre="" class="text-oroClaro font-medium">Prepárate para tu verdad</span>, voy a ser directa contigo. Esta carta no la saco del aire — salió de lo que tú misma me contaste en el quiz.</p>
+        <p>Desde 2023 algo cambió. Tal vez fue un hombre que te drenó. Tal vez fue una ruptura que no te dejó llorar porque tenías que seguir funcionando. Tal vez fue simplemente que <strong class="text-hiloGlow">un día te cansaste de esperar y decidiste que si nadie iba a cargarte, tú cargarías todo sola</strong>.</p>
+        <p>El Diez de Bastos es la carta de la mujer que paga las cuentas que no le corresponden. Que organiza la vida del otro antes de organizar la suya. Que cuida emocionalmente a un hombre que no le preguntó cómo fue su día ni una sola vez en el último mes.</p>
+        <p>Y aquí está la trampa: <em>cuanto más cargas, más él se recuesta. Cuanto más él se recuesta, más tú levantas un muro.</em> No un muro de odio — un muro de cansancio. Un muro que dice: "Ya no voy a dejar que me usen."</p>
+        <div class="quote-box rounded-r-xl px-4 py-3.5 my-4">
+          <p class="text-[14px] italic text-arena/80">"No es que no quieras amar, <span data-nombre="">Prepárate para tu verdad</span>. Es que estás tan agotada de ser el soporte vital de alguien que tu cuerpo aprendió a cerrarse automáticamente cuando alguien se acerca demasiado."</p>
+        </div>
+        <p>Ese muro es invisible para ti, pero <strong>no es invisible para quien intenta acercarse</strong>. Y ahí entra la segunda carta.</p>
+      </div>
+    </div>
+
+    <!-- ═══ CAP 3 · CABALLERO DE COPAS ═══ -->
+    <div class="rm-section mb-12" data-rm="3">
+      <div class="roadmap-dot" style="top:4px"><div class="roadmap-dot-inner"></div></div>
+      <p class="eyebrow">Capítulo 2 · Caballero de Copas invertido</p>
+      <h2 class="font-display text-[22px] font-semibold mt-1 leading-snug">El hombre que aparece y desaparece</h2>
+      <div class="divider my-4"></div>
+
+      <div class="rounded-xl p-4 mb-5" style="background:radial-gradient(ellipse at 50% 50%,rgba(139,0,0,.1),transparent 70%)">
+        <svg viewBox="0 0 300 110" class="w-full"><g transform="rotate(180 150 55)"><path d="M100 95Q110 70 130 65Q150 60 158 69Q168 60 174 65Q180 70 172 75Q178 85 168 95Z" fill="#5B2D8E" opacity=".75"></path><circle cx="140" cy="50" r="7" fill="#5B2D8E" opacity=".9"></circle><path d="M120 36Q120 46 130 46Q140 46 140 36Z" fill="none" stroke="#C9A15A" stroke-width="2"></path><circle cx="126" cy="26" r="2" fill="#C41E3A"></circle><circle cx="132" cy="20" r="2" fill="#C41E3A"></circle><circle cx="128" cy="12" r="2" fill="#C41E3A"></circle></g><path class="hilo-svg hilo-pulse" d="M10,105C100,92 200,108 290,95" stroke-width="1.8"></path></svg>
+      </div>
+
+      <div class="space-y-3.5 text-[15px] leading-relaxed text-arena/90">
+        <p>El Caballero de Copas es la carta más romántica del tarot. Es el hombre que llega en caballo blanco con una copa llena de sentimiento. <strong>Pero invertido, cambia todo.</strong></p>
+        <p>Invertido, el Caballero <em>siente algo real</em> — pero no sabe qué hacer con eso. Se acerca cuando te extraña. Se aleja cuando la cosa se pone seria. Te da lo justo para que no lo olvides, pero nunca lo suficiente para que te sientas elegida.</p>
+        <p>Un mensaje a las 11pm que no lleva a nada. Un "estuve pensando en ti" seguido de tres días de silencio. Un hombre que quiere los beneficios de estar contigo sin la responsabilidad de comprometerse.</p>
+        <p class="text-hiloGlow font-medium">¿Te suena, <span data-nombre="">Prepárate para tu verdad</span>?</p>
+        <p>Pero aquí viene lo que la mayoría no entiende: <strong>el Caballero invertido no es el problema. Es un espejo.</strong> Él no aparece en tu vida porque sí. Aparece porque tu energía de sostenedora lo atrae. Tu muro le dice "acércate pero no tanto". Y él obedece — porque un hombre que quiere amor fácil siempre obedece los muros.</p>
+        <div class="quote-box rounded-r-xl px-4 py-3.5 my-4">
+          <p class="text-[14px] italic text-arena/80">"El Caballero invertido no es tu alma gemela. Es la prueba de que tu patrón sigue activo. Mientras tu energía grite 'yo cargo todo', vas a atraer hombres que necesitan mamá, no pareja."</p>
+        </div>
+        <p>Y exactamente por eso apareció la tercera carta.</p>
+      </div>
+    </div>
+
+    <!-- ═══ CAP 4 · LOS ENAMORADOS ═══ -->
+    <div class="rm-section mb-12" data-rm="4">
+      <div class="roadmap-dot" style="top:4px"><div class="roadmap-dot-inner"></div></div>
+      <p class="eyebrow" style="color:#C41E3A">Capítulo 3 · Los Enamorados</p>
+      <h2 class="font-display text-[22px] font-semibold mt-1 leading-snug">La carta que Martha no giró en tu video</h2>
+      <div class="divider my-4"></div>
+
+      <div class="rounded-xl p-4 mb-5" style="background:radial-gradient(ellipse at 50% 40%,rgba(196,30,58,.1),transparent 65%)">
+        <svg viewBox="0 0 300 130" class="w-full"><circle cx="150" cy="28" r="10" fill="#8B5FC7" opacity=".7"></circle><path d="M130 38Q150 20 170 38" fill="none" stroke="#C9A15A" stroke-width="1.5" opacity=".6"></path><circle cx="100" cy="85" r="8" fill="#5B2D8E" opacity=".8"></circle><path d="M92 95L92 118M86 104L98 104" stroke="#5B2D8E" stroke-width="3" stroke-linecap="round"></path><circle cx="200" cy="85" r="8" fill="#5B2D8E" opacity=".8"></circle><path d="M208 95L208 118M202 104L214 104" stroke="#5B2D8E" stroke-width="3" stroke-linecap="round"></path><path class="hilo-svg hilo-pulse nudo" d="M108 100C130 75 170 125 192 100" stroke-width="2.5"></path><path d="M150 50C142 42 140 52 150 62C160 52 158 42 150 50Z" fill="#C41E3A" opacity=".6" class="vela"></path></svg>
+      </div>
+
+      <div class="space-y-3.5 text-[15px] leading-relaxed text-arena/90">
+        <p><span data-nombre="" class="text-oroClaro font-medium">Prepárate para tu verdad</span>, esta es la carta que Martha mantuvo boca abajo durante toda tu sesión. Y ahora entiendes por qué no podía girarla antes de que vieras las otras dos.</p>
+        <p><strong class="text-oroClaro">Los Enamorados no predicen. Revelan.</strong> Esta carta aparece cuando existe una elección pendiente — una conexión que tu muro impidió que se formara.</p>
+        <p>No es alguien que vas a encontrar en una fecha mágica. Es alguien que tu energía ya conoce, pero que tu patrón de 2023 bloqueó. Puede ser alguien que ya cruzó tu camino y tu muro no dejó entrar. Puede ser alguien que está ahí, visible, pero que tu cansancio emocional te impide ver con claridad.</p>
+        <p>Cuando las tres cartas aparecen juntas — la carga, el intermitente y la conexión oculta — el tarot muestra un mapa claro:</p>
+        <div class="quote-box rounded-r-xl px-4 py-3.5 my-4">
+          <p class="text-[14.5px] text-arena/90"><strong>Tu Hilo Rojo no está roto.</strong> Está enredado en la carga que no te pertenece. Mientras sigas cargando, la persona conectada a tu hilo siente tu muro y no se acerca. Pero los Enamorados aparecieron <em>hoy</em> — eso significa que la energía de esa conexión está activa. No dormida. <strong class="text-hiloGlow">Activa.</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CAP 5 · EL NUDO ═══ -->
+    <div class="rm-section mb-12" data-rm="5">
+      <div class="roadmap-dot" style="top:4px"><div class="roadmap-dot-inner"></div></div>
+      <p class="eyebrow">Capítulo 4</p>
+      <h2 class="font-display text-[22px] font-semibold mt-1 leading-snug">El nudo que repite el ciclo desde 2023</h2>
+      <div class="divider my-4"></div>
+
+      <div class="flex justify-center mb-5"><svg viewBox="0 0 200 90" class="w-3/4 nudo"><path class="hilo-svg" d="M10,45C50,5 70,85 100,45C108,33 92,29 100,41C108,53 92,57 100,47C130,5 160,85 190,45" stroke-width="3"></path><circle cx="100" cy="45" r="15" fill="none" stroke="rgba(196,30,58,.3)" stroke-width="1" stroke-dasharray="3 4"></circle></svg></div>
+
+      <div class="space-y-3.5 text-[15px] leading-relaxed text-arena/90">
+        <p>Mira el nudo del dibujo. Eso eres tú, <span data-nombre="" class="text-oroClaro font-medium">Prepárate para tu verdad</span>, desde 2023.</p>
+        <p>El patrón funciona así y se repite con caras diferentes pero el mismo guión:</p>
+        <div class="rounded-xl p-4 my-4 space-y-2" style="background:rgba(91,45,142,.12);border:1px solid rgba(201,161,90,.2);border-radius:12px">
+          <p class="text-[14px]">➀ Aparece alguien y tú <strong>das todo</strong></p>
+          <p class="text-[14px]">➁ Él se acostumbra y <strong>se recuesta</strong></p>
+          <p class="text-[14px]">➂ Tú te cansas y <strong>levantas el muro</strong></p>
+          <p class="text-[14px]">➃ Él se confunde y <strong>desaparece</strong></p>
+          <p class="text-[14px]">➄ Aparece alguien nuevo y <strong>vuelves a dar todo</strong></p>
+          <p class="text-[14px] text-hiloGlow font-medium">↺ El ciclo se repite</p>
+        </div>
+        <p>El nudo no está en los hombres que atraes. <strong>El nudo está en lo que tu energía comunica:</strong> "Yo me encargo de todo, yo cargo, yo resuelvo." Esa señal atrae a quien busca ser cargado — no a quien viene a caminar contigo como igual.</p>
+        <p>El nudo es exactamente esto: <strong class="text-hiloGlow">el miedo de ser usada otra vez como soporte vital</strong>. Y mientras ese miedo dirija tu energía, cualquier hombre que se acerque va a sentir tu muro. Los débiles van a huir. Los oportunistas van a acercarse. Y los que sí son para ti van a quedarse a distancia, confundidos.</p>
+      </div>
+    </div>
+
+    <!-- ═══ CAP 6 · TU VENTANA DE APERTURA — CALENDÁRIO INTERATIVO ═══ -->
+    <div class="rm-section mb-12" data-rm="6">
+      <div class="roadmap-dot" style="top:4px"><div class="roadmap-dot-inner"></div></div>
+      <span class="bonus-badge mb-2">BONO</span>
+      <p class="eyebrow mt-1">Capítulo 5</p>
+      <h2 class="font-display text-[22px] font-semibold mt-1 leading-snug">Tu ventana de apertura emocional</h2>
+      <div class="divider my-4"></div>
+
+      <!-- Calendário interativo -->
+      <div class="rounded-xl p-3 mb-5" style="background:rgba(91,45,142,.08);border:1px solid rgba(201,161,90,.25)">
+        <p id="cal-month" class="text-center font-display text-[14px] text-oroClaro tracking-widest uppercase mb-3"></p>
+        <div class="grid grid-cols-7 gap-0.5 text-center mb-1">
+          <span class="text-[10px] text-arena/40 py-1">Lun</span><span class="text-[10px] text-arena/40 py-1">Mar</span><span class="text-[10px] text-arena/40 py-1">Mié</span><span class="text-[10px] text-arena/40 py-1">Jue</span><span class="text-[10px] text-arena/40 py-1">Vie</span><span class="text-[10px] text-arena/40 py-1">Sáb</span><span class="text-[10px] text-arena/40 py-1">Dom</span>
+        </div>
+        <div id="cal-grid" class="grid grid-cols-7 gap-0.5"></div>
+        <div id="cal-tooltip" class="mt-3 rounded-lg px-3 py-2.5 text-[13px] leading-relaxed hidden" style="background:rgba(139,0,0,.15);border:1px solid rgba(196,30,58,.3)"></div>
+        <p class="text-[10px] text-arena/35 text-center mt-2">Toca un día para ver su energía · Herramienta de intención, no predicción</p>
+      </div>
+
+      <div class="space-y-3.5 text-[15px] leading-relaxed text-arena/90">
+        <p><span data-nombre="" class="text-oroClaro font-medium">Prepárate para tu verdad</span>, no te voy a dar una fecha mágica porque eso no existe. Pero sí existe lo que llamo <strong class="text-hiloGlow">ventana de apertura emocional</strong>: el periodo donde tu energía está más receptiva después de soltar la carga del Diez de Bastos.</p>
+        <p>Tu ventana no se abre por el calendario. <strong>Se abre el día que hagas el ritual del Capítulo 6.</strong> No antes. No hay atajo. El calendario de arriba marca los días donde simbólicamente tu energía estará más receptiva — pero solo si ya hiciste el trabajo de soltar la carga.</p>
+        <p>Los días marcados en rojo no son predicción. Son tu <strong class="text-hiloGlow">ventana de intención</strong>: el periodo donde tu subconsciente estará más abierto después del ritual. Úsalos como guía para salir, estar presente y dejarte encontrar.</p>
+        <p>Por tus respuestas, los lugares donde más te conectas contigo misma tienen <strong>agua cerca o música en vivo</strong>. Un bar con banda. Un cumpleaños cerca de la playa. Un lugar donde no fuiste a buscar a nadie — fuiste por ti.</p>
+        <div class="quote-box rounded-r-xl px-4 py-3.5 my-4">
+          <p class="text-[14px] text-arena/80"><strong>Sugerencia práctica:</strong> En las semanas marcadas en rojo, ve a esos lugares. Sin expectativa. Con presencia. Tu Hilo se estira cuando estás relajada, no cuando buscas. Esa es la diferencia entre manifestar y perseguir.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CAP 7 · RITUAL DE DESBLOQUEO ═══ -->
+    <div class="rm-section mb-12" data-rm="7">
+      <div class="roadmap-dot" style="top:4px"><div class="roadmap-dot-inner"></div></div>
+      <p class="eyebrow">Capítulo 6 · Tu desbloqueo</p>
+      <h2 class="font-display text-[22px] font-semibold mt-1 leading-snug">Ritual simbólico de 2 minutos</h2>
+      <div class="divider my-4"></div>
+
+      <div class="rounded-xl p-4 mb-5 flex justify-center" style="background:radial-gradient(ellipse at 50% 50%,rgba(232,207,160,.06),transparent 70%)">
+        <svg viewBox="0 0 240 130" class="w-full max-w-[220px]"><rect x="50" y="55" width="22" height="50" rx="4" fill="#F5E6D3" opacity=".8"></rect><line x1="61" y1="55" x2="61" y2="46" stroke="#8B5FC7" stroke-width="2"></line><path class="vela" d="M61 24C54 38 56 44 61 46C66 44 68 38 61 24Z" fill="#E8CFA0" filter="drop-shadow(0 0 8px rgba(232,207,160,.8))"></path><path class="vela" style="animation-delay:.3s" d="M61 32C58 38 60 43 61 45C62 43 64 38 61 32Z" fill="#C41E3A" opacity=".8"></path><g transform="rotate(-6 160 80)"><rect x="130" y="56" width="55" height="36" rx="3" fill="rgba(245,230,211,.88)"></rect><line x1="138" y1="66" x2="178" y2="66" stroke="rgba(10,10,15,.3)" stroke-width="1.5"></line><line x1="138" y1="74" x2="172" y2="74" stroke="rgba(10,10,15,.3)" stroke-width="1.5"></line><line x1="138" y1="82" x2="176" y2="82" stroke="rgba(10,10,15,.3)" stroke-width="1.5"></line><path d="M130 56Q140 46 148 56Q154 38 164 56Z" fill="#C41E3A" opacity=".7" class="vela"></path></g><path class="hilo-svg hilo-pulse" d="M6,122C70,110 170,120 234,106" stroke-width="1.5"></path></svg>
+      </div>
+
+      <div class="space-y-3.5 text-[15px] leading-relaxed text-arena/90">
+        <p><span data-nombre="" class="text-oroClaro font-medium">Prepárate para tu verdad</span>, no necesitas mandarle un mensaje. No necesitas correr detrás de nadie. Necesitas <strong class="text-hiloGlow">soltar el peso del Diez de Bastos</strong>.</p>
+        <p>Este ritual toma 2 minutos. Hazlo hoy por la noche, a solas:</p>
+        <ol class="space-y-3 my-4">
+          <li class="flex gap-3"><span class="shrink-0 w-7 h-7 rounded-full border border-oro/55 text-oro flex items-center justify-center text-[13px] font-display">1</span><span>Agarra un papel. Escribe: <em class="text-oroClaro">"Devuelvo lo que no es mío. Desde 2023 cargo lo que no me pertenece."</em></span></li>
+          <li class="flex gap-3"><span class="shrink-0 w-7 h-7 rounded-full border border-oro/55 text-oro flex items-center justify-center text-[13px] font-display">2</span><span>Quémalo con seguridad (sobre un plato o el lavabo).</span></li>
+          <li class="flex gap-3"><span class="shrink-0 w-7 h-7 rounded-full border border-oro/55 text-oro flex items-center justify-center text-[13px] font-display">3</span><span>Mientras se quema, di en voz alta: <em class="text-oroClaro">"Mi Hilo se estira. Mi muro se cae."</em></span></li>
+          <li class="flex gap-3"><span class="shrink-0 w-7 h-7 rounded-full border border-oro/55 text-oro flex items-center justify-center text-[13px] font-display">4</span><span>Respira hondo 3 veces. Con cada respiración, imagina el nudo de tu Hilo desatándose. Rojo intenso. Libre.</span></li>
+        </ol>
+        <p>Parece simple — y lo es. Tu subconsciente no entiende teorías. <strong>Entiende gestos.</strong> Este gesto le dice a tu cuerpo que paró de cargar. Y cuando tu cuerpo lo entiende, tu energía cambia. Y cuando tu energía cambia, tu muro cae solo.</p>
+      </div>
+    </div>
+
+    <!-- ═══ CAP 8 · MAPA DE SEÑALES ═══ -->
+    <div class="rm-section mb-12" data-rm="8">
+      <div class="roadmap-dot" style="top:4px"><div class="roadmap-dot-inner"></div></div>
+      <span class="bonus-badge mb-2">BONO EXTRA</span>
+      <p class="eyebrow mt-1">Capítulo 7</p>
+      <h2 class="font-display text-[22px] font-semibold mt-1 leading-snug">7 señales de que tu Hilo se estiró</h2>
+      <div class="divider my-4"></div>
+
+      <div class="space-y-3.5 text-[15px] leading-relaxed text-arena/90">
+        <p>Después del ritual, presta atención. Tu Hilo te avisa cuando se estira. Estas son las 7 señales que mis consultantes reportan con más frecuencia:</p>
+
+        <div class="space-y-3 my-4">
+          <div class="rounded-xl px-4 py-3" style="background:rgba(91,45,142,.1);border:1px solid rgba(201,161,90,.15)">
+            <p class="text-[13px] font-semibold text-oroClaro mb-0.5">① Sueños vívidos</p>
+            <p class="text-[13.5px] text-arena/80">Sueñas con alguien que no reconoces pero te genera calma. No ansiedad — calma. Eso es nuevo.</p>
+          </div>
+          <div class="rounded-xl px-4 py-3" style="background:rgba(91,45,142,.1);border:1px solid rgba(201,161,90,.15)">
+            <p class="text-[13px] font-semibold text-oroClaro mb-0.5">② El intermitente se aleja</p>
+            <p class="text-[13.5px] text-arena/80">El Caballero invertido pierde interés. No porque tú hiciste algo — sino porque tu energía dejó de alimentarlo.</p>
+          </div>
+          <div class="rounded-xl px-4 py-3" style="background:rgba(91,45,142,.1);border:1px solid rgba(201,161,90,.15)">
+            <p class="text-[13px] font-semibold text-oroClaro mb-0.5">③ Escalofríos sin frío</p>
+            <p class="text-[13.5px] text-arena/80">Un escalofrío suave en el brazo izquierdo o el cuello. Sin motivo aparente. Es tu Hilo estirándose.</p>
+          </div>
+          <div class="rounded-xl px-4 py-3" style="background:rgba(91,45,142,.1);border:1px solid rgba(201,161,90,.15)">
+            <p class="text-[13px] font-semibold text-oroClaro mb-0.5">④ Alguien inesperado</p>
+            <p class="text-[13.5px] text-arena/80">Una persona que no encaja en tu patrón habitual te busca conversación. No el típico. Alguien diferente.</p>
+          </div>
+          <div class="rounded-xl px-4 py-3" style="background:rgba(91,45,142,.1);border:1px solid rgba(201,161,90,.15)">
+            <p class="text-[13px] font-semibold text-oroClaro mb-0.5">⑤ Ganas de llorar sin razón</p>
+            <p class="text-[13.5px] text-arena/80">Tu cuerpo soltando la carga del Diez de Bastos. No lo reprimas. Ese llanto es la carga saliendo.</p>
+          </div>
+          <div class="rounded-xl px-4 py-3" style="background:rgba(91,45,142,.1);border:1px solid rgba(201,161,90,.15)">
+            <p class="text-[13px] font-semibold text-oroClaro mb-0.5">⑥ Sincronicidades</p>
+            <p class="text-[13.5px] text-arena/80">Ves la hora 11:11, 22:22. Escuchas una canción que te detiene. Un nombre que se repite. Tu Hilo marcando presencia.</p>
+          </div>
+          <div class="rounded-xl px-4 py-3" style="background:rgba(91,45,142,.1);border:1px solid rgba(201,161,90,.15)">
+            <p class="text-[13px] font-semibold text-oroClaro mb-0.5">⑦ Paz interior sin motivo</p>
+            <p class="text-[13.5px] text-arena/80">Un día te despiertas y no sientes la ansiedad de siempre. No cambió nada afuera. Cambió tu energía adentro.</p>
+          </div>
+        </div>
+
+        <p>Si notas 3 o más de estas señales en las primeras 2 semanas después del ritual, tu Hilo se estiró. <strong>No fuerces nada.</strong> Deja que él haga su trabajo.</p>
+      </div>
+    </div>
+
+    <!-- ═══ CAP 9 · MEDITACIÓN DEL HILO ═══ -->
+    <div class="rm-section mb-12" data-rm="9">
+      <div class="roadmap-dot" style="top:4px"><div class="roadmap-dot-inner"></div></div>
+      <span class="bonus-badge mb-2">BONO EXTRA</span>
+      <p class="eyebrow mt-1">Capítulo 8</p>
+      <h2 class="font-display text-[22px] font-semibold mt-1 leading-snug">Meditación guiada del Hilo Rojo</h2>
+      <div class="divider my-4"></div>
+
+      <div class="space-y-3 mb-5">
+        <button onclick="window.open(&#39;https://www.youtube.com/watch?v=Ouf9uUMBJSs&#39;,&#39;_blank&#39;)" class="w-full rounded-xl overflow-hidden text-left" style="border:1px solid rgba(201,161,90,.25);background:linear-gradient(170deg,rgba(91,45,142,.18),rgba(139,0,0,.06))">
+          <div class="flex items-center gap-3 px-4 py-3.5">
+            <div class="shrink-0 w-11 h-11 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,#5B2D8E,#8B0000);box-shadow:0 4px 14px rgba(91,45,142,.5)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#E8CFA0"><path d="M8 5v14l11-7z"></path></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[13px] font-semibold text-oroClaro">Soy Amor · Meditación Guiada</p>
+              <p class="text-[11px] text-arena/50 mt-0.5">Afirmaciones positivas para atraer el amor</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(201,161,90,.5)" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"></path></svg>
+          </div>
+        </button>
+        <button onclick="window.open(&#39;https://www.youtube.com/watch?v=sHZ4_GUv6hE&#39;,&#39;_blank&#39;)" class="w-full rounded-xl overflow-hidden text-left" style="border:1px solid rgba(201,161,90,.25);background:linear-gradient(170deg,rgba(91,45,142,.18),rgba(139,0,0,.06))">
+          <div class="flex items-center gap-3 px-4 py-3.5">
+            <div class="shrink-0 w-11 h-11 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,#5B2D8E,#8B0000);box-shadow:0 4px 14px rgba(91,45,142,.5)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#E8CFA0"><path d="M8 5v14l11-7z"></path></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[13px] font-semibold text-oroClaro">Amor Propio · 5 min</p>
+              <p class="text-[11px] text-arena/50 mt-0.5">Afirmaciones para fortalecer tu autoestima</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(201,161,90,.5)" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"></path></svg>
+          </div>
+        </button>
+      </div>
+      <p class="text-[12px] text-arena/50 mb-4">Toca para reproducir · Escucha antes de dormir, después del ritual</p>
+
+      <div class="space-y-3.5 text-[15px] leading-relaxed text-arena/85 italic">
+        <p>"Cierra los ojos, <span data-nombre="" class="not-italic text-oroClaro font-medium">Prepárate para tu verdad</span>. Respira profundo. Siente tus pies en el suelo. Siente el peso de tu cuerpo.</p>
+        <p>Ahora imagina un hilo rojo que sale de tu dedo meñique izquierdo. Es fino, pero fuerte. Brilla en la oscuridad. Tiene nudos — puedes verlos. No los juzgues. Solo obsérvalos.</p>
+        <p>Con cada respiración, un nudo se suelta. No lo fuerzas — se suelta solo. Porque esos nudos no son tuyos. Son de otros. Cargas que te dieron y que aceptaste porque no sabías que podías decir que no.</p>
+        <p>El hilo se estira. Sale de tu habitación. Cruza calles. Pasa por lugares que aún no conoces. Llega hasta alguien. No ves su rostro, pero sientes su calma. Su presencia no te genera ansiedad. Te genera paz.</p>
+        <p>Esa persona existe. Y su hilo también se está estirando hacia ti.</p>
+        <p>Quédate ahí un momento. No hagas nada. Solo siente.</p>
+        <p>Cuando estés lista, abre los ojos. Tu hilo ya sabe el camino."</p>
+      </div>
+      <p class="text-[12.5px] text-arena/50 mt-4">Repite esta meditación por 7 noches seguidas después del ritual. Tu subconsciente necesita repetición para cambiar de frecuencia.</p>
+    </div>
+
+  </div><!-- /roadmap-container -->
+
+  <!-- ═══════ CAPÍTULO FINAL · RETRATO SIMBÓLICO — ENTREGÁVEL DO ORDER BUMP ═══════ -->
+  <div id="retrato-reveal" class="max-w-md w-full mx-auto mt-4 rm-section" data-rm="10">
+    <div class="divider mb-8"></div>
+    <svg class="w-full h-8 mb-2" viewBox="0 0 400 32" preserveAspectRatio="none"><path class="hilo-svg hilo-anim hilo-pulse" d="M0,16C130,2 270,28 400,14"></path></svg>
+
+    <!-- ═══ BEAT 1 — Ancoragem nas cartas ═══ -->
+    <p class="eyebrow" style="color:#C41E3A">Capítulo 9 · Revelación</p>
+    <h2 class="font-display text-[24px] font-semibold mt-2 leading-snug"><span data-nombre="">Prepárate para tu verdad</span>, vi más que iniciales...<br><em class="text-hiloGlow">Vi rasgos.</em></h2>
+    <div class="divider my-5"></div>
+
+    <div class="space-y-3.5 text-[15px] leading-relaxed text-arena/90 mb-8">
+      <p>Tus 3 cartas revelaron un patrón: cargas todo sola (Diez de Bastos), atraes intermitentes (Caballero invertido), y hay una conexión pendiente (Los Enamorados). Cuando esas tres energías se cruzan, los rasgos aparecen.</p>
+      <p>En tu ventana vi más que iniciales. Vi la forma del maxilar. Vi la energía de alguien que <em>te busca</em> — y que tu muro del Diez de Bastos no dejó entrar. <strong class="text-hiloGlow">No es quien piensas.</strong></p>
+    </div>
+
+    <!-- ═══ CARROSSEL DE RETRATOS ═══ -->
+    <div class="relative mb-6">
+      <!-- Slides -->
+      <div class="overflow-hidden rounded-2xl" style="border:1.5px solid rgba(201,161,90,.4)">
+        <div id="carousel" class="flex transition-transform duration-500 ease-out" style="transform: translateX(0%);">
+
+          <!-- SLIDE 1 — Retrato enquadrado -->
+          <div class="min-w-full flex-[0_0_100%]">
+            <div class="relative aspect-square">
+              <img src="./leitura_files/retratos/retrato-1.png" alt="Retrato Simbólico - Visión" class="absolute inset-0 w-full h-full object-cover" loading="eager">
+              <div class="absolute inset-0" style="background:linear-gradient(0deg,rgba(10,10,15,.7) 0%,transparent 40%)"></div>
+              <div class="absolute bottom-0 left-0 right-0 px-4 pb-4">
+                <p class="text-[10px] text-oro tracking-[.2em] uppercase font-semibold">Visión I · El retrato</p>
+                <p class="font-display text-[15px] text-arena/90 mt-1 italic">"La energía que Martha canalizó cerca de tu Hilo Rojo"</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 2 — Visiones antiguas -->
+          <div class="min-w-full flex-[0_0_100%]">
+            <div class="relative aspect-square">
+              <img src="./leitura_files/retratos/retrato-2.png" alt="Retrato Simbólico - Señales" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
+              <div class="absolute inset-0" style="background:linear-gradient(0deg,rgba(10,10,15,.7) 0%,transparent 40%)"></div>
+              <div class="absolute bottom-0 left-0 right-0 px-4 pb-4">
+                <p class="text-[10px] text-oro tracking-[.2em] uppercase font-semibold">Visión II · Las señales</p>
+                <p class="font-display text-[15px] text-arena/90 mt-1 italic">"Así se mueve la energía conectada a tu Hilo — con calma, con intención"</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 3 — Rostro emergente -->
+          <div class="min-w-full flex-[0_0_100%]">
+            <div class="relative aspect-square">
+              <img src="./leitura_files/retratos/retrato-3.png" alt="Retrato Simbólico - Presencia" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
+              <div class="absolute inset-0" style="background:linear-gradient(0deg,rgba(10,10,15,.7) 0%,transparent 40%)"></div>
+              <div class="absolute bottom-0 left-0 right-0 px-4 pb-4">
+                <p class="text-[10px] text-oro tracking-[.2em] uppercase font-semibold">Visión III · La presencia</p>
+                <p class="font-display text-[15px] text-arena/90 mt-1 italic">"No es quien piensas. Es quien tu muro no dejó entrar."</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Botones de navegação -->
+      <button id="carousel-prev" class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center z-10 opacity-0 pointer-events-none transition-opacity" style="background: rgba(10, 10, 15, 0.7); border: 1px solid rgba(201, 161, 90, 0.4); opacity: 0; pointer-events: none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8CFA0" stroke-width="2.5"><path d="M15 18l-6-6 6-6"></path></svg>
+      </button>
+      <button id="carousel-next" class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center z-10" style="background: rgba(10, 10, 15, 0.7); border: 1px solid rgba(201, 161, 90, 0.4); opacity: 1; pointer-events: auto;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8CFA0" stroke-width="2.5"><path d="M9 18l6-6-6-6"></path></svg>
+      </button>
+
+      <!-- Dots -->
+      <div id="carousel-dots" class="flex justify-center gap-2 mt-3">
+        <button type="button" class="carousel-dot w-2.5 h-2.5 rounded-full transition-colors cursor-pointer border-0 p-0" aria-label="Visión 1" style="background:#C9A15A"></button>
+        <button type="button" class="carousel-dot w-2.5 h-2.5 rounded-full transition-colors cursor-pointer border-0 p-0" aria-label="Visión 2" style="background:rgba(201,161,90,.3)"></button>
+        <button type="button" class="carousel-dot w-2.5 h-2.5 rounded-full transition-colors cursor-pointer border-0 p-0" aria-label="Visión 3" style="background:rgba(201,161,90,.3)"></button>
+      </div>
+    </div>
+
+    <p class="text-center text-[11px] text-arena/40 mb-6">Desliza para ver las 3 visiones · Arte interpretativa basada en tu lectura</p>
+
+    <!-- ═══ BEAT 2 — Identificação ═══ -->
+    <div class="space-y-3.5 text-[15px] leading-relaxed text-arena/90 mb-8">
+      <p><span data-nombre="" class="text-oroClaro font-medium">Prepárate para tu verdad</span>, este retrato no es una foto de alguien que existe. Es una <strong class="text-oroClaro">traducción artística de la energía</strong> que apareció cuando tus tres cartas se alinearon — el Diez de Bastos, el Caballero invertido y Los Enamorados.</p>
+      <p>Los rasgos que ves son la representación simbólica de la presencia conectada a tu Hilo. La forma del rostro, la mirada, la postura — todo refleja la energía <strong>complementaria a la tuya</strong>. Donde tú cargas, esta persona sostiene sin peso. Donde tú levantas muros, esta presencia se queda sin empujar. <em>Donde el Caballero invertido huye, esta energía espera.</em></p>
+    </div>
+
+    <!-- ═══ PERFIL DE RASGOS ═══ -->
+    <div class="rounded-2xl overflow-hidden mb-8" style="border:1.5px solid rgba(201,161,90,.3);background:linear-gradient(170deg,#180D28,#0F0A18 60%,#0A0A0F)">
+      <div class="px-4 py-3" style="background:rgba(91,45,142,.15)"><p class="text-[10px] text-oro tracking-[.2em] uppercase font-semibold">Rasgos de la energía conectada a tu Hilo</p></div>
+      <div class="divide-y divide-[rgba(201,161,90,.1)]">
+        <div class="px-4 py-3.5 flex items-start gap-3">
+          <span class="text-[16px]">👁️</span>
+          <div><p class="text-[12px] text-oro font-semibold tracking-wider uppercase">Mirada</p><p class="text-[13.5px] text-arena/80 mt-0.5">Ojos que observan antes de hablar. Te va a ver antes de que tú lo veas. Cuando lo mires, vas a sentir que ya te conoce.</p></div>
+        </div>
+        <div class="px-4 py-3.5 flex items-start gap-3">
+          <span class="text-[16px]">🪢</span>
+          <div><p class="text-[12px] text-oro font-semibold tracking-wider uppercase">Presencia</p><p class="text-[13.5px] text-arena/80 mt-0.5">Energía calmada pero intensa. No grita. Cuando entra en un lugar, se siente. No busca atención pero la recibe.</p></div>
+        </div>
+        <div class="px-4 py-3.5 flex items-start gap-3">
+          <span class="text-[16px]">🌊</span>
+          <div><p class="text-[12px] text-oro font-semibold tracking-wider uppercase">Dónde aparece</p><p class="text-[13.5px] text-arena/80 mt-0.5">Tu quiz mostró afinidad con agua y música. Esta energía aparece cerca de ella — playa, río, lluvia. O en un lugar con música en vivo.</p></div>
+        </div>
+        <div class="px-4 py-3.5 flex items-start gap-3">
+          <span class="text-[16px]">🤲</span>
+          <div><p class="text-[12px] text-oro font-semibold tracking-wider uppercase">Cómo se acerca</p><p class="text-[13.5px] text-arena/80 mt-0.5">No aparece y desaparece como el Caballero invertido. Se acerca una vez, con intención. Si tu muro está arriba, espera. No huye — <strong class="text-oroClaro">espera</strong>.</p></div>
+        </div>
+        <div class="px-4 py-3.5 flex items-start gap-3">
+          <span class="text-[16px]">✋</span>
+          <div><p class="text-[12px] text-oro font-semibold tracking-wider uppercase">Lo que NO es</p><p class="text-[13.5px] text-arena/80 mt-0.5">No es el último que te dejó en visto. No es el intermitente. Es alguien que ya cruzó tu camino — o está por cruzarlo — y que tu muro de 2023 no dejó entrar.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ BEAT 3 — Cómo usar ═══ -->
+    <p class="eyebrow mb-2">Cómo usar tu retrato</p>
+    <div class="space-y-3.5 text-[15px] leading-relaxed text-arena/90 mb-6">
+      <p><strong class="text-oroClaro">No busques un rostro idéntico.</strong> Busca la <em>sensación</em>. Cuando tu Hilo se estire y alguien aparezca, vas a sentir en el pecho lo mismo que sientes al ver este retrato: <strong class="text-hiloGlow">calma, no ansiedad</strong>. Eso es lo que diferencia a la persona de tu Hilo de todos los intermitentes que vinieron antes.</p>
+    </div>
+
+    <div class="space-y-3 mb-8">
+      <div class="flex gap-3"><span class="shrink-0 w-7 h-7 rounded-full border border-oro/50 text-oro flex items-center justify-center text-[13px] font-display">1</span><span class="text-[14px] text-arena/80">Guarda las imágenes en tu teléfono. Míralas antes de la meditación del Capítulo 8.</span></div>
+      <div class="flex gap-3"><span class="shrink-0 w-7 h-7 rounded-full border border-oro/50 text-oro flex items-center justify-center text-[13px] font-display">2</span><span class="text-[14px] text-arena/80">Después del ritual del Capítulo 6, repite: <em class="text-oroClaro">"Mi Hilo se estira. Ya sé a quién reconocer."</em></span></div>
+      <div class="flex gap-3"><span class="shrink-0 w-7 h-7 rounded-full border border-oro/50 text-oro flex items-center justify-center text-[13px] font-display">3</span><span class="text-[14px] text-arena/80">En tu ventana, ve a lugares con agua o música. Sin expectativa. Con presencia.</span></div>
+    </div>
+
+    <!-- ═══ MENSAJE DE MARTHA ═══ -->
+    <div class="quote-box rounded-r-xl px-5 py-5 mb-6">
+      <p class="font-display text-[15px] italic leading-relaxed text-arena/85">"<span data-nombre="">Prepárate para tu verdad</span>, tu Hilo existe. Tu retrato existe. Ahora solo falta que hagas el ritual y dejes de cargar lo que no te pertenece. Cuando tu muro caiga, lo vas a reconocer. No por la cara — por la paz que sientes."</p>
+      <p class="text-[12px] text-oro mt-3 tracking-widest">— MARTHA</p>
+    </div>
+
+    <button id="btn-finish" class="btn-oro w-full py-4 text-[15px]">GUARDAR MI LECTURA Y RETRATO ✦</button>
+    <p class="text-center text-[11px] text-arena/35 mt-2">Tu lectura y retrato quedan guardados en este enlace</p>
+  </div>
+
+  <footer class="pt-10 max-w-md w-full mx-auto"><p class="text-center text-[10.5px] text-arena/30 leading-relaxed">Esta lectura y retrato son herramientas simbólicas de autoconocimiento y entretenimiento, basadas en arquetipos del tarot y en tus respuestas. Las imágenes son arte interpretativa, no fotografías de personas reales. No sustituye asesoramiento profesional.</p></footer>
+</section>
+
+<!-- ═══ SCREEN END ═══ -->
+<section id="screen-end" class="screen items-center justify-center px-6 text-center min-h-[80dvh]">
+  <svg class="w-full max-w-xs h-10" viewBox="0 0 300 36" preserveAspectRatio="none"><path class="hilo-svg hilo-anim" d="M0,18C100,18 200,18 300,18"></path></svg>
+  <h2 class="font-display text-2xl font-semibold mt-4"><span data-nombre="">Prepárate para tu verdad</span>, tu Hilo está estirado.</h2>
+  <p class="mt-3 text-[15px] text-arena/65 max-w-xs">Tu lectura y retrato quedan guardados en este enlace. Haz el ritual del Capítulo 6 hoy — repite la meditación del Capítulo 8 por 7 noches. Y observa las señales del Capítulo 7.</p>
+  <button id="btn-releer" class="btn-oro px-8 py-3 mt-7 text-[14px]">RELEER MI LECTURA</button>
+</section>
+
+<script>
+// TROCAR PELO LINK REAL DA HOTMART DO UPSELL DE $27
+const CHECKOUT_URL='https://pay.hotmart.com/SEU_CHECKOUT_UPSELL';
+
+/* ═══ Name ═══ */
+(function(){const p=new URLSearchParams(location.search);let n=(p.get('nombre')||p.get('nome')||'').trim();if(!n){document.querySelectorAll('[data-nombre]').forEach(e=>e.textContent='Prepárate para tu verdad');return}n=n.charAt(0).toUpperCase()+n.slice(1).toLowerCase();n=n.replace(/[<>"'&]/g,'');document.querySelectorAll('[data-nombre]').forEach(e=>e.textContent=n)})();
+
+/* ═══ Stars ═══ */
+(function(){const c=document.getElementById('stars');for(let i=0;i<50;i++){const s=document.createElement('div');s.className='star';const z=Math.random()*2+.8;s.style.cssText=`width:${z}px;height:${z}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*6}s`;c.appendChild(s)}})();
+
+/* ═══ Sound ═══ */
+let ctx=null;function playFlip(){try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();const t=ctx.currentTime,b=ctx.createBuffer(1,ctx.sampleRate*.08,ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.5);const n=ctx.createBufferSource();n.buffer=b;const f=ctx.createBiquadFilter();f.type='bandpass';f.frequency.value=2800;f.Q.value=.7;const g=ctx.createGain();g.gain.setValueAtTime(.4,t);g.gain.exponentialRampToValueAtTime(.001,t+.08);n.connect(f).connect(g).connect(ctx.destination);n.start(t);const o=ctx.createOscillator();o.type='sine';o.frequency.setValueAtTime(200,t);o.frequency.exponentialRampToValueAtTime(65,t+.12);const og=ctx.createGain();og.gain.setValueAtTime(.12,t);og.gain.exponentialRampToValueAtTime(.001,t+.13);o.connect(og).connect(ctx.destination);o.start(t);o.stop(t+.14)}catch(e){}}
+
+/* ═══ Screens ═══ */
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'instant'})}
+
+/* ═══ Cards ═══ */
+let f1=false,f2=false,allDone=false;
+function reveal(id){const el=document.getElementById(id);el.classList.remove('hidden');el.style.opacity='0';el.style.transform='translateY(12px)';requestAnimationFrame(()=>{el.style.transition='opacity .6s,transform .6s';el.style.opacity='1';el.style.transform='none'});setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),100)}
+function checkAll(){if(f1&&f2&&!allDone){allDone=true;const c3=document.getElementById('c3');c3.classList.remove('locked');c3.style.transition='opacity .5s';c3.style.opacity='1';setTimeout(()=>{c3.style.transform='scale(1.06)';setTimeout(()=>c3.style.transform='',300)},200)}}
+function bindCard(id,fn){const c=document.getElementById(id);const fire=()=>fn(c);c.addEventListener('click',fire);c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fire()}})}
+bindCard('c1',c=>{if(f1)return;f1=true;playFlip();c.classList.add('flipped');setTimeout(()=>reveal('c1-txt'),500);checkAll()});
+bindCard('c2',c=>{if(f2)return;f2=true;playFlip();c.classList.add('flipped');setTimeout(()=>reveal('c2-txt'),500);checkAll()});
+bindCard('c3',c=>{if(!allDone)return;playFlip();c.classList.add('flipped');setTimeout(()=>{reveal('c3-txt');setTimeout(()=>reveal('cta-lectura'),800)},500)});
+
+/* ═══ Loading ═══ */
+const loadMsgs=['Preparando tu lectura...','Conectando las tres cartas...','Generando tu perfil energético...','Organizando los 9 capítulos...'];
+document.getElementById('btn-lectura').addEventListener('click',()=>{show('screen-loading');const txt=document.getElementById('load-txt'),bar=document.getElementById('load-bar');let step=0;txt.textContent=loadMsgs[0];bar.style.width='8%';const iv=setInterval(()=>{step++;if(step<loadMsgs.length){txt.style.opacity=0;setTimeout(()=>{txt.textContent=loadMsgs[step];txt.style.opacity=1},280)}bar.style.width=Math.min(100,(step+1)/loadMsgs.length*100)+'%';if(step>=loadMsgs.length){clearInterval(iv);setTimeout(()=>{show('screen-roadmap');initRM();buildCalendar()},400)}},1400)});
+
+/* ═══ Roadmap scroll reveal ═══ */
+function initRM(){const secs=document.querySelectorAll('.rm-section'),bar=document.getElementById('rm-bar'),label=document.getElementById('rm-step'),total=secs.length;const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');const idx=+e.target.dataset.rm||0;if(idx){bar.style.width=(idx/total*100)+'%';label.textContent=Math.min(idx,9)+' / 9'}}})},{threshold:.12,rootMargin:'0px 0px -50px 0px'});secs.forEach(s=>io.observe(s));setTimeout(()=>secs[0].classList.add('visible'),200)}
+
+/* ═══ Calendário interativo de 45 dias ═══ */
+function buildCalendar(){
+  const grid=document.getElementById('cal-grid');
+  const tooltip=document.getElementById('cal-tooltip');
+  const monthLabel=document.getElementById('cal-month');
+  if(!grid) return;
+
+  const today=new Date();
+  const windowStart=new Date(today);windowStart.setDate(today.getDate()+13);
+  const windowEnd=new Date(windowStart);windowEnd.setDate(windowStart.getDate()+14);
+
+  const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+  // Determine months covered
+  const endDate=new Date(today);endDate.setDate(today.getDate()+45);
+  const months=new Set();
+  for(let d=new Date(today);d<=endDate;d.setDate(d.getDate()+1)) months.add(d.getMonth());
+  const monthNames=[...months].map(m=>meses[m]);
+  monthLabel.textContent=monthNames.join(' — ')+' '+today.getFullYear();
+
+  // Start from Monday of the week of today
+  const startDay=new Date(today);
+  const dow=startDay.getDay();
+  startDay.setDate(startDay.getDate()-(dow===0?6:dow-1));
+
+  // Build 7 weeks (49 cells)
+  grid.innerHTML='';
+  for(let i=0;i<49;i++){
+    const d=new Date(startDay);d.setDate(startDay.getDate()+i);
+    const cell=document.createElement('div');
+    const dayNum=d.getDate();
+    const isPast=d<new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    const isInWindow=d>=windowStart&&d<=windowEnd;
+    const isToday=d.toDateString()===today.toDateString();
+    const isFuture=d>endDate;
+
+    cell.textContent=dayNum;
+    cell.className='py-2 rounded-md text-[12px] cursor-pointer transition-colors';
+
+    if(isFuture||isPast){
+      cell.className+=' text-arena/20 cursor-default';
+    } else if(isInWindow){
+      cell.className+=' font-semibold';
+      cell.style.cssText='background:rgba(139,0,0,.35);color:#F5E6D3;border:1px solid rgba(201,161,90,.5);box-shadow:0 0 8px rgba(139,0,0,.3)';
+    } else if(isToday){
+      cell.className+=' text-oroClaro font-semibold';
+      cell.style.cssText='border:1px solid rgba(201,161,90,.4)';
+    } else {
+      cell.className+=' text-arena/50 hover:text-arena/80';
+    }
+
+    if(!isFuture&&!isPast){
+      cell.addEventListener('click',()=>{
+        tooltip.classList.remove('hidden');
+        if(isInWindow){
+          tooltip.innerHTML='<p class="text-hiloGlow font-semibold text-[13px] mb-1">✦ '+dayNum+' de '+meses[d.getMonth()]+' — Dentro de tu ventana</p><p class="text-arena/80 text-[12.5px]">Aquí tu Hilo se estira. Lugar con agua o música en vivo. Ve sin expectativa, con presencia. Tu energía estará receptiva.</p>';
+          tooltip.style.cssText='background:rgba(139,0,0,.18);border:1px solid rgba(196,30,58,.35)';
+        } else {
+          tooltip.innerHTML='<p class="text-arena/60 font-semibold text-[13px] mb-1">'+dayNum+' de '+meses[d.getMonth()]+' — Energía neutra</p><p class="text-arena/55 text-[12.5px]">Enfócate en tu ritual y en la meditación del Capítulo 8. Prepara tu energía para la ventana.</p>';
+          tooltip.style.cssText='background:rgba(91,45,142,.1);border:1px solid rgba(201,161,90,.2)';
+        }
+        tooltip.scrollIntoView({behavior:'smooth',block:'nearest'});
+      });
+    }
+    grid.appendChild(cell);
+  }
+}
+
+/* ═══ Carousel ═══ */
+(function(){
+  const carousel=document.getElementById('carousel');
+  if(!carousel) return;
+  const slides=carousel.children;
+  const total=slides.length;
+  let idx=0;
+  const prev=document.getElementById('carousel-prev');
+  const next=document.getElementById('carousel-next');
+  const dots=document.querySelectorAll('#carousel-dots .carousel-dot');
+
+  function go(i){
+    idx=Math.max(0,Math.min(total-1,i));
+    carousel.style.transform='translateX(-'+idx*100+'%)';
+    prev.style.opacity=idx>0?'1':'0';
+    prev.style.pointerEvents=idx>0?'auto':'none';
+    next.style.opacity=idx<total-1?'1':'0';
+    next.style.pointerEvents=idx<total-1?'auto':'none';
+    dots.forEach((d,j)=>d.style.background=j===idx?'#C9A15A':'rgba(201,161,90,.3)');
+  }
+  prev.addEventListener('click',()=>go(idx-1));
+  next.addEventListener('click',()=>go(idx+1));
+  dots.forEach((d,j)=>d.addEventListener('click',()=>go(j)));
+
+  // Touch swipe
+  let sx=0,dx=0;
+  carousel.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;dx=0},{passive:true});
+  carousel.addEventListener('touchmove',e=>{dx=e.touches[0].clientX-sx},{passive:true});
+  carousel.addEventListener('touchend',()=>{if(Math.abs(dx)>40){dx<0?go(idx+1):go(idx-1)}});
+  go(0);
+})();
+
+/* ═══ Finish / Nav ═══ */
+document.getElementById('btn-finish').addEventListener('click',()=>show('screen-end'));
+document.getElementById('btn-releer').addEventListener('click',()=>{show('screen-roadmap');initRM();buildCalendar()});
+</script>
+
+
+</body></html>
