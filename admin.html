@@ -40,12 +40,17 @@
   }
   .toolbar input { flex:1; min-width:160px; }
   .toolbar .btn { width:auto; padding:0 16px; min-height:40px; }
+  .toolbar .btn-danger { background:#991b1b; }
+  .toolbar .btn[disabled] { opacity:.5; cursor:not-allowed; }
+  .toolbar .selection-note { font-size:12px; color:var(--muted); }
   .wrap { padding:0 24px 40px; overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; background:var(--card); border-radius:14px; overflow:hidden; border:1px solid var(--line); min-width:860px; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border-radius:14px; overflow:hidden; border:1px solid var(--line); min-width:920px; }
   th, td { padding:12px 14px; text-align:left; border-bottom:1px solid var(--line); font-size:13px; vertical-align:middle; }
   th { color:var(--muted); font-weight:600; background:#140d22; white-space:nowrap; }
   tr:last-child td { border-bottom:none; }
   tr:hover td { background:#22153a; cursor:pointer; }
+  th.select-col, td.select-col { width:42px; text-align:center; padding-left:10px; padding-right:10px; }
+  input[type="checkbox"] { width:16px; height:16px; accent-color: var(--accent); cursor:pointer; }
   .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:11px; color:#c4b5fd; word-break:break-all; }
   .pill { display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; white-space:nowrap; }
   .quiz, .started, .in_progress { background:#3b2760; color:#e9d5ff; }
@@ -116,6 +121,8 @@
       <option value="checkout">Checkout (clic)</option>
       <option value="purchased">Comprou</option>
     </select>
+    <span class="selection-note" id="selectionNote">0 selecionados</span>
+    <button class="btn btn-danger" id="deleteBtn" onclick="deleteSelected()" disabled>Excluir selecionados</button>
     <button class="btn" onclick="loadSessions()">Actualizar</button>
   </div>
 
@@ -123,6 +130,7 @@
     <table>
       <thead>
         <tr>
+          <th class="select-col"><input type="checkbox" id="selectAll" onclick="toggleSelectAll(event)"></th>
           <th>ID</th>
           <th>IP</th>
           <th>Nombre</th>
@@ -133,7 +141,7 @@
           <th>Última actividad</th>
         </tr>
       </thead>
-      <tbody id="rows"><tr><td colspan="8" class="muted">Cargando…</td></tr></tbody>
+      <tbody id="rows"><tr><td colspan="9" class="muted">Cargando…</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -186,6 +194,7 @@ function statusPillClass(status) {
 
 let SESSIONS = [];
 let KEY = sessionStorage.getItem('almagemela_admin_key') || '';
+let SELECTED = new Set();
 
 function ago(iso) {
   if (!iso) return '—';
@@ -236,12 +245,13 @@ async function loadSessions() {
     }
     if (!res.ok) {
       document.getElementById('rows').innerHTML =
-        `<tr><td colspan="8" class="muted">${data.error || 'Error'} ${data.detail ? '· ' + data.detail : ''}<br><br>¿Ya corriste el SQL de quiz_sessions en Supabase? ¿ADMIN_PASSWORD en Vercel?</td></tr>`;
+        `<tr><td colspan="9" class="muted">${data.error || 'Error'} ${data.detail ? '· ' + data.detail : ''}<br><br>¿Ya corriste el SQL de quiz_sessions en Supabase? ¿ADMIN_PASSWORD en Vercel?</td></tr>`;
       document.getElementById('login').style.display = 'none';
       document.getElementById('app').style.display = 'block';
       return true;
     }
     SESSIONS = data.sessions || [];
+    syncSelection();
     const s = data.stats || {};
     document.getElementById('sTotal').textContent = s.total || 0;
     document.getElementById('sToday').textContent = s.today || 0;
@@ -271,6 +281,7 @@ function render() {
     if (q && !(String(r.name || '').toLowerCase().includes(q) || String(r.visitor_id || '').includes(q) || String(r.ip || '').includes(q))) return false;
     return true;
   });
+  updateSelectionUi(filtered);
   document.getElementById('rows').innerHTML = filtered.map((r) => {
     const step = r.current_step || 0;
     const max = Math.max(r.max_step || 0, step);
@@ -280,7 +291,10 @@ function render() {
     const pill = statusPillClass(r.status);
     const vsl = vslLabel(r);
     const paso = escapeHtml(r.step_label || (max + '/19'));
+    const key = sessionKey(r);
+    const checked = SELECTED.has(key) ? 'checked' : '';
     return `<tr onclick="openDetail('${r.id}')">
+      <td class="select-col" onclick="event.stopPropagation()"><input type="checkbox" ${checked} onchange="toggleRowSelection('${escapeJs(key)}', this.checked)"></td>
       <td class="mono" title="${escapeHtml(r.visitor_id || '')}">${shortId(r.visitor_id)}</td>
       <td class="mono">${escapeHtml(r.ip || '—')}</td>
       <td>${name}</td>
@@ -290,11 +304,101 @@ function render() {
       <td><span class="pill ${pill}">${tag}</span></td>
       <td>${ago(r.updated_at)}</td>
     </tr>`;
-  }).join('') || `<tr><td colspan="8" class="muted">Sin sesiones aún. Abre el quiz y avanza algunos pasos.</td></tr>`;
+  }).join('') || `<tr><td colspan="9" class="muted">Sin sesiones aún. Abre el quiz y avanza algunos pasos.</td></tr>`;
 }
 
 function escapeHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function escapeJs(s) {
+  return String(s || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+function sessionKey(r) {
+  return String(r.storage || '') + ':' + String(r.id || '') + ':' + String(r.visitor_id || '');
+}
+
+function syncSelection() {
+  const valid = new Set(SESSIONS.map(sessionKey));
+  SELECTED = new Set(Array.from(SELECTED).filter((key) => valid.has(key)));
+}
+
+function updateSelectionUi(filtered) {
+  const note = document.getElementById('selectionNote');
+  const btn = document.getElementById('deleteBtn');
+  const selectAll = document.getElementById('selectAll');
+  const visibleKeys = filtered.map(sessionKey);
+  const selectedVisible = visibleKeys.filter((key) => SELECTED.has(key)).length;
+  if (note) note.textContent = `${SELECTED.size} selecionados`;
+  if (btn) btn.disabled = SELECTED.size === 0;
+  if (selectAll) {
+    selectAll.checked = visibleKeys.length > 0 && selectedVisible === visibleKeys.length;
+    selectAll.indeterminate = selectedVisible > 0 && selectedVisible < visibleKeys.length;
+  }
+}
+
+function toggleRowSelection(key, checked) {
+  if (checked) SELECTED.add(key);
+  else SELECTED.delete(key);
+  render();
+}
+
+function toggleSelectAll(event) {
+  const checked = !!(event && event.target && event.target.checked);
+  const q = (document.getElementById('q').value || '').trim().toLowerCase();
+  const st = document.getElementById('status').value;
+  const filtered = SESSIONS.filter(r => {
+    if (st === 'vsl_play' && !r.vsl_started) return false;
+    else if (st === 'vsl_offer' && !r.vsl_offer_shown) return false;
+    else if (st === 'vsl_no' && (r.vsl_started || r.vsl_offer_shown)) return false;
+    else if (st && st !== 'vsl_play' && st !== 'vsl_offer' && st !== 'vsl_no' && funnelKey(r.status) !== st) return false;
+    if (q && !(String(r.name || '').toLowerCase().includes(q) || String(r.visitor_id || '').includes(q) || String(r.ip || '').includes(q))) return false;
+    return true;
+  });
+  filtered.forEach((r) => {
+    const key = sessionKey(r);
+    if (checked) SELECTED.add(key);
+    else SELECTED.delete(key);
+  });
+  render();
+}
+
+async function deleteSelected() {
+  const items = SESSIONS.filter((r) => SELECTED.has(sessionKey(r)))
+    .map((r) => ({ id: r.id, visitor_id: r.visitor_id, storage: r.storage }));
+  if (!items.length) return;
+  const ok = window.confirm(`Excluir ${items.length} lead(s) selecionado(s)? Essa ação não pode ser desfeita.`);
+  if (!ok) return;
+  const btn = document.getElementById('deleteBtn');
+  const prevText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Excluyendo...';
+  try {
+    const res = await fetch('/api/admin', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Key': KEY,
+      },
+      body: JSON.stringify({ items }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok && res.status !== 207) {
+      alert(data.error || 'No se pudo excluir');
+      return;
+    }
+    SELECTED.clear();
+    if (data.failed_count) {
+      alert(`Excluídos: ${data.deleted_count || 0}. Falharam: ${data.failed_count}.`);
+    }
+    await loadSessions();
+  } catch (e) {
+    alert('No se pudo excluir los leads.');
+  } finally {
+    btn.textContent = prevText;
+    btn.disabled = SELECTED.size === 0;
+  }
 }
 
 function openDetail(id) {

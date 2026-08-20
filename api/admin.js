@@ -12,6 +12,19 @@ function adminPassword() {
   return String(process.env.ADMIN_PASSWORD || process.env.ALMAGEMELA_ADMIN_PASSWORD || '').trim();
 }
 
+function parseBody(req) {
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body || '{}'); } catch { body = {}; }
+  }
+  return body && typeof body === 'object' ? body : {};
+}
+
+function sessionEmail(visitorId) {
+  const safe = String(visitorId).toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 64);
+  return `v_${safe}@progress.almagemela.local`;
+}
+
 function checkAuth(req) {
   const expected = adminPassword();
   if (!expected) return { ok: false, reason: 'ADMIN_PASSWORD não configurada na Vercel' };
@@ -81,11 +94,10 @@ function normalizeFromSession(row) {
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Key, Authorization');
 
   if (req.method === 'OPTIONS') return res.status(204).end();
-  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   const auth = checkAuth(req);
   if (!auth.ok) return res.status(401).json({ error: auth.reason });
@@ -103,6 +115,95 @@ module.exports = async function handler(req, res) {
     apikey: supabaseKey,
     Authorization: `Bearer ${supabaseKey}`,
   };
+
+  if (req.method === 'DELETE') {
+    const body = parseBody(req);
+    const items = Array.isArray(body.items) ? body.items : [];
+    if (!items.length) {
+      return res.status(400).json({ error: 'Nenhum lead selecionado' });
+    }
+
+    const deleted = [];
+    const failed = [];
+
+    for (const item of items) {
+      const visitorId = String(item && item.visitor_id || '').trim().slice(0, 80);
+      const leadId = String(item && item.id || '').trim().slice(0, 80);
+      const storage = String(item && item.storage || '').trim();
+
+      if (!visitorId && !leadId) {
+        failed.push({ id: leadId || null, visitor_id: visitorId || null, reason: 'Identificador inválido' });
+        continue;
+      }
+
+      try {
+        let quizDeleted = false;
+        let leadsDeleted = false;
+
+        if (visitorId) {
+          const quizRes = await fetch(
+            `${supabaseUrl}/rest/v1/quiz_sessions?visitor_id=eq.${encodeURIComponent(visitorId)}`,
+            { method: 'DELETE', headers: { ...headers, Prefer: 'return=representation' } }
+          );
+          if (!quizRes.ok) {
+            const detail = await quizRes.text();
+            throw new Error(`quiz_sessions: ${detail.slice(0, 160)}`);
+          }
+          const quizRows = await quizRes.json().catch(() => []);
+          quizDeleted = Array.isArray(quizRows) && quizRows.length > 0;
+
+          const email = sessionEmail(visitorId);
+          const leadByEmailRes = await fetch(
+            `${supabaseUrl}/rest/v1/leads?email=eq.${encodeURIComponent(email)}`,
+            { method: 'DELETE', headers: { ...headers, Prefer: 'return=representation' } }
+          );
+          if (!leadByEmailRes.ok) {
+            const detail = await leadByEmailRes.text();
+            throw new Error(`leads email: ${detail.slice(0, 160)}`);
+          }
+          const leadRows = await leadByEmailRes.json().catch(() => []);
+          leadsDeleted = Array.isArray(leadRows) && leadRows.length > 0;
+        }
+
+        if (!leadsDeleted && storage === 'leads' && leadId) {
+          const leadByIdRes = await fetch(
+            `${supabaseUrl}/rest/v1/leads?id=eq.${encodeURIComponent(leadId)}`,
+            { method: 'DELETE', headers: { ...headers, Prefer: 'return=representation' } }
+          );
+          if (!leadByIdRes.ok) {
+            const detail = await leadByIdRes.text();
+            throw new Error(`leads id: ${detail.slice(0, 160)}`);
+          }
+          const leadRows = await leadByIdRes.json().catch(() => []);
+          leadsDeleted = Array.isArray(leadRows) && leadRows.length > 0;
+        }
+
+        deleted.push({
+          id: leadId || null,
+          visitor_id: visitorId || null,
+          storage,
+          quiz_sessions: quizDeleted,
+          leads: leadsDeleted,
+        });
+      } catch (err) {
+        failed.push({
+          id: leadId || null,
+          visitor_id: visitorId || null,
+          reason: err && err.message ? err.message : 'Erro ao excluir',
+        });
+      }
+    }
+
+    return res.status(failed.length ? 207 : 200).json({
+      ok: failed.length === 0,
+      deleted_count: deleted.length,
+      failed_count: failed.length,
+      deleted,
+      failed,
+    });
+  }
+
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   let sessions = [];
 
