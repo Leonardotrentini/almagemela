@@ -25,6 +25,10 @@ function sessionEmail(visitorId) {
   return `v_${safe}@progress.almagemela.local`;
 }
 
+function isMissingQuizSessions(status, text) {
+  return status === 404 || /PGRST205|quiz_sessions/i.test(String(text || ''));
+}
+
 function checkAuth(req) {
   const expected = adminPassword();
   if (!expected) return { ok: false, reason: 'ADMIN_PASSWORD não configurada na Vercel' };
@@ -147,10 +151,13 @@ module.exports = async function handler(req, res) {
           );
           if (!quizRes.ok) {
             const detail = await quizRes.text();
-            throw new Error(`quiz_sessions: ${detail.slice(0, 160)}`);
+            if (!isMissingQuizSessions(quizRes.status, detail)) {
+              throw new Error(`quiz_sessions: ${detail.slice(0, 160)}`);
+            }
+          } else {
+            const quizRows = await quizRes.json().catch(() => []);
+            quizDeleted = Array.isArray(quizRows) && quizRows.length > 0;
           }
-          const quizRows = await quizRes.json().catch(() => []);
-          quizDeleted = Array.isArray(quizRows) && quizRows.length > 0;
 
           const email = sessionEmail(visitorId);
           const leadByEmailRes = await fetch(
