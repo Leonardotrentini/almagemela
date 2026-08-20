@@ -659,9 +659,9 @@ body {
 }
 #btn-vsl-cta {
   display: block;
-  width: calc(100% - 16px);
-  max-width: 400px;
-  margin: 16px auto 24px;
+  width: 100%;
+  max-width: none;
+  margin: 12px 0 14px;
   padding: 16px 18px;
   font-family: var(--font-sans);
   font-size: 16px;
@@ -1186,10 +1186,82 @@ body {
   <div class="slide" id="slide-offer">
     <div class="reading">
       <div class="cta" style="margin-top:0;padding-top:8px;">
+        <h2 class="offer-vsl-headline" data-tpl="{{NOME}}, tu Hilo Rojo apareció antes de girar la primera carta">Tu Hilo Rojo apareció antes de girar la primera carta</h2>
         <div class="vsl-wrap">
           <wistia-player media-id="7inld7rbw4" seo="false" aspect="0.5625"></wistia-player>
         </div>
-        <button type="button" id="btn-vsl-cta" class="btn-hilo" onclick="goCheckout(event)">¡Recibir consulta completa!</button>
+        <div class="offer-wrap" id="offer-card">
+          <div class="offer-glow" aria-hidden="true"></div>
+          <div class="offer-box">
+            <div class="offer-badge">🔥 OFERTA DE HOY · 94% OFF</div>
+            <div class="offer-scarcity">
+              <span class="dot"></span>
+              <span>Verificando agenda de Martha · <b>2 lugares hoy</b></span>
+            </div>
+            <div class="offer-price-row">
+              De <span class="old">$147 USD</span> por <span class="new">$9 USD</span> hoy
+            </div>
+            <div class="offer-anchor">Entrega en 2 minutos en tu email</div>
+            <h3 class="offer-title" data-tpl="{{NOME}}, tu Hilo Rojo está listo.">Tu Hilo Rojo está listo.</h3>
+            <ul class="offer-stack">
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span class="item-main">Lectura Completa del Alma Gemela por Martha (PDF)</span>
+                <span class="val">$47</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span class="item-main">Audio de 5 min canalizado por Martha</span>
+                <span class="val">$37</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span class="item-main"><span class="bono">BONUS 1:</span> Iniciales de tu alma gemela</span>
+                <span class="val">$27</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span class="item-main"><span class="bono">BONUS 2:</span> Ventana de encuentro: cuándo y dónde</span>
+                <span class="val">$19</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span class="item-main"><span class="bono">BONUS 3:</span> Qué lo está bloqueando y cómo desbloquearlo</span>
+                <span class="val">$17</span>
+              </li>
+            </ul>
+            <div class="offer-divider"></div>
+            <div class="offer-total">Valor total $147 <span class="arrow">→</span> Hoy solo <span class="today">$9</span></div>
+            <div class="offer-timer" id="offerTimer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+              <span>Esta lectura expira en <b id="offerTimerClock">15:00</b></span>
+            </div>
+            <button type="button" id="btn-vsl-cta" class="btn-hilo" onclick="goCheckout(event)">¡Recibir consulta completa!</button>
+            <div class="offer-trust">
+              <div class="t">
+                <svg class="lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                100% confidencial
+              </div>
+              <div class="t">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                12.431 lecturas · 4.8/5
+              </div>
+            </div>
+            <div class="offer-pay">
+              <div class="offer-pay-icons" aria-label="Métodos de pago">
+                <span class="pay-chip visa">VISA</span>
+                <span class="pay-chip mc">MC</span>
+                <span class="pay-chip pp">PayPal</span>
+                <span class="pay-chip pix">Pix</span>
+              </div>
+              <div class="offer-pay-note">Pago seguro · Entrega inmediata en 2 min · Garantía 7 días</div>
+            </div>
+          </div>
+        </div>
+        <div class="guar-soft">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Garantía de 7 días · Si no resuena contigo, te devolvemos el 100% sin preguntas</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1634,8 +1706,29 @@ function revealOferta() {
   goToSlide(19);
   trackProgress({ event: 'offer_open', current_step: 19, status: 'reading', immediate: true });
 }
+const OFFER_WINDOW_MS = 15 * 60 * 1000;
 function showOfferPage() {
   markVsl({ page: true, offer_shown: true });
+  startOfferTimer();
+}
+function startOfferTimer() {
+  const clock = document.getElementById('offerTimerClock');
+  if (!clock) return;
+  let startedAt = parseInt(sessionStorage.getItem('almagemela_offer_start') || '0', 10);
+  if (!startedAt || Date.now() - startedAt > OFFER_WINDOW_MS) {
+    startedAt = Date.now();
+    try { sessionStorage.setItem('almagemela_offer_start', String(startedAt)); } catch(e){}
+  }
+  if (window._offerTimer) clearInterval(window._offerTimer);
+  const tick = () => {
+    const left = Math.max(0, OFFER_WINDOW_MS - (Date.now() - startedAt));
+    const mm = String(Math.floor(left / 60000)).padStart(2,'0');
+    const ss = String(Math.floor((left % 60000) / 1000)).padStart(2,'0');
+    clock.textContent = mm + ':' + ss;
+    if (left <= 0) clearInterval(window._offerTimer);
+  };
+  tick();
+  window._offerTimer = setInterval(tick, 1000);
 }
 function markVsl(patch) {
   const prev = (data && data.vsl) || {};
