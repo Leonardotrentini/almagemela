@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<meta name="almagemela-build" content="v7.0-hilo-rojo-9usd">
+<meta name="almagemela-build" content="v7.1-vturb-card-65s">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -286,9 +286,14 @@ body {
 }
 .offer-wrap {
   position: relative;
-  max-width: 24rem;
-  margin: 8px auto 0;
-  padding: 4px;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 0;
+}
+#card-oferta {
+  max-width: 400px;
+  width: calc(100% - 16px);
+  margin: 16px auto 0;
 }
 .offer-glow {
   position: absolute;
@@ -303,11 +308,11 @@ body {
   position: relative;
   z-index: 1;
   margin: 0 0 16px;
-  padding: 24px 20px;
-  border-radius: 1.5rem;
-  background: #fff;
+  padding: 20px 16px;
+  border-radius: 16px;
+  background: #FFFFFF;
   border: 1px solid #ede9fe;
-  box-shadow: 0 25px 50px -12px rgba(109, 40, 217, 0.18);
+  box-shadow: 0 8px 32px rgba(109, 40, 217, 0.12);
   text-align: center;
 }
 .offer-badge {
@@ -355,42 +360,40 @@ body {
 }
 @keyframes scarcityBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
 .offer-timer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 10px 12px;
-  margin-bottom: 14px;
+  display: block;
+  padding: 12px 14px;
+  margin-bottom: 16px;
   border-radius: 12px;
   background: #1e1b2e;
   color: #fde68a;
   font-size: 12px;
   font-weight: 600;
+  line-height: 1.45;
+  text-align: center;
 }
-.offer-timer svg { flex-shrink: 0; }
-.offer-timer b {
+.offer-timer svg { display: none; }
+.offer-timer b,
+.offer-timer .offer-timer-clock {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 15px;
+  font-weight: 800;
   color: #fff;
   letter-spacing: 0.5px;
 }
 .offer-price-row {
   font-size: 15px;
   color: var(--text-soft);
-  margin-bottom: 10px;
+  margin-bottom: 16px;
   line-height: 1.35;
 }
 .offer-price-row .old { text-decoration: line-through; }
 .offer-price-row .new {
   display: inline-block;
   font-family: var(--font-serif);
-  font-size: 34px;
-  font-weight: 800;
+  font-size: 32px;
+  font-weight: 700;
   line-height: 1;
-  background: linear-gradient(90deg, #7c3aed, #8b5cf6);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #6B21A8;
   vertical-align: middle;
   margin: 0 2px;
 }
@@ -403,7 +406,7 @@ body {
 }
 .offer-stack {
   list-style: none;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   padding: 0;
   text-align: left;
 }
@@ -414,8 +417,9 @@ body {
   font-size: 13px;
   color: var(--ink);
   line-height: 1.4;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 }
+.offer-stack li:last-child { margin-bottom: 0; }
 .offer-stack li svg { flex-shrink: 0; margin-top: 1px; color: #16a34a; }
 .offer-stack .val {
   color: var(--text-soft);
@@ -674,7 +678,7 @@ body {
   display: block;
   width: 100%;
   max-width: none;
-  margin: 12px 0 14px;
+  margin: 0 0 10px;
   padding: 16px 18px;
   font-family: var(--font-sans);
   font-size: 16px;
@@ -682,10 +686,16 @@ body {
   letter-spacing: 0.2px;
   border-radius: 999px;
   cursor: pointer;
-  background: linear-gradient(180deg,#A31226,#8B0000 60%,#5E0000);
-  color: #F5E6D3;
-  border: 1px solid rgba(232,207,160,.4);
-  box-shadow: 0 8px 24px rgba(139,0,0,.45);
+  background: linear-gradient(180deg, #6B21A8, #4C1D95);
+  color: #fff;
+  border: none;
+  box-shadow: 0 8px 24px rgba(107, 33, 168, 0.45);
+}
+.btn-vsl-note {
+  font-size: 11px;
+  color: var(--text-soft);
+  margin: 0 0 16px;
+  line-height: 1.4;
 }
 #btn-vsl-cta.hidden {
   display: none;
@@ -699,8 +709,8 @@ body {
   pointer-events: none;
 }
 @keyframes btnHiloPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 8px 24px rgba(139,0,0,.45); }
-  50% { transform: scale(1.03); box-shadow: 0 12px 28px rgba(139,0,0,.7); }
+  0%, 100% { transform: scale(1); box-shadow: 0 8px 24px rgba(107, 33, 168, 0.45); }
+  50% { transform: scale(1.02); box-shadow: 0 12px 28px rgba(107, 33, 168, 0.65); }
 }
 #btn-vsl-cta.btn-hilo {
   animation: btnHiloPulse 1.4s ease-in-out infinite;
@@ -1205,6 +1215,7 @@ body {
             <div class="vturb-player-placeholder" style="position:relative;width:100%;padding:177.77777777777777% 0 0;z-index:0;background-color:#000;"></div>
           </vturb-smartplayer>
         </div>
+        <div id="card-oferta" style="display:none;opacity:0;transition:opacity 0.6s ease;">
         <div class="offer-wrap" id="offer-card">
           <div class="offer-glow" aria-hidden="true"></div>
           <div class="offer-box">
@@ -1217,7 +1228,7 @@ body {
               De <span class="old">$147 USD</span> por <span class="new">$9 USD</span> hoy
             </div>
             <div class="offer-anchor">Entrega en 2 minutos en tu email</div>
-            <h3 class="offer-title" data-tpl="{{NOME}}, tu Hilo Rojo está listo.">Tu Hilo Rojo está listo.</h3>
+            <h3 class="offer-title" data-tpl="{{NOME}}, tu Hilo Rojo está listo. Vi tu inicial.">Tu Hilo Rojo está listo. Vi tu inicial.</h3>
             <ul class="offer-stack">
               <li>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -1248,10 +1259,10 @@ body {
             <div class="offer-divider"></div>
             <div class="offer-total">Valor total $147 <span class="arrow">→</span> Hoy solo <span class="today">$9</span></div>
             <div class="offer-timer" id="offerTimer">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
-              <span>Esta lectura expira en <b id="offerTimerClock">15:00</b></span>
+              <span>Tu lectura está reservada por <b class="offer-timer-clock" id="offerTimerClock">15:00</b>. Solo hay 2 lugares hoy. Después se libera para otra mujer.</span>
             </div>
             <button type="button" id="btn-vsl-cta" class="btn-hilo" onclick="goCheckout(event)">¡Recibir consulta completa!</button>
+            <p class="btn-vsl-note">Pago seguro · Entrega inmediata en 2 min · Garantía 7 días</p>
             <div class="offer-trust">
               <div class="t">
                 <svg class="lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -1269,13 +1280,13 @@ body {
                 <span class="pay-chip pp">PayPal</span>
                 <span class="pay-chip pix">Pix</span>
               </div>
-              <div class="offer-pay-note">Pago seguro · Entrega inmediata en 2 min · Garantía 7 días</div>
             </div>
           </div>
         </div>
         <div class="guar-soft">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span>Garantía de 7 días · Si no resuena contigo, te devolvemos el 100% sin preguntas</span>
+        </div>
         </div>
       </div>
     </div>
@@ -1722,9 +1733,61 @@ function revealOferta() {
   trackProgress({ event: 'offer_open', current_step: 19, status: 'reading', immediate: true });
 }
 const OFFER_WINDOW_MS = 15 * 60 * 1000;
-function showOfferPage() {
-  markVsl({ page: true, offer_shown: true });
+const OFFER_CARD_DELAY_S = 65;
+let cardMostrado = false;
+
+function mostrarCard() {
+  if (cardMostrado) return;
+  cardMostrado = true;
+  const card = document.getElementById('card-oferta');
+  if (!card) return;
+  card.style.display = 'block';
+  setTimeout(function() { card.style.opacity = '1'; }, 100);
+  try { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+  const secs = Math.max(getVturbCurrentTime(), OFFER_CARD_DELAY_S);
+  markVsl({ offer_shown: true, seconds: secs });
+  if (!window._vslOfferTracked) {
+    window._vslOfferTracked = true;
+    trackProgress({
+      event: 'vsl_offer',
+      current_step: 19,
+      status: 'reading',
+      step_label: '19/19 · Vio VSL 65s',
+      immediate: true
+    });
+  }
   startOfferTimer();
+}
+
+function checkOfferCardDelay(s) {
+  if (s >= OFFER_CARD_DELAY_S) mostrarCard();
+}
+
+function initOfferCardDelay() {
+  if (window._offerCardDelayInit) return;
+  window._offerCardDelayInit = true;
+
+  document.addEventListener('vturb_timeupdate', function(e) {
+    if (e.detail && e.detail.currentTime >= OFFER_CARD_DELAY_S) mostrarCard();
+  });
+
+  setTimeout(function() {
+    if (window.vturbPlayer && typeof window.vturbPlayer.getCurrentTime === 'function') {
+      const check = setInterval(function() {
+        if (window.vturbPlayer.getCurrentTime() >= OFFER_CARD_DELAY_S) {
+          mostrarCard();
+          clearInterval(check);
+        }
+      }, 500);
+    }
+  }, 1000);
+
+  setTimeout(mostrarCard, 70000);
+}
+
+function showOfferPage() {
+  markVsl({ page: true });
+  initOfferCardDelay();
 }
 function startOfferTimer() {
   const clock = document.getElementById('offerTimerClock');
@@ -1770,17 +1833,7 @@ function onVslSecond(s) {
       immediate: true
     });
   }
-  if (s >= 45 && !window._vslOfferTracked) {
-    window._vslOfferTracked = true;
-    markVsl({ offer_shown: true, seconds: s });
-    trackProgress({
-      event: 'vsl_offer',
-      current_step: 19,
-      status: 'reading',
-      step_label: '19/19 · Vio VSL 45s',
-      immediate: true
-    });
-  }
+  checkOfferCardDelay(s);
 }
 function getVturbCurrentTime() {
   try {
@@ -1815,12 +1868,19 @@ function markVslPlayOnce() {
   if (window._vslPlayWatch) return;
   window._vslPlayWatch = setInterval(function() {
     const t = getVturbCurrentTime();
-    if (t > 0) onVslSecond(t);
+    if (t > 0) {
+      onVslSecond(t);
+      checkOfferCardDelay(t);
+    }
   }, 400);
 }
 function bindVslCta() {
   if (window._vslBound) return;
   window._vslBound = true;
+
+  document.addEventListener('vturb_timeupdate', function(e) {
+    if (e.detail && e.detail.currentTime >= OFFER_CARD_DELAY_S) mostrarCard();
+  });
 
   document.addEventListener('play', function(e) {
     const t = e && e.target;
@@ -1842,6 +1902,7 @@ function bindVslCta() {
             if (t > 0) {
               markVslPlayOnce();
               onVslSecond(t);
+              checkOfferCardDelay(t);
             }
           }, 400);
         }
