@@ -13,9 +13,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<script src="https://fast.wistia.com/player.js" async></script>
-<script src="https://fast.wistia.com/embed/7inld7rbw4.js" async type="module"></script>
-<style>wistia-player[media-id='7inld7rbw4']:not(:defined) { background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/7inld7rbw4/swatch'); display: block; filter: blur(5px); padding-top:177.78%; }</style>
+<!-- VTurb / ConverteAI -->
+<script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
+<link rel="preload" href="https://scripts.converteai.net/706f603e-da23-448e-8182-df22e9f4f43d/players/6a8a9b2880d4acead2820bc7/v4/player.js" as="script">
+<link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
+<link rel="preload" href="https://cdn.converteai.net/706f603e-da23-448e-8182-df22e9f4f43d/6a8a9b22879f55929fa2edb5/main.m3u8" as="fetch">
+<link rel="dns-prefetch" href="https://cdn.converteai.net">
+<link rel="dns-prefetch" href="https://scripts.converteai.net">
+<link rel="dns-prefetch" href="https://images.converteai.net">
+<link rel="dns-prefetch" href="https://license.vturb.com">
+<script type="text/javascript">
+var s=document.createElement("script");
+s.src="https://scripts.converteai.net/706f603e-da23-448e-8182-df22e9f4f43d/players/6a8a9b2880d4acead2820bc7/v4/player.js";
+s.async=!0;
+document.head.appendChild(s);
+</script>
 <!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -653,9 +665,10 @@ body {
   overflow: hidden;
   background: #0A0A0F;
 }
-.vsl-wrap wistia-player {
+.vsl-wrap vturb-smartplayer {
   display: block;
   width: 100%;
+  max-width: 100%;
 }
 #btn-vsl-cta {
   display: block;
@@ -1188,7 +1201,9 @@ body {
       <div class="cta" style="margin-top:0;padding-top:8px;">
         <h2 class="offer-vsl-headline" data-tpl="{{NOME}}, tu Hilo Rojo apareció antes de girar la primera carta">Tu Hilo Rojo apareció antes de girar la primera carta</h2>
         <div class="vsl-wrap">
-          <wistia-player media-id="7inld7rbw4" seo="false" aspect="0.5625"></wistia-player>
+          <vturb-smartplayer id="vid-6a8a9b2880d4acead2820bc7" style="display:block;margin:0 auto;width:100%;max-width:400px;">
+            <div class="vturb-player-placeholder" style="position:relative;width:100%;padding:177.77777777777777% 0 0;z-index:0;background-color:#000;"></div>
+          </vturb-smartplayer>
         </div>
         <div class="offer-wrap" id="offer-card">
           <div class="offer-glow" aria-hidden="true"></div>
@@ -1767,32 +1782,72 @@ function onVslSecond(s) {
     });
   }
 }
+function getVturbCurrentTime() {
+  try {
+    const id = 'vid-6a8a9b2880d4acead2820bc7';
+    const sp = window.smartplayer;
+    if (sp && sp.instances) {
+      const inst = sp.instances[id] || Object.values(sp.instances)[0];
+      if (inst) {
+        if (typeof inst.currentTime === 'number') return inst.currentTime;
+        if (inst.video && typeof inst.video.currentTime === 'number') return inst.video.currentTime;
+      }
+    }
+    const el = document.getElementById(id);
+    if (!el) return 0;
+    const video = el.querySelector('video') || (el.shadowRoot && el.shadowRoot.querySelector('video'));
+    return video ? (video.currentTime || 0) : 0;
+  } catch (e) {
+    return 0;
+  }
+}
+function markVslPlayOnce() {
+  if (window._vslPlaySent) return;
+  window._vslPlaySent = true;
+  markVsl({ started: true, page: true });
+  trackProgress({
+    event: 'vsl_play',
+    current_step: 19,
+    status: 'reading',
+    step_label: '19/19 · Play VSL',
+    immediate: true
+  });
+  if (window._vslPlayWatch) return;
+  window._vslPlayWatch = setInterval(function() {
+    const t = getVturbCurrentTime();
+    if (t > 0) onVslSecond(t);
+  }, 400);
+}
 function bindVslCta() {
-  const player = document.querySelector('#slide-offer wistia-player');
-  if (!player || player._vslBound) return;
-  player._vslBound = true;
+  if (window._vslBound) return;
+  window._vslBound = true;
 
-  player.addEventListener('second-change', function(e) {
-    const s = (e && e.detail && e.detail.second != null) ? e.detail.second : 0;
-    onVslSecond(s);
-  });
-  player.addEventListener('time-update', function() {
-    onVslSecond(player.currentTime);
-  });
-  player.addEventListener('play', function() {
-    markVsl({ started: true, page: true });
-    trackProgress({
-      event: 'vsl_play',
-      current_step: 19,
-      status: 'reading',
-      step_label: '19/19 · Play VSL',
-      immediate: true
+  document.addEventListener('play', function(e) {
+    const t = e && e.target;
+    const host = document.getElementById('vid-6a8a9b2880d4acead2820bc7');
+    if (!t || t.tagName !== 'VIDEO' || !host) return;
+    if (host === t || host.contains(t) || (host.shadowRoot && host.shadowRoot.contains(t))) {
+      markVslPlayOnce();
+    }
+  }, true);
+
+  const el = document.getElementById('vid-6a8a9b2880d4acead2820bc7');
+  if (el) {
+    el.addEventListener('click', function() {
+      setTimeout(function() {
+        if (getVturbCurrentTime() > 0) markVslPlayOnce();
+        if (!window._vslPlayWatch) {
+          window._vslPlayWatch = setInterval(function() {
+            const t = getVturbCurrentTime();
+            if (t > 0) {
+              markVslPlayOnce();
+              onVslSecond(t);
+            }
+          }, 400);
+        }
+      }, 250);
     });
-    if (window._vslPlayWatch) return;
-    window._vslPlayWatch = setInterval(function() {
-      onVslSecond(player.currentTime);
-    }, 400);
-  });
+  }
 }
 function goCheckout(e) {
   if (e) e.preventDefault();
