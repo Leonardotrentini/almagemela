@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<meta name="almagemela-build" content="v7.1-vturb-card-65s">
+<meta name="almagemela-build" content="v7.2-vsl-lazy-load">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -13,21 +13,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<!-- VTurb / ConverteAI -->
-<script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
-<link rel="preload" href="https://scripts.converteai.net/706f603e-da23-448e-8182-df22e9f4f43d/players/6a8a9b2880d4acead2820bc7/v4/player.js" as="script">
-<link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
-<link rel="preload" href="https://cdn.converteai.net/706f603e-da23-448e-8182-df22e9f4f43d/6a8a9b22879f55929fa2edb5/main.m3u8" as="fetch">
+<!-- VTurb / ConverteAI — script carregado só no passo 19 (mountVslPlayer) -->
 <link rel="dns-prefetch" href="https://cdn.converteai.net">
 <link rel="dns-prefetch" href="https://scripts.converteai.net">
 <link rel="dns-prefetch" href="https://images.converteai.net">
 <link rel="dns-prefetch" href="https://license.vturb.com">
-<script type="text/javascript">
-var s=document.createElement("script");
-s.src="https://scripts.converteai.net/706f603e-da23-448e-8182-df22e9f4f43d/players/6a8a9b2880d4acead2820bc7/v4/player.js";
-s.async=!0;
-document.head.appendChild(s);
-</script>
 <!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
@@ -1211,9 +1201,7 @@ body {
       <div class="cta" style="margin-top:0;padding-top:8px;">
         <h2 class="offer-vsl-headline" data-tpl="{{NOME}}, tu Hilo Rojo apareció antes de girar la primera carta">Tu Hilo Rojo apareció antes de girar la primera carta</h2>
         <div class="vsl-wrap">
-          <vturb-smartplayer id="vid-6a8a9b2880d4acead2820bc7" style="display:block;margin:0 auto;width:100%;max-width:400px;">
-            <div class="vturb-player-placeholder" style="position:relative;width:100%;padding:177.77777777777777% 0 0;z-index:0;background-color:#000;"></div>
-          </vturb-smartplayer>
+          <div id="vsl-mount" aria-hidden="true"></div>
         </div>
         <div id="card-oferta" style="display:none;opacity:0;transition:opacity 0.6s ease;">
         <div class="offer-wrap" id="offer-card">
@@ -1225,7 +1213,7 @@ body {
               <span>Verificando agenda de Martha · <b>2 lugares hoy</b></span>
             </div>
             <div class="offer-price-row">
-              De <span class="old">$147 USD</span> por <span class="new">$9 USD</span> hoy
+              De <span class="old">$147 USD</span> por <span class="new">$5 USD</span> hoy
             </div>
             <div class="offer-anchor">Entrega en 2 minutos en tu email</div>
             <h3 class="offer-title" data-tpl="{{NOME}}, tu Hilo Rojo está listo. Vi tu inicial.">Tu Hilo Rojo está listo. Vi tu inicial.</h3>
@@ -1257,7 +1245,7 @@ body {
               </li>
             </ul>
             <div class="offer-divider"></div>
-            <div class="offer-total">Valor total $147 <span class="arrow">→</span> Hoy solo <span class="today">$9</span></div>
+            <div class="offer-total">Valor total $147 <span class="arrow">→</span> Hoy solo <span class="today">$5</span></div>
             <div class="offer-timer" id="offerTimer">
               <span>Tu lectura está reservada por <b class="offer-timer-clock" id="offerTimerClock">15:00</b>. Solo hay 2 lugares hoy. Después se libera para otra mujer.</span>
             </div>
@@ -1507,6 +1495,7 @@ function goToSlide(n) {
   if (n < 0) n = 0;
   if (n > 19) n = 19;
   if (_loadingTimer) { clearTimeout(_loadingTimer); _loadingTimer = null; }
+  if (currentSlide === 19 && n !== 19) pauseVsl();
 
   document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
   const id = SLIDE_IDS[n];
@@ -1528,9 +1517,12 @@ function goToSlide(n) {
     }, 1200);
   }
 
+  if (n === 17) loadVslScript();
+
   if (n === 19) {
-    bindVslCta();
+    mountVslPlayer();
     showOfferPage();
+    bindVslCta();
     trackProgress({ event: 'vsl_page', current_step: 19, status: 'reading', step_label: STEP_LABEL[19], immediate: true });
   }
 
@@ -1733,8 +1725,47 @@ function revealOferta() {
   trackProgress({ event: 'offer_open', current_step: 19, status: 'reading', immediate: true });
 }
 const OFFER_WINDOW_MS = 15 * 60 * 1000;
-const OFFER_CARD_DELAY_S = 65;
+const OFFER_CARD_DELAY_S = 40;
+const VSL_PLAYER_ID = 'vid-6a8a9b2880d4acead2820bc7';
+const VSL_SCRIPT_SRC = 'https://scripts.converteai.net/706f603e-da23-448e-8182-df22e9f4f43d/players/6a8a9b2880d4acead2820bc7/v4/player.js';
 let cardMostrado = false;
+
+function loadVslScript() {
+  if (window._vslScriptLoaded || window._vslScriptLoading) return;
+  window._vslScriptLoading = true;
+  if (!window._plt) {
+    window._plt = (window.performance && window.performance.timeOrigin)
+      ? window.performance.timeOrigin + window.performance.now()
+      : Date.now();
+  }
+  const s = document.createElement('script');
+  s.src = VSL_SCRIPT_SRC;
+  s.async = true;
+  s.onload = function() { window._vslScriptLoaded = true; };
+  document.head.appendChild(s);
+}
+
+function mountVslPlayer() {
+  if (window._vslMounted) return;
+  const mount = document.getElementById('vsl-mount');
+  if (!mount) return;
+  window._vslMounted = true;
+  mount.setAttribute('aria-hidden', 'false');
+  mount.innerHTML =
+    '<vturb-smartplayer id="' + VSL_PLAYER_ID + '" style="display:block;margin:0 auto;width:100%;max-width:400px;">' +
+    '<div class="vturb-player-placeholder" style="position:relative;width:100%;padding:177.77777777777777% 0 0;z-index:0;background-color:#000;"></div>' +
+    '</vturb-smartplayer>';
+  loadVslScript();
+}
+
+function pauseVsl() {
+  try {
+    const el = document.getElementById(VSL_PLAYER_ID);
+    if (!el) return;
+    const video = el.querySelector('video') || (el.shadowRoot && el.shadowRoot.querySelector('video'));
+    if (video && !video.paused) video.pause();
+  } catch (e) {}
+}
 
 function mostrarCard() {
   if (cardMostrado) return;
@@ -1743,7 +1774,6 @@ function mostrarCard() {
   if (!card) return;
   card.style.display = 'block';
   setTimeout(function() { card.style.opacity = '1'; }, 100);
-  try { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
   const secs = Math.max(getVturbCurrentTime(), OFFER_CARD_DELAY_S);
   markVsl({ offer_shown: true, seconds: secs });
   if (!window._vslOfferTracked) {
@@ -1752,7 +1782,7 @@ function mostrarCard() {
       event: 'vsl_offer',
       current_step: 19,
       status: 'reading',
-      step_label: '19/19 · Vio VSL 65s',
+      step_label: '19/19 · Vio VSL 40s',
       immediate: true
     });
   }
@@ -1782,7 +1812,7 @@ function initOfferCardDelay() {
     }
   }, 1000);
 
-  setTimeout(mostrarCard, 70000);
+  setTimeout(mostrarCard, 45000);
 }
 
 function showOfferPage() {
@@ -1837,7 +1867,7 @@ function onVslSecond(s) {
 }
 function getVturbCurrentTime() {
   try {
-    const id = 'vid-6a8a9b2880d4acead2820bc7';
+    const id = VSL_PLAYER_ID;
     const sp = window.smartplayer;
     if (sp && sp.instances) {
       const inst = sp.instances[id] || Object.values(sp.instances)[0];
@@ -1884,14 +1914,14 @@ function bindVslCta() {
 
   document.addEventListener('play', function(e) {
     const t = e && e.target;
-    const host = document.getElementById('vid-6a8a9b2880d4acead2820bc7');
+    const host = document.getElementById(VSL_PLAYER_ID);
     if (!t || t.tagName !== 'VIDEO' || !host) return;
     if (host === t || host.contains(t) || (host.shadowRoot && host.shadowRoot.contains(t))) {
       markVslPlayOnce();
     }
   }, true);
 
-  const el = document.getElementById('vid-6a8a9b2880d4acead2820bc7');
+  const el = document.getElementById(VSL_PLAYER_ID);
   if (el) {
     el.addEventListener('click', function() {
       setTimeout(function() {
@@ -1913,7 +1943,7 @@ function bindVslCta() {
 function goCheckout(e) {
   if (e) e.preventDefault();
   const url = hotmartUrl(HOTMART_MAIN_URL);
-  trackProgress({ event: 'checkout_9', status: 'checkout', current_step: 19, step_label: 'Checkout $9', immediate: true });
+  trackProgress({ event: 'checkout_5', status: 'checkout', current_step: 19, step_label: 'Checkout $5', immediate: true });
   setTimeout(function() { window.location.href = url; }, 120);
 }
 
