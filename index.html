@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<meta name="almagemela-build" content="v7.2-vsl-lazy-load">
+<meta name="almagemela-build" content="v7.3-vsl-fix-init">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -1201,7 +1201,9 @@ body {
       <div class="cta" style="margin-top:0;padding-top:8px;">
         <h2 class="offer-vsl-headline" data-tpl="{{NOME}}, tu Hilo Rojo apareció antes de girar la primera carta">Tu Hilo Rojo apareció antes de girar la primera carta</h2>
         <div class="vsl-wrap">
-          <div id="vsl-mount" aria-hidden="true"></div>
+          <vturb-smartplayer id="vid-6a8a9b2880d4acead2820bc7" style="display:block;margin:0 auto;width:100%;max-width:400px;">
+            <div class="vturb-player-placeholder" style="position:relative;width:100%;padding:177.77777777777777% 0 0;z-index:0;background-color:#000;"></div>
+          </vturb-smartplayer>
         </div>
         <div id="card-oferta" style="display:none;opacity:0;transition:opacity 0.6s ease;">
         <div class="offer-wrap" id="offer-card">
@@ -1517,10 +1519,8 @@ function goToSlide(n) {
     }, 1200);
   }
 
-  if (n === 17) loadVslScript();
-
   if (n === 19) {
-    mountVslPlayer();
+    initVslPlayer();
     showOfferPage();
     bindVslCta();
     trackProgress({ event: 'vsl_page', current_step: 19, status: 'reading', step_label: STEP_LABEL[19], immediate: true });
@@ -1730,8 +1730,18 @@ const VSL_PLAYER_ID = 'vid-6a8a9b2880d4acead2820bc7';
 const VSL_SCRIPT_SRC = 'https://scripts.converteai.net/706f603e-da23-448e-8182-df22e9f4f43d/players/6a8a9b2880d4acead2820bc7/v4/player.js';
 let cardMostrado = false;
 
-function loadVslScript() {
-  if (window._vslScriptLoaded || window._vslScriptLoading) return;
+function loadVslScript(onReady) {
+  if (window._vslScriptLoaded) {
+    if (typeof onReady === 'function') onReady();
+    return;
+  }
+  if (window._vslScriptLoading) {
+    document.addEventListener('vsl_script_ready', function h() {
+      document.removeEventListener('vsl_script_ready', h);
+      if (typeof onReady === 'function') onReady();
+    });
+    return;
+  }
   window._vslScriptLoading = true;
   if (!window._plt) {
     window._plt = (window.performance && window.performance.timeOrigin)
@@ -1741,20 +1751,36 @@ function loadVslScript() {
   const s = document.createElement('script');
   s.src = VSL_SCRIPT_SRC;
   s.async = true;
-  s.onload = function() { window._vslScriptLoaded = true; };
+  s.onload = function() {
+    window._vslScriptLoaded = true;
+    document.dispatchEvent(new Event('vsl_script_ready'));
+    if (typeof onReady === 'function') onReady();
+  };
   document.head.appendChild(s);
 }
 
-function mountVslPlayer() {
-  if (window._vslMounted) return;
-  const mount = document.getElementById('vsl-mount');
-  if (!mount) return;
-  window._vslMounted = true;
-  mount.setAttribute('aria-hidden', 'false');
-  mount.innerHTML =
-    '<vturb-smartplayer id="' + VSL_PLAYER_ID + '" style="display:block;margin:0 auto;width:100%;max-width:400px;">' +
-    '<div class="vturb-player-placeholder" style="position:relative;width:100%;padding:177.77777777777777% 0 0;z-index:0;background-color:#000;"></div>' +
-    '</vturb-smartplayer>';
+function vslHasVideo() {
+  try {
+    const el = document.getElementById(VSL_PLAYER_ID);
+    if (!el) return false;
+    return !!(el.querySelector('video') || (el.shadowRoot && el.shadowRoot.querySelector('video')));
+  } catch (e) {
+    return false;
+  }
+}
+
+function initVslPlayer() {
+  if (window._vslInited && vslHasVideo()) return;
+  window._vslInited = true;
+
+  // Script carregou cedo demais (sem player no DOM) — recarrega no passo 19
+  if (window._vslScriptLoaded && !vslHasVideo()) {
+    const old = document.querySelector('script[src="' + VSL_SCRIPT_SRC + '"]');
+    if (old) old.remove();
+    window._vslScriptLoaded = false;
+    window._vslScriptLoading = false;
+  }
+
   loadVslScript();
 }
 
