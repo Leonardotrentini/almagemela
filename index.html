@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<meta name="almagemela-build" content="vesto-wa-mobile-fix-v1">
+<meta name="almagemela-build" content="vesto-wa-ux-v2">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -692,6 +692,80 @@ body {
   border: none;
   box-shadow: 0 8px 24px rgba(201, 161, 90, 0.45);
   animation: btnWaPulse 1.3s ease-in-out infinite;
+  transition: transform 0.12s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+#btn-wa-carta.is-pressed {
+  transform: scale(0.97);
+  box-shadow: 0 4px 16px rgba(201, 161, 90, 0.35);
+}
+#btn-wa-carta.is-loading {
+  animation: none;
+  transform: scale(0.98);
+  opacity: 0.95;
+  cursor: wait;
+  pointer-events: none;
+  box-shadow: 0 4px 18px rgba(201, 161, 90, 0.4);
+  background: linear-gradient(180deg, #D4AF37, #A67C00);
+}
+#btn-wa-carta.is-loading .btn-wa-label::after {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 10px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  vertical-align: -2px;
+  animation: waSpin 0.65s linear infinite;
+}
+.wa-launch-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  background: rgba(10, 10, 15, 0.94);
+  color: #F5E6D3;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+.wa-launch-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.wa-launch-overlay .wa-spin {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(201, 161, 90, 0.25);
+  border-top-color: #E8C547;
+  border-radius: 50%;
+  animation: waSpin 0.7s linear infinite;
+}
+.wa-launch-overlay p {
+  font-size: 15px;
+  line-height: 1.45;
+  max-width: 260px;
+}
+.wa-launch-overlay strong {
+  display: block;
+  font-size: 17px;
+  color: #E8C547;
+  margin-bottom: 6px;
+}
+@keyframes waSpin {
+  to { transform: rotate(360deg); }
 }
 #btn-wa-carta.hidden {
   display: none;
@@ -1209,9 +1283,14 @@ body {
             <div class="vturb-player-placeholder" style="position:relative;width:100%;padding:177.77777777777777% 0 0;z-index:0;background-color:#000;"></div>
           </vturb-smartplayer>
         </div>
-        <a href="#" id="btn-wa-carta" class="hidden" data-vesto-whatsapp rel="noopener noreferrer">🔓 LIBERAR MI CARTA SECRETA AHORA</a>
+        <a href="#" id="btn-wa-carta" class="hidden" data-vesto-whatsapp rel="noopener noreferrer"><span class="btn-wa-label">🔓 LIBERAR MI CARTA SECRETA AHORA</span></a>
       </div>
     </div>
+  </div>
+
+  <div class="wa-launch-overlay" id="wa-launch-overlay" aria-hidden="true">
+    <div class="wa-spin" aria-hidden="true"></div>
+    <p><strong>Conectando con Martha</strong>Preparando tu carta secreta en WhatsApp…</p>
   </div>
 
 </div>

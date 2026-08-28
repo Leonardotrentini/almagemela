@@ -4,6 +4,7 @@
   var NEXT_SELLER_URL = '/api/next-seller';
   var FALLBACK_MSG = 'mi carta secreta';
   var FALLBACK_PHONE = '5511949910425';
+  var BTN_LOADING = 'ABRIENDO WHATSAPP…';
   var busy = false;
 
   function isMobile() {
@@ -27,6 +28,34 @@
 
   function waUrl(phone, message) {
     return 'https://wa.me/' + phone + '?text=' + encodeURIComponent(message || FALLBACK_MSG);
+  }
+
+  function getLabelEl(btn) {
+    if (!btn) return null;
+    return btn.querySelector('.btn-wa-label') || btn;
+  }
+
+  function setBtnLoading(btn, on) {
+    if (!btn) return;
+    var label = getLabelEl(btn);
+    if (on) {
+      if (!btn.dataset.vestoLabel) btn.dataset.vestoLabel = label.textContent;
+      btn.classList.add('is-loading');
+      btn.classList.remove('is-pressed');
+      btn.setAttribute('aria-busy', 'true');
+      label.textContent = BTN_LOADING;
+    } else {
+      btn.classList.remove('is-loading');
+      btn.removeAttribute('aria-busy');
+      if (btn.dataset.vestoLabel) label.textContent = btn.dataset.vestoLabel;
+    }
+  }
+
+  function showLaunchOverlay(show) {
+    var overlay = document.getElementById('wa-launch-overlay');
+    if (!overlay) return;
+    overlay.classList.toggle('visible', !!show);
+    overlay.setAttribute('aria-hidden', show ? 'false' : 'true');
   }
 
   function sendAttribution(meta, ref, contactEventId) {
@@ -94,6 +123,8 @@
     e.stopPropagation();
     if (e.stopImmediatePropagation) e.stopImmediatePropagation();
     busy = true;
+    setBtnLoading(btn, true);
+    if (isMobile()) showLaunchOverlay(true);
 
     var pendingWin = null;
     if (!isMobile()) {
@@ -130,8 +161,32 @@
         }
         openWhatsApp(FALLBACK_PHONE, FALLBACK_MSG, null);
       })
-      .finally(function () { busy = false; });
+      .finally(function () {
+        if (!isMobile()) {
+          setBtnLoading(btn, false);
+          showLaunchOverlay(false);
+          busy = false;
+        }
+      });
   }
 
   document.addEventListener('click', handleWhatsAppClick, true);
+
+  document.addEventListener('touchstart', function (e) {
+    var btn = e.target && e.target.closest && e.target.closest('[data-vesto-whatsapp]');
+    if (!btn || btn.classList.contains('is-loading') || btn.classList.contains('hidden')) return;
+    btn.classList.add('is-pressed');
+  }, { passive: true });
+
+  document.addEventListener('touchend', function () {
+    document.querySelectorAll('[data-vesto-whatsapp].is-pressed').forEach(function (btn) {
+      btn.classList.remove('is-pressed');
+    });
+  }, { passive: true });
+
+  document.addEventListener('touchcancel', function () {
+    document.querySelectorAll('[data-vesto-whatsapp].is-pressed').forEach(function (btn) {
+      btn.classList.remove('is-pressed');
+    });
+  }, { passive: true });
 })();
