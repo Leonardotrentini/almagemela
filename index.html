@@ -1403,8 +1403,18 @@ function getVisitorId() {
   } catch (e) { return 'v_anon_' + Date.now(); }
 }
 function metaEventId(tag) { return String(getVisitorId()) + '_' + tag + '_' + Date.now(); }
-function metaTrack(event, params) {
-  try { if (typeof fbq === 'function') fbq('track', event, params || {}); } catch (e) {}
+function metaTrack(event, params, eventId) {
+  try {
+    if (typeof fbq !== 'function') return;
+    if (eventId) fbq('track', event, params || {}, { eventID: eventId });
+    else fbq('track', event, params || {});
+  } catch (e) {}
+}
+function gtmPush(payload) {
+  try {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(payload);
+  } catch (e) {}
 }
 function hotmartUrl(base) {
   const sep = base.indexOf('?') >= 0 ? '&' : '?';
@@ -1674,6 +1684,8 @@ const VSL_PLAYER_ID = 'vid-6a8a9b2880d4acead2820bc7';
 const VSL_SCRIPT_SRC = 'https://scripts.converteai.net/706f603e-da23-448e-8182-df22e9f4f43d/players/6a8a9b2880d4acead2820bc7/v4/player.js';
 let vslOfferTracked = false;
 let waBtnShown = false;
+let waLeadSent = false;
+const WA_LEAD_CONTENT = 'WhatsApp · Carta secreta';
 
 function showWaButton() {
   if (waBtnShown) return;
@@ -1882,11 +1894,24 @@ function bindVslCta() {
   }
 }
 function goWhatsApp(e) {
+  if (!waLeadSent) {
+    waLeadSent = true;
+    metaTrack('Lead', {
+      content_name: WA_LEAD_CONTENT,
+      content_category: 'Tarot'
+    }, metaEventId('wa_lead'));
+    gtmPush({
+      event: 'lead',
+      lead_type: 'whatsapp_carta',
+      lead_label: 'Botón final · LIBERAR MI CARTA SECRETA',
+      content_name: WA_LEAD_CONTENT
+    });
+  }
   trackProgress({
     event: 'whatsapp_carta',
     status: 'checkout',
     current_step: 19,
-    step_label: 'WhatsApp · Carta secreta',
+    step_label: 'Lead · WhatsApp · Carta secreta',
     immediate: true
   });
 }
