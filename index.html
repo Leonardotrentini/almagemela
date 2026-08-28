@@ -1661,7 +1661,6 @@ function bindInputs() {
 
 // ============ LOADING 13-17 ============
 function startLoading() {
-  metaTrack('Lead', { content_name: 'Quiz completado' });
   trackProgress({ event: 'quiz_complete', current_step: 12, status: 'in_progress', immediate: true });
   // Entra no passo 13; goToSlide agenda sozinho 14→15→16→17→18
   goToSlide(13);
@@ -1894,6 +1893,7 @@ function bindVslCta() {
   }
 }
 function goWhatsApp(e) {
+  if (e) e.preventDefault();
   if (!waLeadSent) {
     waLeadSent = true;
     metaTrack('Lead', {
@@ -1914,6 +1914,9 @@ function goWhatsApp(e) {
     step_label: 'Lead · WhatsApp · Carta secreta',
     immediate: true
   });
+  setTimeout(function() {
+    window.open(WHATSAPP_URL, '_blank', 'noopener,noreferrer');
+  }, 180);
 }
 
 // ============ BOOT ============
