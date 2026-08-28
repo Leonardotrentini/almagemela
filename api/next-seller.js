@@ -4,7 +4,7 @@ const VESTO_CONFIG_URL =
   encodeURIComponent(VESTO_KEY);
 const WA_MESSAGE = 'mi carta secreta';
 
-const DEFAULT_SELLERS = [{ label: 'Martha', phone: '5511949910425' }];
+const DEFAULT_SELLERS = [{ label: 'Martha', phone: '558196738982' }];
 const FALLBACK_PHONE = DEFAULT_SELLERS[0].phone;
 const FALLBACK_LABEL = DEFAULT_SELLERS[0].label;
 
