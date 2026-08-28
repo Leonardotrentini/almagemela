@@ -5,6 +5,21 @@ const VESTO_CONFIG_URL =
 const WA_MESSAGE = 'mi carta secreta';
 
 const DEFAULT_SELLERS = [{ label: 'Martha', phone: '5511949910425' }];
+const FALLBACK_PHONE = DEFAULT_SELLERS[0].phone;
+const FALLBACK_LABEL = DEFAULT_SELLERS[0].label;
+
+function sellerResponse(res, seller, index, total, seq, extra) {
+  return res.status(200).json({
+    ok: true,
+    phone: seller.phone,
+    label: seller.label,
+    index,
+    total,
+    seq,
+    message: WA_MESSAGE,
+    ...(extra || {}),
+  });
+}
 
 let sellersCache = { list: DEFAULT_SELLERS, at: 0 };
 const SELLERS_TTL_MS = 5 * 60 * 1000;
@@ -132,17 +147,9 @@ module.exports = async function handler(req, res) {
     const index = (seq - 1) % sellers.length;
     const seller = sellers[index];
 
-    return res.status(200).json({
-      ok: true,
-      phone: seller.phone,
-      label: seller.label,
-      index,
-      total: sellers.length,
-      seq,
-      message: WA_MESSAGE,
-    });
+    return sellerResponse(res, seller, index, sellers.length, seq);
   } catch (err) {
     console.error('[next-seller]', err);
-    return res.status(502).json({ ok: false, error: 'Falha ao rotacionar vendedor' });
+    return sellerResponse(res, DEFAULT_SELLERS[0], 0, 1, 0, { fallback: true });
   }
 };
