@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<meta name="almagemela-build" content="v7.6-wa-btn-20s">
+<meta name="almagemela-build" content="v7.7-vsl-wa-btn-20s">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -636,10 +636,7 @@ body {
   padding: 20px 16px 46px;
 }
 #slide-offer .cta {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  min-height: 55vh;
+  display: block !important;
   background: transparent;
   border: none;
   padding: 0;
@@ -1206,6 +1203,13 @@ body {
   <div class="slide" id="slide-offer">
     <div class="reading">
       <div class="cta" style="margin-top:0;padding-top:8px;">
+        <h2 class="offer-vsl-headline" data-tpl="{{NOME}}, tu Hilo Rojo apareció antes de girar la primera carta">Tu Hilo Rojo apareció antes de girar la primera carta</h2>
+        <p class="offer-vsl-subheadline">Mira hasta el final para que pueda revelar tus 2 iniciales bloqueadas y confirmar tu cupo</p>
+        <div class="vsl-wrap">
+          <vturb-smartplayer id="vid-6a8a9b2880d4acead2820bc7" style="display:block;margin:0 auto;width:100%;max-width:400px;">
+            <div class="vturb-player-placeholder" style="position:relative;width:100%;padding:177.77777777777777% 0 0;z-index:0;background-color:#000;"></div>
+          </vturb-smartplayer>
+        </div>
         <a href="https://api.whatsapp.com/send?phone=5511949910425&amp;text=mi%20carta%20secreta" id="btn-wa-carta" class="hidden" target="_blank" rel="noopener noreferrer" onclick="goWhatsApp(event)">🔓 LIBERAR MI CARTA SECRETA AHORA</a>
       </div>
     </div>
@@ -1718,6 +1722,8 @@ function vslHasVideo() {
 }
 
 function initVslPlayer() {
+  const host = document.getElementById(VSL_PLAYER_ID);
+  if (!host) return;
   if (window._vslInited && vslHasVideo()) return;
   window._vslInited = true;
 
@@ -1727,6 +1733,7 @@ function initVslPlayer() {
     if (old) old.remove();
     window._vslScriptLoaded = false;
     window._vslScriptLoading = false;
+    window._vslInited = false;
   }
 
   loadVslScript();
