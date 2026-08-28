@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<meta name="almagemela-build" content="v7.3-vsl-fix-init">
+<meta name="almagemela-build" content="v7.6-wa-btn-20s">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -628,7 +628,6 @@ body {
 }
 /* V6 reading states — exclusive panels */
 #slide-reading-confirm .confirm-gate { display: block !important; }
-#slide-offer .cta { display: block !important; }
 #slide-offer {
   background: #0A0A0F;
 }
@@ -637,6 +636,10 @@ body {
   padding: 20px 16px 46px;
 }
 #slide-offer .cta {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 55vh;
   background: transparent;
   border: none;
   padding: 0;
@@ -648,7 +651,15 @@ body {
   line-height: 1.3;
   text-align: center;
   color: #F5E6D3;
-  margin: 8px 8px 16px;
+  margin: 8px 8px 10px;
+}
+.offer-vsl-subheadline {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: center;
+  color: #C9A15A;
+  margin: 0 12px 16px;
 }
 .vsl-wrap {
   max-width: 400px;
@@ -664,49 +675,45 @@ body {
   width: 100%;
   max-width: 100%;
 }
-#btn-vsl-cta {
+#btn-wa-carta {
   display: block;
   width: 100%;
-  max-width: none;
-  margin: 0 0 10px;
-  padding: 16px 18px;
+  max-width: 400px;
+  margin: 16px auto 0;
+  padding: 18px 16px;
   font-family: var(--font-sans);
   font-size: 16px;
   font-weight: 700;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.3px;
+  line-height: 1.35;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
   border-radius: 999px;
   cursor: pointer;
-  background: linear-gradient(180deg, #6B21A8, #4C1D95);
+  background: linear-gradient(180deg, #E8C547, #B8860B);
   color: #fff;
   border: none;
-  box-shadow: 0 8px 24px rgba(107, 33, 168, 0.45);
+  box-shadow: 0 8px 24px rgba(201, 161, 90, 0.45);
+  animation: btnWaPulse 1.3s ease-in-out infinite;
 }
-.btn-vsl-note {
-  font-size: 11px;
-  color: var(--text-soft);
-  margin: 0 0 16px;
-  line-height: 1.4;
-}
-#btn-vsl-cta.hidden {
+#btn-wa-carta.hidden {
   display: none;
   opacity: 0;
   pointer-events: none;
+  animation: none;
 }
-#slide-offer .offer-wrap.hidden,
-#slide-offer .guar-soft.hidden {
-  display: none;
-  opacity: 0;
-  pointer-events: none;
-}
-@keyframes btnHiloPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 8px 24px rgba(107, 33, 168, 0.45); }
-  50% { transform: scale(1.02); box-shadow: 0 12px 28px rgba(107, 33, 168, 0.65); }
-}
-#btn-vsl-cta.btn-hilo {
-  animation: btnHiloPulse 1.4s ease-in-out infinite;
-}
-#slide-offer .guar-soft {
-  color: #d4c8b0;
+@keyframes btnWaPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 24px rgba(201, 161, 90, 0.45);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 14px 32px rgba(201, 161, 90, 0.75);
+    opacity: 0.88;
+  }
 }
 .letter-block {
   opacity: 0;
@@ -1199,85 +1206,7 @@ body {
   <div class="slide" id="slide-offer">
     <div class="reading">
       <div class="cta" style="margin-top:0;padding-top:8px;">
-        <h2 class="offer-vsl-headline" data-tpl="{{NOME}}, tu Hilo Rojo apareció antes de girar la primera carta">Tu Hilo Rojo apareció antes de girar la primera carta</h2>
-        <div class="vsl-wrap">
-          <vturb-smartplayer id="vid-6a8a9b2880d4acead2820bc7" style="display:block;margin:0 auto;width:100%;max-width:400px;">
-            <div class="vturb-player-placeholder" style="position:relative;width:100%;padding:177.77777777777777% 0 0;z-index:0;background-color:#000;"></div>
-          </vturb-smartplayer>
-        </div>
-        <div id="card-oferta" style="display:none;opacity:0;transition:opacity 0.6s ease;">
-        <div class="offer-wrap" id="offer-card">
-          <div class="offer-glow" aria-hidden="true"></div>
-          <div class="offer-box">
-            <div class="offer-badge">🔥 OFERTA DE HOY · 94% OFF</div>
-            <div class="offer-scarcity">
-              <span class="dot"></span>
-              <span>Verificando agenda de Martha · <b>2 lugares hoy</b></span>
-            </div>
-            <div class="offer-price-row">
-              De <span class="old">$147 USD</span> por <span class="new">$5 USD</span> hoy
-            </div>
-            <div class="offer-anchor">Entrega en 2 minutos en tu email</div>
-            <h3 class="offer-title" data-tpl="{{NOME}}, tu Hilo Rojo está listo. Vi tu inicial.">Tu Hilo Rojo está listo. Vi tu inicial.</h3>
-            <ul class="offer-stack">
-              <li>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span class="item-main">Lectura Completa del Alma Gemela por Martha (PDF)</span>
-                <span class="val">$47</span>
-              </li>
-              <li>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span class="item-main">Audio de 5 min canalizado por Martha</span>
-                <span class="val">$37</span>
-              </li>
-              <li>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span class="item-main"><span class="bono">BONUS 1:</span> Iniciales de tu alma gemela</span>
-                <span class="val">$27</span>
-              </li>
-              <li>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span class="item-main"><span class="bono">BONUS 2:</span> Ventana de encuentro: cuándo y dónde</span>
-                <span class="val">$19</span>
-              </li>
-              <li>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span class="item-main"><span class="bono">BONUS 3:</span> Qué lo está bloqueando y cómo desbloquearlo</span>
-                <span class="val">$17</span>
-              </li>
-            </ul>
-            <div class="offer-divider"></div>
-            <div class="offer-total">Valor total $147 <span class="arrow">→</span> Hoy solo <span class="today">$5</span></div>
-            <div class="offer-timer" id="offerTimer">
-              <span>Tu lectura está reservada por <b class="offer-timer-clock" id="offerTimerClock">15:00</b>. Solo hay 2 lugares hoy. Después se libera para otra mujer.</span>
-            </div>
-            <button type="button" id="btn-vsl-cta" class="btn-hilo" onclick="goCheckout(event)">¡Recibir consulta completa!</button>
-            <p class="btn-vsl-note">Pago seguro · Entrega inmediata en 2 min · Garantía 7 días</p>
-            <div class="offer-trust">
-              <div class="t">
-                <svg class="lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                100% confidencial
-              </div>
-              <div class="t">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                12.431 lecturas · 4.8/5
-              </div>
-            </div>
-            <div class="offer-pay">
-              <div class="offer-pay-icons" aria-label="Métodos de pago">
-                <span class="pay-chip visa">VISA</span>
-                <span class="pay-chip mc">MC</span>
-                <span class="pay-chip pp">PayPal</span>
-                <span class="pay-chip pix">Pix</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="guar-soft">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>Garantía de 7 días · Si no resuena contigo, te devolvemos el 100% sin preguntas</span>
-        </div>
-        </div>
+        <a href="https://api.whatsapp.com/send?phone=5511949910425&amp;text=mi%20carta%20secreta" id="btn-wa-carta" class="hidden" target="_blank" rel="noopener noreferrer" onclick="goWhatsApp(event)">🔓 LIBERAR MI CARTA SECRETA AHORA</a>
       </div>
     </div>
   </div>
@@ -1340,7 +1269,8 @@ const CARDS = {
   temperance:{name:"La Templanza"}, strength:{name:"La Fuerza"}, wheel:{name:"La Rueda de la Fortuna"}
 };
 const CARD_KEYS = Object.keys(CARDS);
-const HOTMART_MAIN_URL = 'https://pay.hotmart.com/J107108736M?checkoutMode=10';
+const WHATSAPP_URL = 'https://api.whatsapp.com/send?phone=5511949910425&text=mi%20carta%20secreta';
+const WA_BTN_DELAY_S = 20;
 
 // Ordem linear EXATA: índice = passo (0 picker ... 19 oferta)
 const SLIDE_IDS = [
@@ -1724,11 +1654,29 @@ function revealOferta() {
   goToSlide(19);
   trackProgress({ event: 'offer_open', current_step: 19, status: 'reading', immediate: true });
 }
-const OFFER_WINDOW_MS = 15 * 60 * 1000;
-const OFFER_CARD_DELAY_S = 40;
+const VSL_OFFER_TRACK_S = WA_BTN_DELAY_S;
 const VSL_PLAYER_ID = 'vid-6a8a9b2880d4acead2820bc7';
 const VSL_SCRIPT_SRC = 'https://scripts.converteai.net/706f603e-da23-448e-8182-df22e9f4f43d/players/6a8a9b2880d4acead2820bc7/v4/player.js';
-let cardMostrado = false;
+let vslOfferTracked = false;
+let waBtnShown = false;
+
+function showWaButton() {
+  if (waBtnShown) return;
+  waBtnShown = true;
+  const btn = document.getElementById('btn-wa-carta');
+  if (!btn) return;
+  btn.classList.remove('hidden');
+  btn.style.opacity = '0';
+  btn.style.pointerEvents = 'none';
+  setTimeout(function() {
+    btn.style.transition = 'opacity 0.6s ease';
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  }, 80);
+  const secs = Math.max(getVturbCurrentTime(), WA_BTN_DELAY_S);
+  markVsl({ offer_shown: true, seconds: secs });
+  trackVslOfferAt40s(secs);
+}
 
 function loadVslScript(onReady) {
   if (window._vslScriptLoaded) {
@@ -1793,76 +1741,22 @@ function pauseVsl() {
   } catch (e) {}
 }
 
-function mostrarCard() {
-  if (cardMostrado) return;
-  cardMostrado = true;
-  const card = document.getElementById('card-oferta');
-  if (!card) return;
-  card.style.display = 'block';
-  setTimeout(function() { card.style.opacity = '1'; }, 100);
-  const secs = Math.max(getVturbCurrentTime(), OFFER_CARD_DELAY_S);
-  markVsl({ offer_shown: true, seconds: secs });
-  if (!window._vslOfferTracked) {
-    window._vslOfferTracked = true;
-    trackProgress({
-      event: 'vsl_offer',
-      current_step: 19,
-      status: 'reading',
-      step_label: '19/19 · Vio VSL 40s',
-      immediate: true
-    });
-  }
-  startOfferTimer();
-}
-
-function checkOfferCardDelay(s) {
-  if (s >= OFFER_CARD_DELAY_S) mostrarCard();
-}
-
-function initOfferCardDelay() {
-  if (window._offerCardDelayInit) return;
-  window._offerCardDelayInit = true;
-
-  document.addEventListener('vturb_timeupdate', function(e) {
-    if (e.detail && e.detail.currentTime >= OFFER_CARD_DELAY_S) mostrarCard();
+function trackVslOfferAt40s(s) {
+  if (vslOfferTracked || s < VSL_OFFER_TRACK_S) return;
+  vslOfferTracked = true;
+  markVsl({ offer_shown: true, seconds: s });
+  trackProgress({
+    event: 'vsl_offer',
+    current_step: 19,
+    status: 'reading',
+    step_label: '19/19 · Botón WA 20s',
+    immediate: true
   });
-
-  setTimeout(function() {
-    if (window.vturbPlayer && typeof window.vturbPlayer.getCurrentTime === 'function') {
-      const check = setInterval(function() {
-        if (window.vturbPlayer.getCurrentTime() >= OFFER_CARD_DELAY_S) {
-          mostrarCard();
-          clearInterval(check);
-        }
-      }, 500);
-    }
-  }, 1000);
-
-  setTimeout(mostrarCard, 45000);
 }
 
 function showOfferPage() {
   markVsl({ page: true });
-  initOfferCardDelay();
-}
-function startOfferTimer() {
-  const clock = document.getElementById('offerTimerClock');
-  if (!clock) return;
-  let startedAt = parseInt(sessionStorage.getItem('almagemela_offer_start') || '0', 10);
-  if (!startedAt || Date.now() - startedAt > OFFER_WINDOW_MS) {
-    startedAt = Date.now();
-    try { sessionStorage.setItem('almagemela_offer_start', String(startedAt)); } catch(e){}
-  }
-  if (window._offerTimer) clearInterval(window._offerTimer);
-  const tick = () => {
-    const left = Math.max(0, OFFER_WINDOW_MS - (Date.now() - startedAt));
-    const mm = String(Math.floor(left / 60000)).padStart(2,'0');
-    const ss = String(Math.floor((left % 60000) / 1000)).padStart(2,'0');
-    clock.textContent = mm + ':' + ss;
-    if (left <= 0) clearInterval(window._offerTimer);
-  };
-  tick();
-  window._offerTimer = setInterval(tick, 1000);
+  setTimeout(showWaButton, WA_BTN_DELAY_S * 1000);
 }
 function markVsl(patch) {
   const prev = (data && data.vsl) || {};
@@ -1889,7 +1783,8 @@ function onVslSecond(s) {
       immediate: true
     });
   }
-  checkOfferCardDelay(s);
+  trackVslOfferAt40s(s);
+  if (s >= WA_BTN_DELAY_S) showWaButton();
 }
 function getVturbCurrentTime() {
   try {
@@ -1926,7 +1821,7 @@ function markVslPlayOnce() {
     const t = getVturbCurrentTime();
     if (t > 0) {
       onVslSecond(t);
-      checkOfferCardDelay(t);
+      trackVslOfferAt40s(t);
     }
   }, 400);
 }
@@ -1935,7 +1830,9 @@ function bindVslCta() {
   window._vslBound = true;
 
   document.addEventListener('vturb_timeupdate', function(e) {
-    if (e.detail && e.detail.currentTime >= OFFER_CARD_DELAY_S) mostrarCard();
+    if (!e.detail) return;
+    trackVslOfferAt40s(e.detail.currentTime);
+    if (e.detail.currentTime >= WA_BTN_DELAY_S) showWaButton();
   });
 
   document.addEventListener('play', function(e) {
@@ -1958,7 +1855,7 @@ function bindVslCta() {
             if (t > 0) {
               markVslPlayOnce();
               onVslSecond(t);
-              checkOfferCardDelay(t);
+              trackVslOfferAt40s(t);
             }
           }, 400);
         }
@@ -1966,11 +1863,14 @@ function bindVslCta() {
     });
   }
 }
-function goCheckout(e) {
-  if (e) e.preventDefault();
-  const url = hotmartUrl(HOTMART_MAIN_URL);
-  trackProgress({ event: 'checkout_5', status: 'checkout', current_step: 19, step_label: 'Checkout $5', immediate: true });
-  setTimeout(function() { window.location.href = url; }, 120);
+function goWhatsApp(e) {
+  trackProgress({
+    event: 'whatsapp_carta',
+    status: 'checkout',
+    current_step: 19,
+    step_label: 'WhatsApp · Carta secreta',
+    immediate: true
+  });
 }
 
 // ============ BOOT ============
