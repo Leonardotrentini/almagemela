@@ -11,7 +11,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<meta name="almagemela-build" content="checkpoint-2026-08-27">
+<meta name="almagemela-build" content="vesto-wa-rotator-v1">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -46,7 +46,6 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 })();
 fbq('init','38539014385698035',{external_id:window.__almagemelaVid||undefined});
 fbq('track','PageView');
-fbq('track','ViewContent',{content_name:'Quiz Almagemela',content_category:'Tarot'});
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=38539014385698035&ev=PageView&noscript=1"
@@ -1221,7 +1220,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="vturb-player-placeholder" style="position:relative;width:100%;padding:177.77777777777777% 0 0;z-index:0;background-color:#000;"></div>
           </vturb-smartplayer>
         </div>
-        <a href="https://api.whatsapp.com/send?phone=5511949910425&amp;text=mi%20carta%20secreta" id="btn-wa-carta" class="hidden" target="_blank" rel="noopener noreferrer" onclick="goWhatsApp(event)">🔓 LIBERAR MI CARTA SECRETA AHORA</a>
+        <a href="#" id="btn-wa-carta" class="hidden" data-vesto-whatsapp rel="noopener noreferrer">🔓 LIBERAR MI CARTA SECRETA AHORA</a>
       </div>
     </div>
   </div>
@@ -1284,7 +1283,6 @@ const CARDS = {
   temperance:{name:"La Templanza"}, strength:{name:"La Fuerza"}, wheel:{name:"La Rueda de la Fortuna"}
 };
 const CARD_KEYS = Object.keys(CARDS);
-const WHATSAPP_URL = 'https://api.whatsapp.com/send?phone=5511949910425&text=mi%20carta%20secreta';
 const WA_BTN_DELAY_S = 20;
 
 // Ordem linear EXATA: índice = passo (0 picker ... 19 oferta)
@@ -1401,20 +1399,6 @@ function getVisitorId() {
     window.__almagemelaVid = id;
     return id;
   } catch (e) { return 'v_anon_' + Date.now(); }
-}
-function metaEventId(tag) { return String(getVisitorId()) + '_' + tag + '_' + Date.now(); }
-function metaTrack(event, params, eventId) {
-  try {
-    if (typeof fbq !== 'function') return;
-    if (eventId) fbq('track', event, params || {}, { eventID: eventId });
-    else fbq('track', event, params || {});
-  } catch (e) {}
-}
-function gtmPush(payload) {
-  try {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(payload);
-  } catch (e) {}
 }
 function hotmartUrl(base) {
   const sep = base.indexOf('?') >= 0 ? '&' : '?';
@@ -1683,8 +1667,6 @@ const VSL_PLAYER_ID = 'vid-6a8a9b2880d4acead2820bc7';
 const VSL_SCRIPT_SRC = 'https://scripts.converteai.net/706f603e-da23-448e-8182-df22e9f4f43d/players/6a8a9b2880d4acead2820bc7/v4/player.js';
 let vslOfferTracked = false;
 let waBtnShown = false;
-let waLeadSent = false;
-const WA_LEAD_CONTENT = 'WhatsApp · Carta secreta';
 
 function showWaButton() {
   if (waBtnShown) return;
@@ -1892,32 +1874,6 @@ function bindVslCta() {
     });
   }
 }
-function goWhatsApp(e) {
-  if (e) e.preventDefault();
-  if (!waLeadSent) {
-    waLeadSent = true;
-    metaTrack('Lead', {
-      content_name: WA_LEAD_CONTENT,
-      content_category: 'Tarot'
-    }, metaEventId('wa_lead'));
-    gtmPush({
-      event: 'lead',
-      lead_type: 'whatsapp_carta',
-      lead_label: 'Botón final · LIBERAR MI CARTA SECRETA',
-      content_name: WA_LEAD_CONTENT
-    });
-  }
-  trackProgress({
-    event: 'whatsapp_carta',
-    status: 'checkout',
-    current_step: 19,
-    step_label: 'Lead · WhatsApp · Carta secreta',
-    immediate: true
-  });
-  setTimeout(function() {
-    window.open(WHATSAPP_URL, '_blank', 'noopener,noreferrer');
-  }, 180);
-}
 
 // ============ BOOT ============
 try {
@@ -1957,5 +1913,7 @@ requestAnimationFrame(() => {
   });
 });
 </script>
+<script src="https://backend-production-7a466.up.railway.app/vesto-attribution.js?key=vpk_2b4dcce2b4ab82bd1b3c8b525ee85c0f" defer data-selector="[data-vesto-skip]"></script>
+<script src="/js/vesto-global-rotator.js" defer></script>
 </body>
 </html>
