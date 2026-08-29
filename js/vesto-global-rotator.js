@@ -2,7 +2,7 @@
   var VESTO_KEY = 'vpk_2b4dcce2b4ab82bd1b3c8b525ee85c0f';
   var ATTRIBUTION_URL = 'https://backend-production-7a466.up.railway.app/api/public/meta/attribution?key=' + encodeURIComponent(VESTO_KEY);
   var NEXT_SELLER_URL = '/api/next-seller';
-  var FALLBACK_MSG = 'mi carta secreta';
+  var FALLBACK_MSG = 'libera';
   var FALLBACK_PHONE = '558196738982';
   var BTN_LOADING = 'ABRIENDO WHATSAPP…';
   var busy = false;
