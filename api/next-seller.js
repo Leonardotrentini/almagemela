@@ -2,7 +2,7 @@ const VESTO_KEY = 'vpk_2b4dcce2b4ab82bd1b3c8b525ee85c0f';
 const VESTO_CONFIG_URL =
   'https://backend-production-7a466.up.railway.app/api/public/meta/config?key=' +
   encodeURIComponent(VESTO_KEY);
-const WA_MESSAGE = 'libera';
+const WA_MESSAGE = 'mi carta secreta';
 
 const DEFAULT_SELLERS = [{ label: 'Martha', phone: '558196738982' }];
 const FALLBACK_PHONE = DEFAULT_SELLERS[0].phone;
