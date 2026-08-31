@@ -37,7 +37,6 @@ function createMockEnv() {
     removeItem(k) { delete storage[k]; },
     clear() { Object.keys(storage).forEach((k) => delete storage[k]); },
   };
-  const storageApi = sessionStorage;
 
   function fbq() {
     const args = Array.from(arguments);
@@ -117,7 +116,7 @@ console.log('══════════════════════�
     assert(fbqLog[0].args[0] === 'order-bump', 'nome custom');
   });
 
-  test('waitForPixel executa callback quando fbq.loaded', (done) => {
+  test('waitForPixel executa callback quando fbq.loaded', () => {
     let called = false;
     window.waitForPixel(() => { called = true; });
     assert(called, 'callback imediato');
@@ -128,41 +127,38 @@ console.log('══════════════════════�
 console.log('\n--- Varredura estática ---\n');
 
 const scanExts = ['.html', '.js'];
-const scanDirs = [ROOT];
 const findings = {
   fbqInit: [],
   fbqTrack: [],
-  fbqTrackCustom: [],
   trackOnce: [],
-  waitForPixel: [],
-  directFbqContact: [],
+  indexLead: [],
+  indexViewContent: [],
+  indexInitiateCheckout: [],
+  indexPurchase: [],
   mapaRedirect: false,
 };
 
 function scanFile(filePath) {
   const rel = path.relative(ROOT, filePath).replace(/\\/g, '/');
+  if (rel.startsWith('v777/') || rel.startsWith('leitura/')) return;
   const content = fs.readFileSync(filePath, 'utf8');
   const lines = content.split('\n');
   lines.forEach((line, i) => {
     const ln = i + 1;
     if (/fbq\s*\(\s*['"]init['"]/.test(line)) {
-      const m = line.match(/init['"],\s*['"](\d+)['"]/);
-      findings.fbqInit.push({ file: rel, line: ln, pixelId: m ? m[1] : '38539014385698035' });
+      findings.fbqInit.push({ file: rel, line: ln });
     }
     if (/fbq\s*\(\s*['"]track['"]/.test(line) && !/meta-tracking-utils/.test(rel)) {
       findings.fbqTrack.push({ file: rel, line: ln, code: line.trim().slice(0, 80) });
     }
-    if (/fbq\s*\(\s*['"]trackCustom['"]/.test(line)) {
-      findings.fbqTrackCustom.push({ file: rel, line: ln, code: line.trim().slice(0, 80) });
-    }
     if (/trackOnce\s*\(/.test(line)) {
       findings.trackOnce.push({ file: rel, line: ln, code: line.trim().slice(0, 80) });
     }
-    if (/waitForPixel\s*\(/.test(line)) {
-      findings.waitForPixel.push({ file: rel, line: ln, code: line.trim().slice(0, 80) });
-    }
-    if (/fbq\s*\(\s*['"]track['"],\s*['"]Contact['"]/.test(line)) {
-      findings.directFbqContact.push({ file: rel, line: ln });
+    if (rel === 'index.html') {
+      if (/trackOnce\s*\(\s*['"]Lead['"]/.test(line)) findings.indexLead.push(ln);
+      if (/trackOnce\s*\(\s*['"]ViewContent['"]/.test(line)) findings.indexViewContent.push(ln);
+      if (/trackOnce\s*\(\s*['"]InitiateCheckout['"]/.test(line)) findings.indexInitiateCheckout.push(ln);
+      if (/trackOnce\s*\(\s*['"]Purchase['"]|trackPurchase\s*\(/.test(line)) findings.indexPurchase.push(ln);
     }
   });
 }
@@ -183,24 +179,65 @@ findings.mapaRedirect = (vercel.redirects || []).some(
   (r) => r.source === '/mapa' && r.destination && r.destination.includes('hotmart')
 );
 
-test('Produção index.html carrega meta-tracking-utils.js', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  assert(html.includes('meta-tracking-utils.js'), 'utils presente');
+const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const rotator = fs.readFileSync(path.join(ROOT, 'js', 'vesto-global-rotator.js'), 'utf8');
+const webhook = fs.readFileSync(path.join(ROOT, 'api', 'hotmart-webhook.js'), 'utf8');
+
+test('index.html: PageView no carregamento', () => {
+  assert(/fbq\s*\(\s*['"]track['"],\s*['"]PageView['"]/.test(indexHtml), 'PageView presente');
 });
 
-test('Produção index.html dispara Lead em startLoading', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  const startLoading = html.match(/function startLoading\(\)[\s\S]*?^}/m);
+test('index.html: NÃO dispara Lead no quiz (só no botão WA pós-VSL)', () => {
+  const startLoading = indexHtml.match(/function startLoading\(\)[\s\S]*?^}/m);
   assert(startLoading, 'startLoading existe');
-  assert(/trackOnce\s*\(\s*['"]Lead['"]/.test(startLoading[0]), 'Lead via trackOnce');
+  assert(!/trackOnce\s*\(\s*['"]Lead['"]/.test(startLoading[0]), 'sem Lead em startLoading');
+  assert(findings.indexLead.length === 0, 'sem Lead inline no index.html');
 });
 
-test('/mapa serve página intermediária com Pixel + InitiateCheckout', () => {
+test('index.html: NÃO dispara ViewContent', () => {
+  assert(findings.indexViewContent.length === 0, 'sem ViewContent');
+});
+
+test('index.html: NÃO dispara InitiateCheckout (checkout é na Hotmart)', () => {
+  assert(findings.indexInitiateCheckout.length === 0, 'sem IC no index');
+  const slide19 = indexHtml.match(/if\s*\(\s*n\s*===\s*19\s*\)[\s\S]*?trackProgress\(\{\s*event:\s*'vsl_page'/);
+  assert(slide19 && !/InitiateCheckout/.test(slide19[0]), 'slide 19 sem IC');
+});
+
+test('index.html: NÃO dispara Purchase no browser', () => {
+  assert(findings.indexPurchase.length === 0, 'sem Purchase no index');
+});
+
+test('Lead dispara no clique do botão WA pós-VSL (rotator)', () => {
+  assert(rotator.includes("trackOnce('Lead'"), 'Lead via trackOnce');
+  assert(rotator.includes('Quiz Almagemela Completado'), 'content_name correto');
+  assert(rotator.includes('waitForPixel'), 'waitForPixel');
+  assert(!rotator.includes("trackOnce('Contact'"), 'sem Contact no rotator');
+});
+
+test('/mapa: InitiateCheckout antes do redirect Hotmart', () => {
   const mapa = fs.readFileSync(path.join(ROOT, 'mapa', 'index.html'), 'utf8');
   assert(mapa.includes("fbq('init','38539014385698035')"), 'pixel init');
-  assert(mapa.includes("trackOnce('InitiateCheckout'"), 'InitiateCheckout via trackOnce');
-  assert(mapa.includes('meta-tracking-utils.js'), 'utils carregado');
-  assert(!findings.mapaRedirect, 'sem redirect server-side /mapa');
+  assert(mapa.includes("trackOnce('InitiateCheckout'"), 'IC via trackOnce');
+  assert(mapa.includes('pay.hotmart.com'), 'redirect Hotmart');
+  assert(!findings.mapaRedirect, 'sem redirect server-side /mapa no vercel.json');
+});
+
+test('/acesso: InitiateCheckout antes do redirect Hotmart', () => {
+  const acesso = fs.readFileSync(path.join(ROOT, 'acesso', 'index.html'), 'utf8');
+  assert(acesso.includes("trackOnce('InitiateCheckout'"), 'IC via trackOnce');
+  assert(acesso.includes('Acesso Completo'), 'content_name');
+});
+
+test('Purchase: webhook Hotmart usa CAPI nativo (não duplica no browser)', () => {
+  assert(webhook.includes("META_CAPI_FROM_WEBHOOK !== 'true'"), 'CAPI do webhook desligado por padrão');
+  assert(webhook.includes('disabled_use_hotmart_native'), 'doc usa integração Hotmart');
+});
+
+test('api/mapa.js serve HTML (não redirect 302)', () => {
+  const api = fs.readFileSync(path.join(ROOT, 'api', 'mapa.js'), 'utf8');
+  assert(!api.includes('redirect(302'), 'sem redirect 302');
+  assert(api.includes('text/html'), 'serve HTML');
 });
 
 test('next.config.js não redireciona /mapa ou /acesso', () => {
@@ -209,37 +246,20 @@ test('next.config.js não redireciona /mapa ou /acesso', () => {
   assert(!/\/acesso[\s\S]*hotmart/.test(cfg), 'sem redirect /acesso');
 });
 
-test('api/mapa.js serve HTML em vez de redirect 302', () => {
-  const api = fs.readFileSync(path.join(ROOT, 'api', 'mapa.js'), 'utf8');
-  assert(!api.includes('redirect(302'), 'sem redirect 302');
-  assert(api.includes('text/html'), 'serve HTML');
-});
-
-test('Produção index.html dispara InitiateCheckout no slide 19', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  const block = html.match(/if\s*\(\s*n\s*===\s*19\s*\)[\s\S]*?trackProgress\(\{\s*event:\s*'vsl_page'/);
-  assert(block, 'bloco slide 19 existe');
-  assert(/trackOnce\s*\(\s*['"]InitiateCheckout['"]/.test(block[0]), 'InitiateCheckout via trackOnce');
-  assert(block[0].includes("'Oferta Almagemela'"), 'content_name Oferta');
-});
-
-test('index.html produção dispara Contact via rotator (trackOnce)', () => {
-  const rot = fs.readFileSync(path.join(ROOT, 'js', 'vesto-global-rotator.js'), 'utf8');
-  assert(rot.includes("trackOnce('Contact'"), 'Contact via trackOnce');
-  assert(rot.includes('waitForPixel'), 'waitForPixel no Contact');
-});
-
 console.log('\n--- Resultados dos testes ---\n');
 results.tests.forEach((t) => {
   console.log((t.ok ? '✅' : '❌') + ' ' + t.name + (t.error ? ' — ' + t.error : ''));
 });
 console.log(`\nTotal: ${results.passed} passou, ${results.failed} falhou\n`);
 
-// Write JSON report for reference
 const reportPath = path.join(__dirname, 'audit-tracking-output.json');
 fs.writeFileSync(
   reportPath,
-  JSON.stringify({ date: new Date().toISOString(), results, findings }, null, 2)
+  JSON.stringify({ date: new Date().toISOString(), funnel: {
+    quiz: ['PageView', 'Lead (botão WA pós-VSL)'],
+    checkout: ['InitiateCheckout (/mapa, /acesso → Hotmart)'],
+    purchase: ['Hotmart Pixel+CAPI nativo'],
+  }, results, findings }, null, 2)
 );
 console.log('Relatório JSON: tests/audit-tracking-output.json');
 

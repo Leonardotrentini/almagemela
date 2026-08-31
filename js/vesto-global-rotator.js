@@ -136,30 +136,30 @@
     meta.pageUrl = location.href;
     meta.userAgent = navigator.userAgent || '';
     var ref = buildRef();
-    var contactEventId = 'vst_contact_' + ref.toLowerCase();
+    var leadEventId = 'vst_lead_' + ref.toLowerCase();
     try { sessionStorage.setItem('vesto_ref', ref); } catch (_) {}
-    try { sessionStorage.setItem('vesto_contact_event_id', contactEventId); } catch (_) {}
+    try { sessionStorage.setItem('vesto_contact_event_id', leadEventId); } catch (_) {}
     if (typeof waitForPixel === 'function' && typeof trackOnce === 'function') {
       waitForPixel(function () {
-        trackOnce('Contact', {}, contactEventId);
+        trackOnce('Lead', { content_name: 'Quiz Almagemela Completado' }, leadEventId);
       });
     } else if (typeof trackOnce === 'function') {
-      trackOnce('Contact', {}, contactEventId);
+      trackOnce('Lead', { content_name: 'Quiz Almagemela Completado' }, leadEventId);
     } else if (typeof fbq === 'function') {
-      var k = 'fb_fired_Contact';
+      var k = 'fb_fired_Lead';
       try {
         if (!sessionStorage.getItem(k)) {
-          var eid = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : contactEventId;
-          fbq('track', 'Contact', {}, { eventID: eid });
+          var eid = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : leadEventId;
+          fbq('track', 'Lead', { content_name: 'Quiz Almagemela Completado' }, { eventID: eid });
           sessionStorage.setItem(k, eid);
         }
       } catch (e) {
-        fbq('track', 'Contact', {}, { eventID: contactEventId });
+        fbq('track', 'Lead', { content_name: 'Quiz Almagemela Completado' }, { eventID: leadEventId });
       }
     }
 
     var attributionWait = Promise.race([
-      sendAttribution(meta, ref, contactEventId),
+      sendAttribution(meta, ref, leadEventId),
       wait(2500),
     ]);
 
