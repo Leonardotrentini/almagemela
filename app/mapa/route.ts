@@ -1,12 +1,18 @@
 import { NextResponse } from 'next/server';
-
-const HOTMART_CHECKOUT =
-  'https://pay.hotmart.com/J107108736M?checkoutMode=10';
+import fs from 'fs';
+import path from 'path';
 
 export function GET() {
-  return NextResponse.redirect(HOTMART_CHECKOUT, 302);
+  const html = fs.readFileSync(path.join(process.cwd(), 'mapa', 'index.html'), 'utf8');
+  return new NextResponse(html, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store',
+    },
+  });
 }
 
 export function HEAD() {
-  return NextResponse.redirect(HOTMART_CHECKOUT, 302);
+  return GET();
 }

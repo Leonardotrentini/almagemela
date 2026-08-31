@@ -198,8 +198,29 @@ test('Produção index.html dispara Lead em startLoading', () => {
 test('/mapa serve página intermediária com Pixel + InitiateCheckout', () => {
   const mapa = fs.readFileSync(path.join(ROOT, 'mapa', 'index.html'), 'utf8');
   assert(mapa.includes("fbq('init','38539014385698035')"), 'pixel init');
-  assert(mapa.includes('InitiateCheckout'), 'InitiateCheckout');
+  assert(mapa.includes("trackOnce('InitiateCheckout'"), 'InitiateCheckout via trackOnce');
+  assert(mapa.includes('meta-tracking-utils.js'), 'utils carregado');
   assert(!findings.mapaRedirect, 'sem redirect server-side /mapa');
+});
+
+test('next.config.js não redireciona /mapa ou /acesso', () => {
+  const cfg = fs.readFileSync(path.join(ROOT, 'next.config.js'), 'utf8');
+  assert(!/\/mapa[\s\S]*hotmart/.test(cfg), 'sem redirect /mapa');
+  assert(!/\/acesso[\s\S]*hotmart/.test(cfg), 'sem redirect /acesso');
+});
+
+test('api/mapa.js serve HTML em vez de redirect 302', () => {
+  const api = fs.readFileSync(path.join(ROOT, 'api', 'mapa.js'), 'utf8');
+  assert(!api.includes('redirect(302'), 'sem redirect 302');
+  assert(api.includes('text/html'), 'serve HTML');
+});
+
+test('Produção index.html dispara InitiateCheckout no slide 19', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const block = html.match(/if\s*\(\s*n\s*===\s*19\s*\)[\s\S]*?trackProgress\(\{\s*event:\s*'vsl_page'/);
+  assert(block, 'bloco slide 19 existe');
+  assert(/trackOnce\s*\(\s*['"]InitiateCheckout['"]/.test(block[0]), 'InitiateCheckout via trackOnce');
+  assert(block[0].includes("'Oferta Almagemela'"), 'content_name Oferta');
 });
 
 test('index.html produção dispara Contact via rotator (trackOnce)', () => {
