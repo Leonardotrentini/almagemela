@@ -208,6 +208,14 @@ test('index.html: NÃO dispara Purchase no browser', () => {
   assert(findings.indexPurchase.length === 0, 'sem Purchase no index');
 });
 
+test('index.html: autoConfig desligado (evita Lead automático duplicado)', () => {
+  assert(indexHtml.includes("fbq('set','autoConfig',false"), 'autoConfig false');
+});
+
+test('index.html: botão WA com data-fb-disable-automatic-logging', () => {
+  assert(indexHtml.includes('data-fb-disable-automatic-logging'), 'disable auto log no botão');
+});
+
 test('Lead dispara no clique do botão WA pós-VSL (rotator)', () => {
   assert(rotator.includes("trackOnce('Lead'"), 'Lead via trackOnce');
   assert(rotator.includes('Quiz Almagemela Completado'), 'content_name correto');
@@ -215,18 +223,19 @@ test('Lead dispara no clique do botão WA pós-VSL (rotator)', () => {
   assert(!rotator.includes("trackOnce('Contact'"), 'sem Contact no rotator');
 });
 
-test('/mapa: InitiateCheckout antes do redirect Hotmart', () => {
+test('/mapa: bridge PageView only — InitiateCheckout fica na Hotmart', () => {
   const mapa = fs.readFileSync(path.join(ROOT, 'mapa', 'index.html'), 'utf8');
   assert(mapa.includes("fbq('init','38539014385698035')"), 'pixel init');
-  assert(mapa.includes("trackOnce('InitiateCheckout'"), 'IC via trackOnce');
+  assert(mapa.includes("fbq('track','PageView')"), 'PageView');
+  assert(!mapa.includes("trackOnce('InitiateCheckout'"), 'sem IC no bridge');
   assert(mapa.includes('pay.hotmart.com'), 'redirect Hotmart');
   assert(!findings.mapaRedirect, 'sem redirect server-side /mapa no vercel.json');
 });
 
-test('/acesso: InitiateCheckout antes do redirect Hotmart', () => {
+test('/acesso: bridge PageView only — InitiateCheckout fica na Hotmart', () => {
   const acesso = fs.readFileSync(path.join(ROOT, 'acesso', 'index.html'), 'utf8');
-  assert(acesso.includes("trackOnce('InitiateCheckout'"), 'IC via trackOnce');
-  assert(acesso.includes('Acesso Completo'), 'content_name');
+  assert(acesso.includes("fbq('track','PageView')"), 'PageView');
+  assert(!acesso.includes("trackOnce('InitiateCheckout'"), 'sem IC no bridge');
 });
 
 test('Purchase: webhook Hotmart usa CAPI nativo (não duplica no browser)', () => {
@@ -257,7 +266,7 @@ fs.writeFileSync(
   reportPath,
   JSON.stringify({ date: new Date().toISOString(), funnel: {
     quiz: ['PageView', 'Lead (botão WA pós-VSL)'],
-    checkout: ['InitiateCheckout (/mapa, /acesso → Hotmart)'],
+    checkout: ['InitiateCheckout (Hotmart nativo ao carregar checkout)'],
     purchase: ['Hotmart Pixel+CAPI nativo'],
   }, results, findings }, null, 2)
 );
