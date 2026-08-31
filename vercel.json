@@ -3,16 +3,6 @@
   "trailingSlash": false,
   "redirects": [
     {
-      "source": "/mapa",
-      "destination": "https://pay.hotmart.com/J107108736M?checkoutMode=10",
-      "permanent": false
-    },
-    {
-      "source": "/acesso",
-      "destination": "https://pay.hotmart.com/J107108736M?checkoutMode=10",
-      "permanent": false
-    },
-    {
       "source": "/",
       "has": [{ "type": "host", "value": "acesso\\..+" }],
       "destination": "https://pay.hotmart.com/J107108736M?checkoutMode=10",

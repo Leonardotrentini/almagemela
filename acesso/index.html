@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<title>Redirecionando...</title>
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','38539014385698035');
+fbq('track','PageView');
+var key='fb_fired_InitiateCheckout';
+try{if(!sessionStorage.getItem(key)){
+var eid=crypto.randomUUID();
+fbq('track','InitiateCheckout',{value:9,currency:'USD',content_name:'Acesso Completo'},{eventID:eid});
+sessionStorage.setItem(key,eid);
+}}catch(e){}
+setTimeout(function(){window.location.href='https://pay.hotmart.com/J107108736M?checkoutMode=10';},500);
+</script>
+</head><body><p style="text-align:center;padding:40px;font-family:sans-serif;color:#666">Preparando tu lectura...</p></body></html>

@@ -143,8 +143,19 @@
       waitForPixel(function () {
         trackOnce('Contact', {}, contactEventId);
       });
+    } else if (typeof trackOnce === 'function') {
+      trackOnce('Contact', {}, contactEventId);
     } else if (typeof fbq === 'function') {
-      fbq('track', 'Contact', {}, { eventID: contactEventId });
+      var k = 'fb_fired_Contact';
+      try {
+        if (!sessionStorage.getItem(k)) {
+          var eid = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : contactEventId;
+          fbq('track', 'Contact', {}, { eventID: eid });
+          sessionStorage.setItem(k, eid);
+        }
+      } catch (e) {
+        fbq('track', 'Contact', {}, { eventID: contactEventId });
+      }
     }
 
     var attributionWait = Promise.race([

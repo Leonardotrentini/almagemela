@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<meta name="almagemela-build" content="meta-track-once-v1">
+<meta name="almagemela-build" content="meta-track-funnel-v2">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -1518,6 +1518,10 @@ function goToSlide(n) {
   if (el) el.classList.add('active');
   currentSlide = n;
 
+  if (n === 2 && typeof trackOnce === 'function') {
+    trackOnce('ViewContent', { content_name: 'Quiz Almagemela Iniciado' });
+  }
+
   updateProgress();
   applyTemplates();
   fillConfirmGate();
@@ -1719,6 +1723,9 @@ function bindInputs() {
 
 // ============ LOADING 13-17 ============
 function startLoading() {
+  if (typeof trackOnce === 'function') {
+    trackOnce('Lead', { content_name: 'Quiz Almagemela Completado' });
+  }
   trackProgress({ event: 'quiz_complete', current_step: 12, status: 'in_progress', immediate: true });
   // Entra no passo 13; goToSlide agenda sozinho 14→15→16→17→18
   goToSlide(13);
