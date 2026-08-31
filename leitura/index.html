@@ -16,7 +16,12 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '38539014385698035');
 fbq('track', 'PageView');
-fbq('trackCustom', 'order-bump', {content_name:'Lectura Hilo Rojo',content_category:'OrderBump'});
+</script>
+<script src="/js/meta-tracking-utils.js"></script>
+<script>
+waitForPixel(function () {
+  trackOnceCustom('order-bump', { content_name: 'Lectura Hilo Rojo', content_category: 'OrderBump' });
+});
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=38539014385698035&ev=PageView&noscript=1"

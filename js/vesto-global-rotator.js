@@ -139,7 +139,11 @@
     var contactEventId = 'vst_contact_' + ref.toLowerCase();
     try { sessionStorage.setItem('vesto_ref', ref); } catch (_) {}
     try { sessionStorage.setItem('vesto_contact_event_id', contactEventId); } catch (_) {}
-    if (typeof fbq === 'function') {
+    if (typeof waitForPixel === 'function' && typeof trackOnce === 'function') {
+      waitForPixel(function () {
+        trackOnce('Contact', {}, contactEventId);
+      });
+    } else if (typeof fbq === 'function') {
       fbq('track', 'Contact', {}, { eventID: contactEventId });
     }
 

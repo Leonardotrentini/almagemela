@@ -37,7 +37,12 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 })();
 fbq('init','38539014385698035',{external_id:window.__almagemelaVid||undefined});
 fbq('track','PageView');
-fbq('track','ViewContent',{content_name:'Quiz Almagemela',content_category:'Tarot'});
+</script>
+<script src="/js/meta-tracking-utils.js"></script>
+<script>
+waitForPixel(function () {
+  trackOnce('ViewContent', { content_name: 'Quiz Almagemela', content_category: 'Tarot' });
+});
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=38539014385698035&ev=PageView&noscript=1"
@@ -1415,7 +1420,29 @@ function getVisitorId() {
 }
 function metaEventId(tag) { return String(getVisitorId()) + '_' + tag + '_' + Date.now(); }
 function metaTrack(event, params) {
-  try { if (typeof fbq === 'function') fbq('track', event, params || {}); } catch (e) {}
+  try {
+    params = params || {};
+    if (event === 'Lead') {
+      trackOnce('Lead', params);
+      return;
+    }
+    if (event === 'InitiateCheckout') {
+      if (!sessionStorage.getItem('fb_fired_Lead')) return;
+      const eventId = params.eventID;
+      const p = Object.assign({}, params);
+      delete p.eventID;
+      trackInitiateCheckout(p, eventId);
+      return;
+    }
+    if (event === 'Purchase') {
+      const eventId = params.eventID;
+      const p = Object.assign({}, params);
+      delete p.eventID;
+      trackPurchase(p, eventId);
+      return;
+    }
+    trackOnce(event, params);
+  } catch (e) {}
 }
 function hotmartUrl(base) {
   const sep = base.indexOf('?') >= 0 ? '&' : '?';
